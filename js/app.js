@@ -487,7 +487,7 @@ function renderTikzInContainer(container) {
 function renderOneTikz(code, callback) {
     var iframe = document.createElement('iframe');
     iframe.style.cssText = 'border:none;width:0;height:0;position:absolute;left:-9999px;';
-    iframe.srcdoc = '';
+    iframe.src = 'about:blank';
     document.body.appendChild(iframe);
 
     var safeCode = code.replace(/<\//g, '<\\/');
@@ -496,15 +496,18 @@ function renderOneTikz(code, callback) {
     doc.write('<!DOCTYPE html><html><head>' +
         '<link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css">' +
         '<script>' +
-        // Fix btoa to handle Uint8Array/Buffer objects (TikZJax library.js bug: btoa(buffer))
-        'var _origBtoa=window.btoa;' +
+        // Fix btoa: use ArrayBuffer.isView (cross-realm safe) instead of instanceof
+        'try{' +
+        'var _ob=window.btoa;' +
         'window.btoa=function(s){' +
-        'if(s&&s.buffer instanceof ArrayBuffer||s instanceof Uint8Array){' +
+        'if(s&&typeof s==="object"){' +
+        'if(ArrayBuffer.isView(s)){' +
         'var r="";for(var i=0;i<s.length;i++)r+=String.fromCharCode(s[i]);' +
-        'return _origBtoa(r)}' +
-        'if(typeof s==="object"&&s!==null&&typeof s.toString==="function")' +
-        'return _origBtoa(s.toString("binary"));' +
-        'return _origBtoa(s)};' +
+        'return _ob(r)}' +
+        'if(typeof s.toString==="function")' +
+        'return _ob(s.toString("binary"))}' +
+        'return _ob(s)}' +
+        '}catch(e){console.warn("btoa patch error:",e)}' +
         '<\/script>' +
         '<script src="https://tikzjax.com/v1/tikzjax.js"><\/script>' +
         '</head><body>' +
@@ -526,13 +529,13 @@ function renderOneTikz(code, callback) {
         } catch(e) {
             console.warn('TikZ poll error:', e);
         }
-    }, 200);
+    }, 300);
 
     var timeoutTimer = setTimeout(function() {
         clearInterval(pollTimer);
         if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
         callback('<span style="color:red">[TikZ渲染超时]</span>');
-    }, 60000);
+    }, 120000);
 }
 function renderQuestionCards(questions) {
     var container = document.getElementById('questionCards');
@@ -1435,7 +1438,7 @@ function extractKaodianFromText(text) {
     return names;
 }
 
-function parseSingleExample(source) {
+function parseSingleExample(source, externalProof) {
     var typeMap = { '1': '单选题', '2': '多选题', '3': '填空题', '4': '解答题' };
     var re = /\\begin\{example\}\{(\d)\}((?:\[[^\]]*\])*)([\s\S]*?)\\end\{example\}/;
     var m = re.exec(source);
@@ -1443,6 +1446,9 @@ function parseSingleExample(source) {
     var qType = typeMap[m[1]] || '解答题';
     var bracketStr = m[2] || '';
     var allContent = m[3].trim();
+
+    // Merge external proof (Mode 2: proof outside \end{example})
+    if (externalProof) allContent += '\n' + externalProof;
 
     var proofContent = '';
     var proofRe = /\\begin\{proof\}([\s\S]*?)\\end\{proof\}/;
@@ -1539,9 +1545,20 @@ function parseLatexInput() {
     var questions = [];
     var re = /\\begin\{example\}\{(\d)\}((?:\[[^\]]*\])*)([\s\S]*?)\\end\{example\}/g;
     var m;
+    var lastIndex = 0;
     while ((m = re.exec(raw)) !== null) {
-        var parsed = parseSingleExample(m[0]);
+        var exampleEnd = m.index + m[0].length;
+        // Look ahead for external proof block (Mode 2: proof after \end{example})
+        var ahead = raw.substring(exampleEnd);
+        var extProof = '';
+        var extRe = /^\s*\\begin\{proof\}([\s\S]*?)\\end\{proof\}/;
+        var extM = extRe.exec(ahead);
+        if (extM) extProof = extM[0];
+        var parsed = parseSingleExample(m[0], extProof);
         if (parsed) questions.push(parsed);
+        // Update lastIndex to skip past external proof if found
+        var consumed = extM ? exampleEnd + extM[0].length : exampleEnd;
+        if (consumed > re.lastIndex) re.lastIndex = consumed;
     }
 
     // Rebuild filter values after parsing
