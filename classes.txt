@@ -1,0 +1,41 @@
+﻿app-container
+btn-generate
+btn-print
+btn-reset
+btn-submit
+category-items
+category-title
+empty-icon
+empty-state
+filter-bar
+filter-bar-label
+filter-bar-row
+filter-bar-tags
+folder-icon
+formula-list
+knowledge-category
+knowledge-item
+knowledge-item knowledge-folder
+knowledge-list
+knowledge-panel
+material-card
+materials-content
+nav-icon
+nav-item
+nav-item active
+nav-text
+panel-header
+paper-config
+question-cards
+question-count
+question-panel
+search-box
+sidebar
+sidebar-header
+sidebar-nav
+stat-item
+stat-label
+stat-number
+stats-grid
+sub-items hidden
+tip-list

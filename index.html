@@ -1,0 +1,2090 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学题库 - 网页版</title>
+    <!-- MathJax 3 -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Left Navigation Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>📚 数学题库</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active" data-tab="question-bank">
+                        <span class="nav-icon">📝</span>
+                        <span class="nav-text">题库中心</span>
+                    </li>
+                    <li class="nav-item" data-tab="paper-maker">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-text">组卷中心</span>
+                    </li>
+                    <li class="nav-item" data-tab="materials">
+                        <span class="nav-icon">📖</span>
+                        <span class="nav-text">资料中心</span>
+                    </li>
+                    <li class="nav-item" data-tab="question-entry">
+                        <span class="nav-icon">➕</span>
+                        <span class="nav-text">录题中心</span>
+                    </li>
+                </ul>
+            </nav>
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索题目...">
+            </div>
+            <!-- Import/Export Data -->
+            <div class="sidebar-import-export">
+                <button class="sidebar-btn btn-export-data" onclick="showExportMenu()" title="导出题库">📤 导出题库</button>
+                <button class="sidebar-btn btn-import-data" onclick="document.getElementById('importFileInput').click()" title="从 JSON 文件导入题库">📥 导入题库</button>
+                <input type="file" id="importFileInput" accept=".json" style="display:none;" onchange="importQuestionBank(event)">
+                <div id="importStatus" class="import-status"></div>
+                <button class="sidebar-btn btn-clear-data" onclick="clearAllData()" title="清空所有题目数据" style="margin-top:6px;">🗑️ 清空浏览器缓存</button>
+            </div>
+            <!-- Progress Bar Overlay -->
+            <div class="progress-overlay" id="progressOverlay" style="display:none;">
+                <div class="progress-modal">
+                    <div class="progress-title" id="progressTitle">处理中...</div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="progressFill" style="width:0%;"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">0 / 0</div>
+                </div>
+            </div>
+            <!-- Edit Modal -->
+            <div class="modal-overlay" id="editModal" style="display:none;">
+                <div class="modal-box">
+                    <div class="modal-header">
+                        <span>编辑题目</span>
+                        <span class="modal-close" onclick="closeEditModal()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <textarea id="editSource" class="edit-source-textarea" spellcheck="false"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" id="btnDeleteQuestion" onclick="deleteQuestion()">删除题目</button>
+                        <button class="btn btn-primary" onclick="saveQuestionEdit()">保存修改</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center Panel - Knowledge Points -->
+        <section class="knowledge-panel" id="knowledgePanel">
+            <div class="panel-header">
+                <h2>知识点</h2>
+            </div>
+            <div class="knowledge-list" id="knowledgeList">
+                <div class="knowledge-category">
+                    <h3 class="category-title" data-toggle="三角函数与解三角形">📐 三角函数与解三角形</h3>
+                    <ul class="category-items" id="三角函数与解三角形">
+                        <li class="knowledge-item knowledge-folder" data-knowledge="三角函数" data-toggle="l2_三角函数">
+                            <span class="folder-icon">▶</span> 三角函数
+                        </li>
+                        <ul class="sub-items hidden" id="l2_三角函数">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="任意角与弧度值" data-toggle="l3_任意角与弧度值">
+                                <span class="folder-icon">▶</span> 任意角与弧度值
+                            </li>
+                            <ul class="sub-items hidden" id="l3_任意角与弧度值">
+                                <li class="knowledge-item" data-knowledge="周期现象">周期现象</li>
+                                <li class="knowledge-item" data-knowledge="任意角">任意角</li>
+                                <li class="knowledge-item" data-knowledge="相同角">相同角</li>
+                                <li class="knowledge-item" data-knowledge="轴线角">轴线角</li>
+                                <li class="knowledge-item" data-knowledge="象限角">象限角</li>
+                                <li class="knowledge-item" data-knowledge="弧度制">弧度制</li>
+                                <li class="knowledge-item" data-knowledge="角度与弧度互化">角度与弧度互化</li>
+                                <li class="knowledge-item" data-knowledge="弧长公式">弧长公式</li>
+                                <li class="knowledge-item" data-knowledge="扇形面积公式">扇形面积公式</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="任意角的三角函数" data-toggle="l3_任意角的三角函数">
+                                <span class="folder-icon">▶</span> 任意角的三角函数
+                            </li>
+                            <ul class="sub-items hidden" id="l3_任意角的三角函数">
+                                <li class="knowledge-item" data-knowledge="任意角的三角函数的定义">任意角的三角函数的定义</li>
+                                <li class="knowledge-item" data-knowledge="任意角的三角函数的值">任意角的三角函数的值</li>
+                                <li class="knowledge-item" data-knowledge="三角函数线">三角函数线</li>
+                                <li class="knowledge-item" data-knowledge="已知三角函数求角">已知三角函数求角</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="同角三角函数的基本公式" data-toggle="l3_同角三角函数的基本公式">
+                                <span class="folder-icon">▶</span> 同角三角函数的基本公式
+                            </li>
+                            <ul class="sub-items hidden" id="l3_同角三角函数的基本公式">
+                                <li class="knowledge-item" data-knowledge="平方关系">平方关系</li>
+                                <li class="knowledge-item" data-knowledge="四则关系">四则关系</li>
+                                <li class="knowledge-item" data-knowledge="商数关系">商数关系</li>
+                                <li class="knowledge-item" data-knowledge="同角三角函数基本关系的综合应用">同角三角函数基本关系的综合应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="诱导公式" data-toggle="l3_诱导公式">
+                                <span class="folder-icon">▶</span> 诱导公式
+                            </li>
+                            <ul class="sub-items hidden" id="l3_诱导公式">
+                                <li class="knowledge-item" data-knowledge="诱导公式的直接应用">诱导公式的直接应用</li>
+                                <li class="knowledge-item" data-knowledge="诱导公式的综合应用">诱导公式的综合应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="三角函数的图像与形状" data-toggle="l3_三角函数的图像与形状">
+                                <span class="folder-icon">▶</span> 三角函数的图像与形状
+                            </li>
+                            <ul class="sub-items hidden" id="l3_三角函数的图像与形状">
+                                <li class="knowledge-item" data-knowledge="正弦函数的图象">正弦函数的图象</li>
+                                <li class="knowledge-item" data-knowledge="余弦函数的图象">余弦函数的图象</li>
+                                <li class="knowledge-item" data-knowledge="正弦函数的单调性">正弦函数的单调性</li>
+                                <li class="knowledge-item" data-knowledge="正弦函数的定义域">正弦函数的定义域</li>
+                                <li class="knowledge-item" data-knowledge="正弦函数的值域">正弦函数的值域</li>
+                                <li class="knowledge-item" data-knowledge="正弦函数的最值">正弦函数的最值</li>
+                                <li class="knowledge-item" data-knowledge="正弦函数的奇偶性">正弦函数的奇偶性</li>
+                                <li class="knowledge-item" data-knowledge="正弦函数的周期性">正弦函数的周期性</li>
+                                <li class="knowledge-item" data-knowledge="正弦函数的对称性">正弦函数的对称性</li>
+                                <li class="knowledge-item" data-knowledge="余弦函数的单调性">余弦函数的单调性</li>
+                                <li class="knowledge-item" data-knowledge="余弦函数的定义域">余弦函数的定义域</li>
+                                <li class="knowledge-item" data-knowledge="余弦函数的值域">余弦函数的值域</li>
+                                <li class="knowledge-item" data-knowledge="余弦函数的最值">余弦函数的最值</li>
+                                <li class="knowledge-item" data-knowledge="余弦函数的奇偶性">余弦函数的奇偶性</li>
+                                <li class="knowledge-item" data-knowledge="余弦函数的周期性">余弦函数的周期性</li>
+                                <li class="knowledge-item" data-knowledge="余弦函数的对称性">余弦函数的对称性</li>
+                                <li class="knowledge-item" data-knowledge="正切函数的图象">正切函数的图象</li>
+                                <li class="knowledge-item" data-knowledge="正切函数的单调性">正切函数的单调性</li>
+                                <li class="knowledge-item" data-knowledge="正切函数的奇偶性">正切函数的奇偶性</li>
+                                <li class="knowledge-item" data-knowledge="正切函数的周期性">正切函数的周期性</li>
+                                <li class="knowledge-item" data-knowledge="正切函数的对称性">正切函数的对称性</li>
+                                <li class="knowledge-item" data-knowledge="正切函数的定义域">正切函数的定义域</li>
+                                <li class="knowledge-item" data-knowledge="正切函数的值域">正切函数的值域</li>
+                                <li class="knowledge-item" data-knowledge="正切函数的最值">正切函数的最值</li>
+                                <li class="knowledge-item" data-knowledge="正(余)弦型三角函数的图象">正(余)弦型三角函数的图象</li>
+                                <li class="knowledge-item" data-knowledge="正切型三角函数的图象">正切型三角函数的图象</li>
+                                <li class="knowledge-item" data-knowledge="三角函数图象的综合应用">三角函数图象的综合应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="三角函数的图像变换" data-toggle="l3_三角函数的图像变换">
+                                <span class="folder-icon">▶</span> 三角函数的图像变换
+                            </li>
+                            <ul class="sub-items hidden" id="l3_三角函数的图像变换">
+                                <li class="knowledge-item" data-knowledge="四种基本图像变换">四种基本图像变换</li>
+                                <li class="knowledge-item" data-knowledge="三角函数的图像变换">三角函数的图像变换</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="三角函数的应用">三角函数的应用</li>
+                            <li class="knowledge-item" data-knowledge="反三角函数">反三角函数</li>
+                            <li class="knowledge-item" data-knowledge="三角函数综合">三角函数综合</li>
+                            <li class="knowledge-item" data-knowledge="三角函数的新定义">三角函数的新定义</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="三角恒等变换" data-toggle="l2_三角恒等变换">
+                            <span class="folder-icon">▶</span> 三角恒等变换
+                        </li>
+                        <ul class="sub-items hidden" id="l2_三角恒等变换">
+                            <li class="knowledge-item" data-knowledge="两角和与差公式">两角和与差公式</li>
+                            <li class="knowledge-item" data-knowledge="二倍角公式">二倍角公式</li>
+                            <li class="knowledge-item" data-knowledge="半角公式">半角公式</li>
+                            <li class="knowledge-item" data-knowledge="万能公式">万能公式</li>
+                            <li class="knowledge-item" data-knowledge="积化和差与和差化积公式">积化和差与和差化积公式</li>
+                            <li class="knowledge-item" data-knowledge="降幂公式">降幂公式</li>
+                            <li class="knowledge-item" data-knowledge="辅助角公式">辅助角公式</li>
+                            <li class="knowledge-item" data-knowledge="三角恒等变换的应用">三角恒等变换的应用</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="解三角形" data-toggle="l2_解三角形">
+                            <span class="folder-icon">▶</span> 解三角形
+                        </li>
+                        <ul class="sub-items hidden" id="l2_解三角形">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="正弦定理与余弦定理" data-toggle="l3_正弦定理与余弦定理">
+                                <span class="folder-icon">▶</span> 正弦定理与余弦定理
+                            </li>
+                            <ul class="sub-items hidden" id="l3_正弦定理与余弦定理">
+                                <li class="knowledge-item" data-knowledge="正弦定理">正弦定理</li>
+                                <li class="knowledge-item" data-knowledge="三角形面积公式">三角形面积公式</li>
+                                <li class="knowledge-item" data-knowledge="余弦定理">余弦定理</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="解三角形的应用" data-toggle="l3_解三角形的应用">
+                                <span class="folder-icon">▶</span> 解三角形的应用
+                            </li>
+                            <ul class="sub-items hidden" id="l3_解三角形的应用">
+                                <li class="knowledge-item" data-knowledge="余弦定理在几何中的应用">余弦定理在几何中的应用</li>
+                                <li class="knowledge-item" data-knowledge="正余弦定理的实际应用">正余弦定理的实际应用</li>
+                            </ul>
+                        </ul>
+                    </ul>
+                </div>
+                <div class="knowledge-category">
+                    <h3 class="category-title" data-toggle="圆锥曲线">〰️ 圆锥曲线</h3>
+                    <ul class="category-items" id="圆锥曲线">
+                        <li class="knowledge-item knowledge-folder" data-knowledge="椭圆" data-toggle="l2_椭圆">
+                            <span class="folder-icon">▶</span> 椭圆
+                        </li>
+                        <ul class="sub-items hidden" id="l2_椭圆">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="椭圆的定义" data-toggle="l3_椭圆的定义">
+                                <span class="folder-icon">▶</span> 椭圆的定义
+                            </li>
+                            <ul class="sub-items hidden" id="l3_椭圆的定义">
+                                <li class="knowledge-item" data-knowledge="椭圆定义及辨析">椭圆定义及辨析</li>
+                                <li class="knowledge-item" data-knowledge="利用椭圆定义求方程">利用椭圆定义求方程</li>
+                                <li class="knowledge-item" data-knowledge="椭圆上点到焦点的距离及最值">椭圆上点到焦点的距离及最值</li>
+                                <li class="knowledge-item" data-knowledge="椭圆上的点到坐标轴上的点的距离及最值">椭圆上的点到坐标轴上的点的距离及最值</li>
+                                <li class="knowledge-item" data-knowledge="椭圆中焦点三角形的周长问题">椭圆中焦点三角形的周长问题</li>
+                                <li class="knowledge-item" data-knowledge="椭圆上点到焦点和定点距离的和、差最值">椭圆上点到焦点和定点距离的和、差最值</li>
+                                <li class="knowledge-item" data-knowledge="椭圆中焦点三角形的面积问题">椭圆中焦点三角形的面积问题</li>
+                                <li class="knowledge-item" data-knowledge="椭圆中焦点三角形的其他问题">椭圆中焦点三角形的其他问题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="椭圆的标准方程" data-toggle="l3_椭圆的标准方程">
+                                <span class="folder-icon">▶</span> 椭圆的标准方程
+                            </li>
+                            <ul class="sub-items hidden" id="l3_椭圆的标准方程">
+                                <li class="knowledge-item" data-knowledge="判断方程是否表示椭圆">判断方程是否表示椭圆</li>
+                                <li class="knowledge-item" data-knowledge="根据方程表示椭圆求参数的范围">根据方程表示椭圆求参数的范围</li>
+                                <li class="knowledge-item" data-knowledge="根据椭圆方程求a、b、c">根据椭圆方程求a、b、c</li>
+                                <li class="knowledge-item" data-knowledge="椭圆的方程与椭圆（焦点）位置的特征">椭圆的方程与椭圆（焦点）位置的特征</li>
+                                <li class="knowledge-item" data-knowledge="求椭圆上点的坐标">求椭圆上点的坐标</li>
+                                <li class="knowledge-item" data-knowledge="根据a、b、c求椭圆标准方程">根据a、b、c求椭圆标准方程</li>
+                                <li class="knowledge-item" data-knowledge="根据椭圆过的点求标准方程">根据椭圆过的点求标准方程</li>
+                                <li class="knowledge-item" data-knowledge="轨迹问题——椭圆">轨迹问题——椭圆</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="椭圆的焦点、焦距" data-toggle="l3_椭圆的焦点、焦距">
+                                <span class="folder-icon">▶</span> 椭圆的焦点、焦距
+                            </li>
+                            <ul class="sub-items hidden" id="l3_椭圆的焦点、焦距">
+                                <li class="knowledge-item" data-knowledge="求椭圆的焦点、焦距">求椭圆的焦点、焦距</li>
+                                <li class="knowledge-item" data-knowledge="求共焦点的椭圆方程">求共焦点的椭圆方程</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="椭圆的范围" data-toggle="l3_椭圆的范围">
+                                <span class="folder-icon">▶</span> 椭圆的范围
+                            </li>
+                            <ul class="sub-items hidden" id="l3_椭圆的范围">
+                                <li class="knowledge-item" data-knowledge="椭圆中x、y的取值范围">椭圆中x、y的取值范围</li>
+                                <li class="knowledge-item" data-knowledge="根据椭圆的有界性求范围或最值">根据椭圆的有界性求范围或最值</li>
+                                <li class="knowledge-item" data-knowledge="点和椭圆的位置关系">点和椭圆的位置关系</li>
+                                <li class="knowledge-item" data-knowledge="椭圆的对称性">椭圆的对称性</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="椭圆的顶点、长短轴" data-toggle="l3_椭圆的顶点、长短轴">
+                                <span class="folder-icon">▶</span> 椭圆的顶点、长短轴
+                            </li>
+                            <ul class="sub-items hidden" id="l3_椭圆的顶点、长短轴">
+                                <li class="knowledge-item" data-knowledge="求椭圆的顶点坐标">求椭圆的顶点坐标</li>
+                                <li class="knowledge-item" data-knowledge="求椭圆的长轴、短轴">求椭圆的长轴、短轴</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="椭圆的离心率" data-toggle="l3_椭圆的离心率">
+                                <span class="folder-icon">▶</span> 椭圆的离心率
+                            </li>
+                            <ul class="sub-items hidden" id="l3_椭圆的离心率">
+                                <li class="knowledge-item" data-knowledge="求椭圆的离心率或离心率的取值范围">求椭圆的离心率或离心率的取值范围</li>
+                                <li class="knowledge-item" data-knowledge="椭圆离心率大小与椭圆圆扁的关系">椭圆离心率大小与椭圆圆扁的关系</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="椭圆的应用">椭圆的应用</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="双曲线" data-toggle="l2_双曲线">
+                            <span class="folder-icon">▶</span> 双曲线
+                        </li>
+                        <ul class="sub-items hidden" id="l2_双曲线">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线的定义" data-toggle="l3_双曲线的定义">
+                                <span class="folder-icon">▶</span> 双曲线的定义
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线的定义">
+                                <li class="knowledge-item" data-knowledge="双曲线定义的理解">双曲线定义的理解</li>
+                                <li class="knowledge-item" data-knowledge="利用双曲线定义求方程">利用双曲线定义求方程</li>
+                                <li class="knowledge-item" data-knowledge="利用双曲线定义求点到焦点的距离及最值">利用双曲线定义求点到焦点的距离及最值</li>
+                                <li class="knowledge-item" data-knowledge="利用定义解决双曲线中焦点三角形问题">利用定义解决双曲线中焦点三角形问题</li>
+                                <li class="knowledge-item" data-knowledge="利用定义求双曲线中线段和、差的最值">利用定义求双曲线中线段和、差的最值</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线标准方程的形式" data-toggle="l3_双曲线标准方程的形式">
+                                <span class="folder-icon">▶</span> 双曲线标准方程的形式
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线标准方程的形式">
+                                <li class="knowledge-item" data-knowledge="判断方程是否表示双曲线">判断方程是否表示双曲线</li>
+                                <li class="knowledge-item" data-knowledge="根据方程表示双曲线求参数的范围">根据方程表示双曲线求参数的范围</li>
+                                <li class="knowledge-item" data-knowledge="根据双曲线方程求a、b、c">根据双曲线方程求a、b、c</li>
+                                <li class="knowledge-item" data-knowledge="双曲线的方程与双曲线（焦点）位置的特征">双曲线的方程与双曲线（焦点）位置的特征</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线标准方程的求法" data-toggle="l3_双曲线标准方程的求法">
+                                <span class="folder-icon">▶</span> 双曲线标准方程的求法
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线标准方程的求法">
+                                <li class="knowledge-item" data-knowledge="根据a、b、c求双曲线的标准方程">根据a、b、c求双曲线的标准方程</li>
+                                <li class="knowledge-item" data-knowledge="根据双曲线过的点求标准方程">根据双曲线过的点求标准方程</li>
+                                <li class="knowledge-item" data-knowledge="求双曲线的轨迹方程">求双曲线的轨迹方程</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线的焦点、焦距" data-toggle="l3_双曲线的焦点、焦距">
+                                <span class="folder-icon">▶</span> 双曲线的焦点、焦距
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线的焦点、焦距">
+                                <li class="knowledge-item" data-knowledge="求双曲线的焦点坐标">求双曲线的焦点坐标</li>
+                                <li class="knowledge-item" data-knowledge="求双曲线的焦距">求双曲线的焦距</li>
+                                <li class="knowledge-item" data-knowledge="判断两个双曲线共焦点">判断两个双曲线共焦点</li>
+                                <li class="knowledge-item" data-knowledge="求共焦点的双曲线方程">求共焦点的双曲线方程</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线的范围" data-toggle="l3_双曲线的范围">
+                                <span class="folder-icon">▶</span> 双曲线的范围
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线的范围">
+                                <li class="knowledge-item" data-knowledge="双曲线中x、y的取值范围">双曲线中x、y的取值范围</li>
+                                <li class="knowledge-item" data-knowledge="根据双曲线中x、y的范围求范围或最值">根据双曲线中x、y的范围求范围或最值</li>
+                                <li class="knowledge-item" data-knowledge="判断点和双曲线的位置关系">判断点和双曲线的位置关系</li>
+                                <li class="knowledge-item" data-knowledge="双曲线的对称性">双曲线的对称性</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线的顶点、实轴、虚轴" data-toggle="l3_双曲线的顶点、实轴、虚轴">
+                                <span class="folder-icon">▶</span> 双曲线的顶点、实轴、虚轴
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线的顶点、实轴、虚轴">
+                                <li class="knowledge-item" data-knowledge="求双曲线的顶点坐标">求双曲线的顶点坐标</li>
+                                <li class="knowledge-item" data-knowledge="求双曲线的实轴、虚轴">求双曲线的实轴、虚轴</li>
+                                <li class="knowledge-item" data-knowledge="根据顶点坐标、实轴、虚轴求双曲线的标准方程">根据顶点坐标、实轴、虚轴求双曲线的标准方程</li>
+                                <li class="knowledge-item" data-knowledge="根据顶点或实虚轴关系求参数">根据顶点或实虚轴关系求参数</li>
+                                <li class="knowledge-item" data-knowledge="等轴双曲线">等轴双曲线</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线的渐近线" data-toggle="l3_双曲线的渐近线">
+                                <span class="folder-icon">▶</span> 双曲线的渐近线
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线的渐近线">
+                                <li class="knowledge-item" data-knowledge="已知方程求双曲线的渐近线">已知方程求双曲线的渐近线</li>
+                                <li class="knowledge-item" data-knowledge="根据双曲线的渐近线求标准方程">根据双曲线的渐近线求标准方程</li>
+                                <li class="knowledge-item" data-knowledge="求共渐近线的双曲线的标准方程">求共渐近线的双曲线的标准方程</li>
+                                <li class="knowledge-item" data-knowledge="根据a,b,c齐次式关系求渐近线方程">根据a,b,c齐次式关系求渐近线方程</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线的离心率" data-toggle="l3_双曲线的离心率">
+                                <span class="folder-icon">▶</span> 双曲线的离心率
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线的离心率">
+                                <li class="knowledge-item" data-knowledge="求双曲线的离心率或离心率的取值范围">求双曲线的离心率或离心率的取值范围</li>
+                                <li class="knowledge-item" data-knowledge="双曲线离心率大小与双曲线形状的关系">双曲线离心率大小与双曲线形状的关系</li>
+                                <li class="knowledge-item" data-knowledge="根据离心率求双曲线的标准方程">根据离心率求双曲线的标准方程</li>
+                                <li class="knowledge-item" data-knowledge="求共离心率的双曲线的标准方程">求共离心率的双曲线的标准方程</li>
+                                <li class="knowledge-item" data-knowledge="由双曲线的离心率求参数的取值范围">由双曲线的离心率求参数的取值范围</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="双曲线的应用">双曲线的应用</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="抛物线" data-toggle="l2_抛物线">
+                            <span class="folder-icon">▶</span> 抛物线
+                        </li>
+                        <ul class="sub-items hidden" id="l2_抛物线">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="抛物线的定义" data-toggle="l3_抛物线的定义">
+                                <span class="folder-icon">▶</span> 抛物线的定义
+                            </li>
+                            <ul class="sub-items hidden" id="l3_抛物线的定义">
+                                <li class="knowledge-item" data-knowledge="抛物线定义的理解">抛物线定义的理解</li>
+                                <li class="knowledge-item" data-knowledge="利用抛物线定义求动点轨迹">利用抛物线定义求动点轨迹</li>
+                                <li class="knowledge-item" data-knowledge="抛物线上的点到定点的距离及最值">抛物线上的点到定点的距离及最值</li>
+                                <li class="knowledge-item" data-knowledge="抛物线上的点到定点和焦点距离的和、差最值">抛物线上的点到定点和焦点距离的和、差最值</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="抛物线标准方程的形式" data-toggle="l3_抛物线标准方程的形式">
+                                <span class="folder-icon">▶</span> 抛物线标准方程的形式
+                            </li>
+                            <ul class="sub-items hidden" id="l3_抛物线标准方程的形式">
+                                <li class="knowledge-item" data-knowledge="根据抛物线方程求焦点或准线">根据抛物线方程求焦点或准线</li>
+                                <li class="knowledge-item" data-knowledge="抛物线方程的四种形式与位置特征">抛物线方程的四种形式与位置特征</li>
+                                <li class="knowledge-item" data-knowledge="抛物线的焦半径公式">抛物线的焦半径公式</li>
+                                <li class="knowledge-item" data-knowledge="根据抛物线的方程求参数">根据抛物线的方程求参数</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="抛物线标准方程的求法" data-toggle="l3_抛物线标准方程的求法">
+                                <span class="folder-icon">▶</span> 抛物线标准方程的求法
+                            </li>
+                            <ul class="sub-items hidden" id="l3_抛物线标准方程的求法">
+                                <li class="knowledge-item" data-knowledge="根据焦点或准线写出抛物线的标准方程">根据焦点或准线写出抛物线的标准方程</li>
+                                <li class="knowledge-item" data-knowledge="根据定义求抛物线的标准方程">根据定义求抛物线的标准方程</li>
+                                <li class="knowledge-item" data-knowledge="根据抛物线上的点求标准方程">根据抛物线上的点求标准方程</li>
+                                <li class="knowledge-item" data-knowledge="求抛物线的轨迹方程">求抛物线的轨迹方程</li>
+                                <li class="knowledge-item" data-knowledge="求实际问题中的抛物线方程">求实际问题中的抛物线方程</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="抛物线的顶点、开口方向" data-toggle="l3_抛物线的顶点、开口方向">
+                                <span class="folder-icon">▶</span> 抛物线的顶点、开口方向
+                            </li>
+                            <ul class="sub-items hidden" id="l3_抛物线的顶点、开口方向">
+                                <li class="knowledge-item" data-knowledge="判断抛物线开口方向">判断抛物线开口方向</li>
+                                <li class="knowledge-item" data-knowledge="判断抛物线开口大小">判断抛物线开口大小</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="抛物线的范围">抛物线的范围</li>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="抛物线的对称性" data-toggle="l3_抛物线的对称性">
+                                <span class="folder-icon">▶</span> 抛物线的对称性
+                            </li>
+                            <ul class="sub-items hidden" id="l3_抛物线的对称性">
+                                <li class="knowledge-item" data-knowledge="求抛物线的对称轴">求抛物线的对称轴</li>
+                                <li class="knowledge-item" data-knowledge="抛物线的对称性的应用">抛物线的对称性的应用</li>
+                                <li class="knowledge-item" data-knowledge="抛物线的对称性求相应参数">抛物线的对称性求相应参数</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="直线与圆锥曲线的位置关系" data-toggle="l2_直线与圆锥曲线的位置关系">
+                            <span class="folder-icon">▶</span> 直线与圆锥曲线的位置关系
+                        </li>
+                        <ul class="sub-items hidden" id="l2_直线与圆锥曲线的位置关系">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="直线与椭圆的位置关系" data-toggle="l3_直线与椭圆的位置关系">
+                                <span class="folder-icon">▶</span> 直线与椭圆的位置关系
+                            </li>
+                            <ul class="sub-items hidden" id="l3_直线与椭圆的位置关系">
+                                <li class="knowledge-item" data-knowledge="求直线与椭圆的交点坐标">求直线与椭圆的交点坐标</li>
+                                <li class="knowledge-item" data-knowledge="讨论椭圆与直线的位置关系">讨论椭圆与直线的位置关系</li>
+                                <li class="knowledge-item" data-knowledge="求椭圆的切线方程">求椭圆的切线方程</li>
+                                <li class="knowledge-item" data-knowledge="根据直线与椭圆的位置关系求参数或范围">根据直线与椭圆的位置关系求参数或范围</li>
+                                <li class="knowledge-item" data-knowledge="根据韦达定理求参数">根据韦达定理求参数</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="椭圆的弦长、焦点弦" data-toggle="l3_椭圆的弦长、焦点弦">
+                                <span class="folder-icon">▶</span> 椭圆的弦长、焦点弦
+                            </li>
+                            <ul class="sub-items hidden" id="l3_椭圆的弦长、焦点弦">
+                                <li class="knowledge-item" data-knowledge="求椭圆中的弦长焦点弦">求椭圆中的弦长焦点弦</li>
+                                <li class="knowledge-item" data-knowledge="椭圆中三角形（四边形）的面积">椭圆中三角形（四边形）的面积</li>
+                                <li class="knowledge-item" data-knowledge="椭圆中的通径问题">椭圆中的通径问题</li>
+                                <li class="knowledge-item" data-knowledge="椭圆的焦半径与焦点弦问题">椭圆的焦半径与焦点弦问题</li>
+                                <li class="knowledge-item" data-knowledge="根据弦长求参数">根据弦长求参数</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="椭圆的中点弦" data-toggle="l3_椭圆的中点弦">
+                                <span class="folder-icon">▶</span> 椭圆的中点弦
+                            </li>
+                            <ul class="sub-items hidden" id="l3_椭圆的中点弦">
+                                <li class="knowledge-item" data-knowledge="由弦中点求弦方程或斜率">由弦中点求弦方程或斜率</li>
+                                <li class="knowledge-item" data-knowledge="求弦中点所在的直线方程或斜率">求弦中点所在的直线方程或斜率</li>
+                                <li class="knowledge-item" data-knowledge="由中点弦坐标或中点弦方程、斜率求参数">由中点弦坐标或中点弦方程、斜率求参数</li>
+                                <li class="knowledge-item" data-knowledge="由韦达定理或斜率求弦中点">由韦达定理或斜率求弦中点</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="椭圆中的参数范围及最值" data-toggle="l3_椭圆中的参数范围及最值">
+                                <span class="folder-icon">▶</span> 椭圆中的参数范围及最值
+                            </li>
+                            <ul class="sub-items hidden" id="l3_椭圆中的参数范围及最值">
+                                <li class="knowledge-item" data-knowledge="求椭圆中的参数及范围">求椭圆中的参数及范围</li>
+                                <li class="knowledge-item" data-knowledge="求椭圆中的最值问题">求椭圆中的最值问题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="椭圆中的定点、定值" data-toggle="l3_椭圆中的定点、定值">
+                                <span class="folder-icon">▶</span> 椭圆中的定点、定值
+                            </li>
+                            <ul class="sub-items hidden" id="l3_椭圆中的定点、定值">
+                                <li class="knowledge-item" data-knowledge="椭圆中的直线过定点问题">椭圆中的直线过定点问题</li>
+                                <li class="knowledge-item" data-knowledge="椭圆中存在定点满足某条件问题">椭圆中存在定点满足某条件问题</li>
+                                <li class="knowledge-item" data-knowledge="椭圆中的定值问题">椭圆中的定值问题</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="椭圆中的定直线">椭圆中的定直线</li>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="椭圆中的向量问题" data-toggle="l3_椭圆中的向量问题">
+                                <span class="folder-icon">▶</span> 椭圆中的向量问题
+                            </li>
+                            <ul class="sub-items hidden" id="l3_椭圆中的向量问题">
+                                <li class="knowledge-item" data-knowledge="椭圆中向量点乘问题">椭圆中向量点乘问题</li>
+                                <li class="knowledge-item" data-knowledge="椭圆中向量共线比例问题">椭圆中向量共线比例问题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="直线与双曲线的位置关系" data-toggle="l3_直线与双曲线的位置关系">
+                                <span class="folder-icon">▶</span> 直线与双曲线的位置关系
+                            </li>
+                            <ul class="sub-items hidden" id="l3_直线与双曲线的位置关系">
+                                <li class="knowledge-item" data-knowledge="求直线与双曲线的交点坐标">求直线与双曲线的交点坐标</li>
+                                <li class="knowledge-item" data-knowledge="讨论双曲线与直线的位置关系">讨论双曲线与直线的位置关系</li>
+                                <li class="knowledge-item" data-knowledge="求双曲线的切线方程">求双曲线的切线方程</li>
+                                <li class="knowledge-item" data-knowledge="根据直线与双曲线的位置关系求参数或范围">根据直线与双曲线的位置关系求参数或范围</li>
+                                <li class="knowledge-item" data-knowledge="根据韦达定理求参数">根据韦达定理求参数</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线的弦长、焦点弦" data-toggle="l3_双曲线的弦长、焦点弦">
+                                <span class="folder-icon">▶</span> 双曲线的弦长、焦点弦
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线的弦长、焦点弦">
+                                <li class="knowledge-item" data-knowledge="求双曲线中的弦长">求双曲线中的弦长</li>
+                                <li class="knowledge-item" data-knowledge="求双曲线中三角形（四边形）的面积问题">求双曲线中三角形（四边形）的面积问题</li>
+                                <li class="knowledge-item" data-knowledge="双曲线中的通径问题">双曲线中的通径问题</li>
+                                <li class="knowledge-item" data-knowledge="双曲线的焦半径与焦点弦问题">双曲线的焦半径与焦点弦问题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线的中点弦" data-toggle="l3_双曲线的中点弦">
+                                <span class="folder-icon">▶</span> 双曲线的中点弦
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线的中点弦">
+                                <li class="knowledge-item" data-knowledge="求弦中点所在的直线方程或斜率">求弦中点所在的直线方程或斜率</li>
+                                <li class="knowledge-item" data-knowledge="由中点弦坐标或中点弦方程、斜率求参数">由中点弦坐标或中点弦方程、斜率求参数</li>
+                                <li class="knowledge-item" data-knowledge="由弦中点求弦方程或斜率">由弦中点求弦方程或斜率</li>
+                                <li class="knowledge-item" data-knowledge="由韦达定理或斜率求弦中点">由韦达定理或斜率求弦中点</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线中的参数范围及最值" data-toggle="l3_双曲线中的参数范围及最值">
+                                <span class="folder-icon">▶</span> 双曲线中的参数范围及最值
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线中的参数范围及最值">
+                                <li class="knowledge-item" data-knowledge="双曲线中的参数及范围">双曲线中的参数及范围</li>
+                                <li class="knowledge-item" data-knowledge="求双曲线中的最值问题">求双曲线中的最值问题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线中的定点、定值" data-toggle="l3_双曲线中的定点、定值">
+                                <span class="folder-icon">▶</span> 双曲线中的定点、定值
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线中的定点、定值">
+                                <li class="knowledge-item" data-knowledge="双曲线中的直线过定点问题">双曲线中的直线过定点问题</li>
+                                <li class="knowledge-item" data-knowledge="双曲线中存在定点满足某条件问题">双曲线中存在定点满足某条件问题</li>
+                                <li class="knowledge-item" data-knowledge="双曲线中的定值问题">双曲线中的定值问题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线中的定直线" data-toggle="l3_双曲线中的定直线">
+                                <span class="folder-icon">▶</span> 双曲线中的定直线
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线中的定直线">
+                                <li class="knowledge-item" data-knowledge="双曲线中的动点在定直线上问题">双曲线中的动点在定直线上问题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="双曲线中的向量问题" data-toggle="l3_双曲线中的向量问题">
+                                <span class="folder-icon">▶</span> 双曲线中的向量问题
+                            </li>
+                            <ul class="sub-items hidden" id="l3_双曲线中的向量问题">
+                                <li class="knowledge-item" data-knowledge="双曲线中向量点乘问题">双曲线中向量点乘问题</li>
+                                <li class="knowledge-item" data-knowledge="双曲线向量共线比例问题">双曲线向量共线比例问题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="直线与抛物线的位置关系" data-toggle="l3_直线与抛物线的位置关系">
+                                <span class="folder-icon">▶</span> 直线与抛物线的位置关系
+                            </li>
+                            <ul class="sub-items hidden" id="l3_直线与抛物线的位置关系">
+                                <li class="knowledge-item" data-knowledge="判断直线与抛物线的位置关系">判断直线与抛物线的位置关系</li>
+                                <li class="knowledge-item" data-knowledge="求直线与抛物线的交点坐标">求直线与抛物线的交点坐标</li>
+                                <li class="knowledge-item" data-knowledge="求抛物线的切线方程">求抛物线的切线方程</li>
+                                <li class="knowledge-item" data-knowledge="直线与抛物线交点相关问题">直线与抛物线交点相关问题</li>
+                                <li class="knowledge-item" data-knowledge="根据韦达定理求参数">根据韦达定理求参数</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="抛物线的弦长" data-toggle="l3_抛物线的弦长">
+                                <span class="folder-icon">▶</span> 抛物线的弦长
+                            </li>
+                            <ul class="sub-items hidden" id="l3_抛物线的弦长">
+                                <li class="knowledge-item" data-knowledge="利用焦半径公式解决直线与抛物线交点问题">利用焦半径公式解决直线与抛物线交点问题</li>
+                                <li class="knowledge-item" data-knowledge="求直线与抛物线相交所得弦的弦长">求直线与抛物线相交所得弦的弦长</li>
+                                <li class="knowledge-item" data-knowledge="抛物线中的三角形或四边形面积问题">抛物线中的三角形或四边形面积问题</li>
+                                <li class="knowledge-item" data-knowledge="直线与抛物线相交求直线方程">直线与抛物线相交求直线方程</li>
+                                <li class="knowledge-item" data-knowledge="由弦长求参数">由弦长求参数</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="抛物线的中点弦">抛物线的中点弦</li>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="抛物线焦点弦的性质" data-toggle="l3_抛物线焦点弦的性质">
+                                <span class="folder-icon">▶</span> 抛物线焦点弦的性质
+                            </li>
+                            <ul class="sub-items hidden" id="l3_抛物线焦点弦的性质">
+                                <li class="knowledge-item" data-knowledge="与抛物线焦点弦有关的几何性质">与抛物线焦点弦有关的几何性质</li>
+                                <li class="knowledge-item" data-knowledge="抛物线的通径问题">抛物线的通径问题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="抛物线中的参数范围及最值" data-toggle="l3_抛物线中的参数范围及最值">
+                                <span class="folder-icon">▶</span> 抛物线中的参数范围及最值
+                            </li>
+                            <ul class="sub-items hidden" id="l3_抛物线中的参数范围及最值">
+                                <li class="knowledge-item" data-knowledge="抛物线中的参数范围问题">抛物线中的参数范围问题</li>
+                                <li class="knowledge-item" data-knowledge="求抛物线上一点到定直线的最值">求抛物线上一点到定直线的最值</li>
+                                <li class="knowledge-item" data-knowledge="求抛物线上一点到定点的最值">求抛物线上一点到定点的最值</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="抛物线中的定点、定值" data-toggle="l3_抛物线中的定点、定值">
+                                <span class="folder-icon">▶</span> 抛物线中的定点、定值
+                            </li>
+                            <ul class="sub-items hidden" id="l3_抛物线中的定点、定值">
+                                <li class="knowledge-item" data-knowledge="抛物线中的直线过定点问题">抛物线中的直线过定点问题</li>
+                                <li class="knowledge-item" data-knowledge="抛物线中存在定点满足某条件问题">抛物线中存在定点满足某条件问题</li>
+                                <li class="knowledge-item" data-knowledge="抛物线中的定值问题">抛物线中的定值问题</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="抛物线中的定直线">抛物线中的定直线</li>
+                            <li class="knowledge-item" data-knowledge="抛物线的应用">抛物线的应用</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="圆锥曲线的统一定义" data-toggle="l2_圆锥曲线的统一定义">
+                            <span class="folder-icon">▶</span> 圆锥曲线的统一定义
+                        </li>
+                        <ul class="sub-items hidden" id="l2_圆锥曲线的统一定义">
+                            <li class="knowledge-item" data-knowledge="圆锥曲线的统一定义、椭圆焦半径公式及其应用">圆锥曲线的统一定义、椭圆焦半径公式及其应用</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="圆锥曲线新定义" data-toggle="l2_圆锥曲线新定义">
+                            <span class="folder-icon">▶</span> 圆锥曲线新定义
+                        </li>
+                        <ul class="sub-items hidden" id="l2_圆锥曲线新定义">
+                        </ul>
+                    </ul>
+                </div>
+                <div class="knowledge-category">
+                    <h3 class="category-title" data-toggle="复数">🌀 复数</h3>
+                    <ul class="category-items" id="复数">
+                        <li class="knowledge-item knowledge-folder" data-knowledge="数系的扩充与复数的概念" data-toggle="l2_数系的扩充与复数的概念">
+                            <span class="folder-icon">▶</span> 数系的扩充与复数的概念
+                        </li>
+                        <ul class="sub-items hidden" id="l2_数系的扩充与复数的概念">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="复数的有关概念" data-toggle="l3_复数的有关概念">
+                                <span class="folder-icon">▶</span> 复数的有关概念
+                            </li>
+                            <ul class="sub-items hidden" id="l3_复数的有关概念">
+                                <li class="knowledge-item" data-knowledge="虚数单位i及其性质">虚数单位i及其性质</li>
+                                <li class="knowledge-item" data-knowledge="复数的基本概念">复数的基本概念</li>
+                                <li class="knowledge-item" data-knowledge="求复数的实部与虚部">求复数的实部与虚部</li>
+                                <li class="knowledge-item" data-knowledge="根据相等条件求参数">根据相等条件求参数</li>
+                                <li class="knowledge-item" data-knowledge="复数的相等">复数的相等</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="复数的分类" data-toggle="l3_复数的分类">
+                                <span class="folder-icon">▶</span> 复数的分类
+                            </li>
+                            <ul class="sub-items hidden" id="l3_复数的分类">
+                                <li class="knowledge-item" data-knowledge="复数的分类及辨析">复数的分类及辨析</li>
+                                <li class="knowledge-item" data-knowledge="已知复数的类型求参数">已知复数的类型求参数</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="复数的几何意义" data-toggle="l3_复数的几何意义">
+                                <span class="folder-icon">▶</span> 复数的几何意义
+                            </li>
+                            <ul class="sub-items hidden" id="l3_复数的几何意义">
+                                <li class="knowledge-item" data-knowledge="复数的坐标表示">复数的坐标表示</li>
+                                <li class="knowledge-item" data-knowledge="在各象限内点对应复数的特征">在各象限内点对应复数的特征</li>
+                                <li class="knowledge-item" data-knowledge="实轴、虚轴上点对应的复数">实轴、虚轴上点对应的复数</li>
+                                <li class="knowledge-item" data-knowledge="判断复数对应的点所在的象限">判断复数对应的点所在的象限</li>
+                                <li class="knowledge-item" data-knowledge="根据复数的坐标写出对应的复数">根据复数的坐标写出对应的复数</li>
+                                <li class="knowledge-item" data-knowledge="根据复数对应坐标的特点求参数">根据复数对应坐标的特点求参数</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="复数的模" data-toggle="l3_复数的模">
+                                <span class="folder-icon">▶</span> 复数的模
+                            </li>
+                            <ul class="sub-items hidden" id="l3_复数的模">
+                                <li class="knowledge-item" data-knowledge="求复数的模">求复数的模</li>
+                                <li class="knowledge-item" data-knowledge="由复数模求参数">由复数模求参数</li>
+                                <li class="knowledge-item" data-knowledge="与复数模相关的轨迹（图形）问题">与复数模相关的轨迹（图形）问题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="复数的三角表示" data-toggle="l3_复数的三角表示">
+                                <span class="folder-icon">▶</span> 复数的三角表示
+                            </li>
+                            <ul class="sub-items hidden" id="l3_复数的三角表示">
+                                <li class="knowledge-item" data-knowledge="复数的三角表示">复数的三角表示</li>
+                                <li class="knowledge-item" data-knowledge="复数乘、除运算的三角表示">复数乘、除运算的三角表示</li>
+                                <li class="knowledge-item" data-knowledge="三角表示下复数的几何意义">三角表示下复数的几何意义</li>
+                                <li class="knowledge-item" data-knowledge="三角表示下复数的乘方与开方">三角表示下复数的乘方与开方</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="复数代数形式的四则运算" data-toggle="l2_复数代数形式的四则运算">
+                            <span class="folder-icon">▶</span> 复数代数形式的四则运算
+                        </li>
+                        <ul class="sub-items hidden" id="l2_复数代数形式的四则运算">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="复数的加减" data-toggle="l3_复数的加减">
+                                <span class="folder-icon">▶</span> 复数的加减
+                            </li>
+                            <ul class="sub-items hidden" id="l3_复数的加减">
+                                <li class="knowledge-item" data-knowledge="复数加减法的代数运算">复数加减法的代数运算</li>
+                                <li class="knowledge-item" data-knowledge="复数加减法几何意义的运用">复数加减法几何意义的运用</li>
+                                <li class="knowledge-item" data-knowledge="根据复数的加减运算结果求参数">根据复数的加减运算结果求参数</li>
+                                <li class="knowledge-item" data-knowledge="根据复数加减运算结果求复数特征">根据复数加减运算结果求复数特征</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="复数的乘除和乘方" data-toggle="l3_复数的乘除和乘方">
+                                <span class="folder-icon">▶</span> 复数的乘除和乘方
+                            </li>
+                            <ul class="sub-items hidden" id="l3_复数的乘除和乘方">
+                                <li class="knowledge-item" data-knowledge="复数代数形式的乘法运算">复数代数形式的乘法运算</li>
+                                <li class="knowledge-item" data-knowledge="复数的乘方">复数的乘方</li>
+                                <li class="knowledge-item" data-knowledge="复数范围内分解因式">复数范围内分解因式</li>
+                                <li class="knowledge-item" data-knowledge="复数范围内方程的根">复数范围内方程的根</li>
+                                <li class="knowledge-item" data-knowledge="复数的除法运算">复数的除法运算</li>
+                                <li class="knowledge-item" data-knowledge="根据复数乘法运算结果求复数的特征">根据复数乘法运算结果求复数的特征</li>
+                                <li class="knowledge-item" data-knowledge="根据复数乘法运算结果求参数">根据复数乘法运算结果求参数</li>
+                                <li class="knowledge-item" data-knowledge="根据除法运算结果求参数">根据除法运算结果求参数</li>
+                                <li class="knowledge-item" data-knowledge="根据除法运算结果求复数特征">根据除法运算结果求复数特征</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="共轭复数" data-toggle="l3_共轭复数">
+                                <span class="folder-icon">▶</span> 共轭复数
+                            </li>
+                            <ul class="sub-items hidden" id="l3_共轭复数">
+                                <li class="knowledge-item" data-knowledge="共轭复数的概念及计算">共轭复数的概念及计算</li>
+                                <li class="knowledge-item" data-knowledge="求共轭复数的复数特征">求共轭复数的复数特征</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="复数的平方根与立方根" data-toggle="l3_复数的平方根与立方根">
+                                <span class="folder-icon">▶</span> 复数的平方根与立方根
+                            </li>
+                            <ul class="sub-items hidden" id="l3_复数的平方根与立方根">
+                                <li class="knowledge-item" data-knowledge="复数的平方根与立方根">复数的平方根与立方根</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="复数综合运算">复数综合运算</li>
+                        </ul>
+                    </ul>
+                </div>
+                <div class="knowledge-category">
+                    <h3 class="category-title" data-toggle="导数与函数">📈 导数与函数</h3>
+                    <ul class="category-items" id="导数与函数">
+                        <li class="knowledge-item knowledge-folder" data-knowledge="函数及其性质" data-toggle="l2_函数及其性质">
+                            <span class="folder-icon">▶</span> 函数及其性质
+                        </li>
+                        <ul class="sub-items hidden" id="l2_函数及其性质">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="函数及其表示" data-toggle="l3_函数及其表示">
+                                <span class="folder-icon">▶</span> 函数及其表示
+                            </li>
+                            <ul class="sub-items hidden" id="l3_函数及其表示">
+                                <li class="knowledge-item" data-knowledge="函数的定义">函数的定义</li>
+                                <li class="knowledge-item" data-knowledge="区间">区间</li>
+                                <li class="knowledge-item" data-knowledge="函数的定义域">函数的定义域</li>
+                                <li class="knowledge-item" data-knowledge="函数的值域">函数的值域</li>
+                                <li class="knowledge-item" data-knowledge="函数的解析式">函数的解析式</li>
+                                <li class="knowledge-item" data-knowledge="相等函数">相等函数</li>
+                                <li class="knowledge-item" data-knowledge="函数的表示方法">函数的表示方法</li>
+                                <li class="knowledge-item" data-knowledge="分段函数">分段函数</li>
+                                <li class="knowledge-item" data-knowledge="映射">映射</li>
+                                <li class="knowledge-item" data-knowledge="反函数的概念与性质">反函数的概念与性质</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="函数的基本性质" data-toggle="l3_函数的基本性质">
+                                <span class="folder-icon">▶</span> 函数的基本性质
+                            </li>
+                            <ul class="sub-items hidden" id="l3_函数的基本性质">
+                                <li class="knowledge-item" data-knowledge="函数的单调性">函数的单调性</li>
+                                <li class="knowledge-item" data-knowledge="函数的最值">函数的最值</li>
+                                <li class="knowledge-item" data-knowledge="函数的奇偶性">函数的奇偶性</li>
+                                <li class="knowledge-item" data-knowledge="函数的周期性">函数的周期性</li>
+                                <li class="knowledge-item" data-knowledge="函数的对称性">函数的对称性</li>
+                                <li class="knowledge-item" data-knowledge="函数的图像">函数的图像</li>
+                                <li class="knowledge-item" data-knowledge="函数的性质综合应用">函数的性质综合应用</li>
+                                <li class="knowledge-item" data-knowledge="函数新定义">函数新定义</li>
+                                <li class="knowledge-item" data-knowledge="函数的和与积">函数的和与积</li>
+                                <li class="knowledge-item" data-knowledge="抽象函数模型与赋值法">抽象函数模型与赋值法</li>
+                                <li class="knowledge-item" data-knowledge="函数图像的对称与翻折变换">函数图像的对称与翻折变换</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="一次函数与二次函数" data-toggle="l2_一次函数与二次函数">
+                            <span class="folder-icon">▶</span> 一次函数与二次函数
+                        </li>
+                        <ul class="sub-items hidden" id="l2_一次函数与二次函数">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="二次函数的概念" data-toggle="l3_二次函数的概念">
+                                <span class="folder-icon">▶</span> 二次函数的概念
+                            </li>
+                            <ul class="sub-items hidden" id="l3_二次函数的概念">
+                                <li class="knowledge-item" data-knowledge="二次函数的定义域">二次函数的定义域</li>
+                                <li class="knowledge-item" data-knowledge="二次函数的值域与最值">二次函数的值域与最值</li>
+                                <li class="knowledge-item" data-knowledge="二次函数的解析式">二次函数的解析式</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="二次函数的性质与图像" data-toggle="l3_二次函数的性质与图像">
+                                <span class="folder-icon">▶</span> 二次函数的性质与图像
+                            </li>
+                            <ul class="sub-items hidden" id="l3_二次函数的性质与图像">
+                                <li class="knowledge-item" data-knowledge="判断二次函数的单调性和求解单调区间">判断二次函数的单调性和求解单调区间</li>
+                                <li class="knowledge-item" data-knowledge="与二次函数相关的复合问题">与二次函数相关的复合问题</li>
+                                <li class="knowledge-item" data-knowledge="已知二次函数单调区间求参数">已知二次函数单调区间求参数</li>
+                                <li class="knowledge-item" data-knowledge="已知二次函数的最值或值域求参数">已知二次函数的最值或值域求参数</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="指对幂函数" data-toggle="l2_指对幂函数">
+                            <span class="folder-icon">▶</span> 指对幂函数
+                        </li>
+                        <ul class="sub-items hidden" id="l2_指对幂函数">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="指数函数" data-toggle="l3_指数函数">
+                                <span class="folder-icon">▶</span> 指数函数
+                            </li>
+                            <ul class="sub-items hidden" id="l3_指数函数">
+                                <li class="knowledge-item" data-knowledge="指数与指数幂的运算">指数与指数幂的运算</li>
+                                <li class="knowledge-item" data-knowledge="指数函数的概念">指数函数的概念</li>
+                                <li class="knowledge-item" data-knowledge="指数函数的图像">指数函数的图像</li>
+                                <li class="knowledge-item" data-knowledge="指数函数的定义域">指数函数的定义域</li>
+                                <li class="knowledge-item" data-knowledge="指数函数的值域">指数函数的值域</li>
+                                <li class="knowledge-item" data-knowledge="指数函数的单调性">指数函数的单调性</li>
+                                <li class="knowledge-item" data-knowledge="指数函数的最值">指数函数的最值</li>
+                                <li class="knowledge-item" data-knowledge="指数函数的应用">指数函数的应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="对数函数" data-toggle="l3_对数函数">
+                                <span class="folder-icon">▶</span> 对数函数
+                            </li>
+                            <ul class="sub-items hidden" id="l3_对数函数">
+                                <li class="knowledge-item" data-knowledge="对数运算">对数运算</li>
+                                <li class="knowledge-item" data-knowledge="对数函数的概念">对数函数的概念</li>
+                                <li class="knowledge-item" data-knowledge="对数函数的定义域">对数函数的定义域</li>
+                                <li class="knowledge-item" data-knowledge="对数函数的值域">对数函数的值域</li>
+                                <li class="knowledge-item" data-knowledge="对数函数的图像">对数函数的图像</li>
+                                <li class="knowledge-item" data-knowledge="对数函数的单调性">对数函数的单调性</li>
+                                <li class="knowledge-item" data-knowledge="对数函数的最值">对数函数的最值</li>
+                                <li class="knowledge-item" data-knowledge="反函数">反函数</li>
+                                <li class="knowledge-item" data-knowledge="对数函数的应用">对数函数的应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="幂函数" data-toggle="l3_幂函数">
+                                <span class="folder-icon">▶</span> 幂函数
+                            </li>
+                            <ul class="sub-items hidden" id="l3_幂函数">
+                                <li class="knowledge-item" data-knowledge="幂函数的定义">幂函数的定义</li>
+                                <li class="knowledge-item" data-knowledge="幂函数的定义域">幂函数的定义域</li>
+                                <li class="knowledge-item" data-knowledge="幂函数的值域">幂函数的值域</li>
+                                <li class="knowledge-item" data-knowledge="幂函数的图像">幂函数的图像</li>
+                                <li class="knowledge-item" data-knowledge="幂函数的单调性">幂函数的单调性</li>
+                                <li class="knowledge-item" data-knowledge="幂函数的奇偶性">幂函数的奇偶性</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="指对幂大小比较">指对幂大小比较</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="函数的应用" data-toggle="l2_函数的应用">
+                            <span class="folder-icon">▶</span> 函数的应用
+                        </li>
+                        <ul class="sub-items hidden" id="l2_函数的应用">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="函数与方程" data-toggle="l3_函数与方程">
+                                <span class="folder-icon">▶</span> 函数与方程
+                            </li>
+                            <ul class="sub-items hidden" id="l3_函数与方程">
+                                <li class="knowledge-item" data-knowledge="函数的零点定义">函数的零点定义</li>
+                                <li class="knowledge-item" data-knowledge="函数的零点存在定理">函数的零点存在定理</li>
+                                <li class="knowledge-item" data-knowledge="函数的零点分布">函数的零点分布</li>
+                                <li class="knowledge-item" data-knowledge="二分法求方程的近似解">二分法求方程的近似解</li>
+                                <li class="knowledge-item" data-knowledge="函数与方程的综合应用">函数与方程的综合应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="函数的模型及其应用" data-toggle="l3_函数的模型及其应用">
+                                <span class="folder-icon">▶</span> 函数的模型及其应用
+                            </li>
+                            <ul class="sub-items hidden" id="l3_函数的模型及其应用">
+                                <li class="knowledge-item" data-knowledge="分段函数">分段函数</li>
+                                <li class="knowledge-item" data-knowledge="其他函数">其他函数</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="函数综合">函数综合</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="导数及其应用" data-toggle="l2_导数及其应用">
+                            <span class="folder-icon">▶</span> 导数及其应用
+                        </li>
+                        <ul class="sub-items hidden" id="l2_导数及其应用">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="导数的概念与几何意义" data-toggle="l3_导数的概念与几何意义">
+                                <span class="folder-icon">▶</span> 导数的概念与几何意义
+                            </li>
+                            <ul class="sub-items hidden" id="l3_导数的概念与几何意义">
+                                <li class="knowledge-item" data-knowledge="平均变化率">平均变化率</li>
+                                <li class="knowledge-item" data-knowledge="瞬时变化率与导数的概念">瞬时变化率与导数的概念</li>
+                                <li class="knowledge-item" data-knowledge="导数的几何意义">导数的几何意义</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="导数的计算" data-toggle="l3_导数的计算">
+                                <span class="folder-icon">▶</span> 导数的计算
+                            </li>
+                            <ul class="sub-items hidden" id="l3_导数的计算">
+                                <li class="knowledge-item" data-knowledge="初等函数的导数公式">初等函数的导数公式</li>
+                                <li class="knowledge-item" data-knowledge="导数的运算法则">导数的运算法则</li>
+                                <li class="knowledge-item" data-knowledge="复合导数求导">复合导数求导</li>
+                                <li class="knowledge-item" data-knowledge="导数的四则运算">导数的四则运算</li>
+                                <li class="knowledge-item" data-knowledge="导数值计算">导数值计算</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="导数在研究函数中的作用" data-toggle="l3_导数在研究函数中的作用">
+                                <span class="folder-icon">▶</span> 导数在研究函数中的作用
+                            </li>
+                            <ul class="sub-items hidden" id="l3_导数在研究函数中的作用">
+                                <li class="knowledge-item" data-knowledge="利用导数求单调性">利用导数求单调性</li>
+                                <li class="knowledge-item" data-knowledge="利用导数求极值">利用导数求极值</li>
+                                <li class="knowledge-item" data-knowledge="利用导数求最值">利用导数求最值</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="导数的综合应用" data-toggle="l3_导数的综合应用">
+                                <span class="folder-icon">▶</span> 导数的综合应用
+                            </li>
+                            <ul class="sub-items hidden" id="l3_导数的综合应用">
+                                <li class="knowledge-item" data-knowledge="导数在函数的其他运用">导数在函数的其他运用</li>
+                                <li class="knowledge-item" data-knowledge="导数解决实际问题">导数解决实际问题</li>
+                                <li class="knowledge-item" data-knowledge="导数新定义">导数新定义</li>
+                                <li class="knowledge-item" data-knowledge="导数中的极值偏移问题">导数中的极值偏移问题</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="定积分" data-toggle="l2_定积分">
+                            <span class="folder-icon">▶</span> 定积分
+                        </li>
+                        <ul class="sub-items hidden" id="l2_定积分">
+                            <li class="knowledge-item" data-knowledge="定积分的概念">定积分的概念</li>
+                            <li class="knowledge-item" data-knowledge="微积分基本定理">微积分基本定理</li>
+                            <li class="knowledge-item" data-knowledge="定积分的简单应用">定积分的简单应用</li>
+                        </ul>
+                    </ul>
+                </div>
+                <div class="knowledge-category">
+                    <h3 class="category-title" data-toggle="平面向量">➡️ 平面向量</h3>
+                    <ul class="category-items" id="平面向量">
+                        <li class="knowledge-item knowledge-folder" data-knowledge="平面向量的实际背景及基本概念" data-toggle="l2_平面向量的实际背景及基本概念">
+                            <span class="folder-icon">▶</span> 平面向量的实际背景及基本概念
+                        </li>
+                        <ul class="sub-items hidden" id="l2_平面向量的实际背景及基本概念">
+                            <li class="knowledge-item" data-knowledge="平面向量的概念与表示">平面向量的概念与表示</li>
+                            <li class="knowledge-item" data-knowledge="向量的模">向量的模</li>
+                            <li class="knowledge-item" data-knowledge="零向量与单位向量">零向量与单位向量</li>
+                            <li class="knowledge-item" data-knowledge="相等向量">相等向量</li>
+                            <li class="knowledge-item" data-knowledge="平行向量">平行向量</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="平面向量的线性运算" data-toggle="l2_平面向量的线性运算">
+                            <span class="folder-icon">▶</span> 平面向量的线性运算
+                        </li>
+                        <ul class="sub-items hidden" id="l2_平面向量的线性运算">
+                            <li class="knowledge-item" data-knowledge="平面向量的加法">平面向量的加法</li>
+                            <li class="knowledge-item" data-knowledge="相反向量">相反向量</li>
+                            <li class="knowledge-item" data-knowledge="平面向量的减法">平面向量的减法</li>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="平面向量的数乘" data-toggle="l3_平面向量的数乘">
+                                <span class="folder-icon">▶</span> 平面向量的数乘
+                            </li>
+                            <ul class="sub-items hidden" id="l3_平面向量的数乘">
+                                <li class="knowledge-item" data-knowledge="向量数乘的有关计算">向量数乘的有关计算</li>
+                                <li class="knowledge-item" data-knowledge="平面向量的混合运算">平面向量的混合运算</li>
+                                <li class="knowledge-item" data-knowledge="向量的线性运算的几何应用">向量的线性运算的几何应用</li>
+                                <li class="knowledge-item" data-knowledge="三角形的心的向量表示">三角形的心的向量表示</li>
+                                <li class="knowledge-item" data-knowledge="根据向量关系判断三角形的心">根据向量关系判断三角形的心</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="平面向量共线定理" data-toggle="l3_平面向量共线定理">
+                                <span class="folder-icon">▶</span> 平面向量共线定理
+                            </li>
+                            <ul class="sub-items hidden" id="l3_平面向量共线定理">
+                                <li class="knowledge-item" data-knowledge="平面向量共线定理证明点共线问题">平面向量共线定理证明点共线问题</li>
+                                <li class="knowledge-item" data-knowledge="平面向量共线定理证明线平行问题">平面向量共线定理证明线平行问题</li>
+                                <li class="knowledge-item" data-knowledge="已知向量共线（平行）求参数">已知向量共线（平行）求参数</li>
+                                <li class="knowledge-item" data-knowledge="平面向量共线定理的推论">平面向量共线定理的推论</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="平面向量的基本定理及坐标表示" data-toggle="l2_平面向量的基本定理及坐标表示">
+                            <span class="folder-icon">▶</span> 平面向量的基本定理及坐标表示
+                        </li>
+                        <ul class="sub-items hidden" id="l2_平面向量的基本定理及坐标表示">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="平面向量基本定理" data-toggle="l3_平面向量基本定理">
+                                <span class="folder-icon">▶</span> 平面向量基本定理
+                            </li>
+                            <ul class="sub-items hidden" id="l3_平面向量基本定理">
+                                <li class="knowledge-item" data-knowledge="基底的概念及辨析">基底的概念及辨析</li>
+                                <li class="knowledge-item" data-knowledge="用基底表示向量">用基底表示向量</li>
+                                <li class="knowledge-item" data-knowledge="平面向量基本定理的应用">平面向量基本定理的应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="平面向量的正交分解与坐标表示" data-toggle="l3_平面向量的正交分解与坐标表示">
+                                <span class="folder-icon">▶</span> 平面向量的正交分解与坐标表示
+                            </li>
+                            <ul class="sub-items hidden" id="l3_平面向量的正交分解与坐标表示">
+                                <li class="knowledge-item" data-knowledge="用坐标表示平面向量">用坐标表示平面向量</li>
+                                <li class="knowledge-item" data-knowledge="平面向量有关概念的坐标表示">平面向量有关概念的坐标表示</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="平面向量线性运算的坐标" data-toggle="l3_平面向量线性运算的坐标">
+                                <span class="folder-icon">▶</span> 平面向量线性运算的坐标
+                            </li>
+                            <ul class="sub-items hidden" id="l3_平面向量线性运算的坐标">
+                                <li class="knowledge-item" data-knowledge="平面向量线性运算的坐标表示">平面向量线性运算的坐标表示</li>
+                                <li class="knowledge-item" data-knowledge="由向量线性运算结果求参数">由向量线性运算结果求参数</li>
+                                <li class="knowledge-item" data-knowledge="向量坐标的线性运算解决几何问题">向量坐标的线性运算解决几何问题</li>
+                                <li class="knowledge-item" data-knowledge="线段的定比分点">线段的定比分点</li>
+                                <li class="knowledge-item" data-knowledge="由向量线性运算解决最值和范围问题">由向量线性运算解决最值和范围问题</li>
+                                <li class="knowledge-item" data-knowledge="利用坐标求向量的模">利用坐标求向量的模</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="平面向量共线的坐标表示" data-toggle="l3_平面向量共线的坐标表示">
+                                <span class="folder-icon">▶</span> 平面向量共线的坐标表示
+                            </li>
+                            <ul class="sub-items hidden" id="l3_平面向量共线的坐标表示">
+                                <li class="knowledge-item" data-knowledge="由坐标判断向量是否共线">由坐标判断向量是否共线</li>
+                                <li class="knowledge-item" data-knowledge="由向量共线（平行）求参数">由向量共线（平行）求参数</li>
+                                <li class="knowledge-item" data-knowledge="由坐标解决三点共线问题">由坐标解决三点共线问题</li>
+                                <li class="knowledge-item" data-knowledge="由坐标解决线段平行和长度问题">由坐标解决线段平行和长度问题</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="直线的向量参数方程">直线的向量参数方程</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="平面向量的数量积" data-toggle="l2_平面向量的数量积">
+                            <span class="folder-icon">▶</span> 平面向量的数量积
+                        </li>
+                        <ul class="sub-items hidden" id="l2_平面向量的数量积">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="平面向量的数量积的定义" data-toggle="l3_平面向量的数量积的定义">
+                                <span class="folder-icon">▶</span> 平面向量的数量积的定义
+                            </li>
+                            <ul class="sub-items hidden" id="l3_平面向量的数量积的定义">
+                                <li class="knowledge-item" data-knowledge="平面向量数量积的定义及辨析">平面向量数量积的定义及辨析</li>
+                                <li class="knowledge-item" data-knowledge="平面向量数量积的几何意义">平面向量数量积的几何意义</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="平面向量的数量积的运算" data-toggle="l3_平面向量的数量积的运算">
+                                <span class="folder-icon">▶</span> 平面向量的数量积的运算
+                            </li>
+                            <ul class="sub-items hidden" id="l3_平面向量的数量积的运算">
+                                <li class="knowledge-item" data-knowledge="用定义求向量的数量积">用定义求向量的数量积</li>
+                                <li class="knowledge-item" data-knowledge="数量积的运算律">数量积的运算律</li>
+                                <li class="knowledge-item" data-knowledge="已知数量积求模">已知数量积求模</li>
+                                <li class="knowledge-item" data-knowledge="向量夹角的计算">向量夹角的计算</li>
+                                <li class="knowledge-item" data-knowledge="垂直关系的向量表示">垂直关系的向量表示</li>
+                                <li class="knowledge-item" data-knowledge="已知模求数量积">已知模求数量积</li>
+                                <li class="knowledge-item" data-knowledge="已知模求参数">已知模求参数</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="数量积的坐标" data-toggle="l3_数量积的坐标">
+                                <span class="folder-icon">▶</span> 数量积的坐标
+                            </li>
+                            <ul class="sub-items hidden" id="l3_数量积的坐标">
+                                <li class="knowledge-item" data-knowledge="数量积的坐标表示">数量积的坐标表示</li>
+                                <li class="knowledge-item" data-knowledge="向量模的坐标表示">向量模的坐标表示</li>
+                                <li class="knowledge-item" data-knowledge="坐标计算向量的模">坐标计算向量的模</li>
+                                <li class="knowledge-item" data-knowledge="向量垂直的坐标表示">向量垂直的坐标表示</li>
+                                <li class="knowledge-item" data-knowledge="利用数量积求参数">利用数量积求参数</li>
+                                <li class="knowledge-item" data-knowledge="利用向量垂直求参数">利用向量垂直求参数</li>
+                                <li class="knowledge-item" data-knowledge="向量夹角的坐标表示">向量夹角的坐标表示</li>
+                                <li class="knowledge-item" data-knowledge="已知向量垂直求参数">已知向量垂直求参数</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="投影向量">投影向量</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="平面向量的应用举例" data-toggle="l2_平面向量的应用举例">
+                            <span class="folder-icon">▶</span> 平面向量的应用举例
+                        </li>
+                        <ul class="sub-items hidden" id="l2_平面向量的应用举例">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="平面向量在几何的应用" data-toggle="l3_平面向量在几何的应用">
+                                <span class="folder-icon">▶</span> 平面向量在几何的应用
+                            </li>
+                            <ul class="sub-items hidden" id="l3_平面向量在几何的应用">
+                                <li class="knowledge-item" data-knowledge="用向量证明线段垂直">用向量证明线段垂直</li>
+                                <li class="knowledge-item" data-knowledge="用向量解决夹角问题">用向量解决夹角问题</li>
+                                <li class="knowledge-item" data-knowledge="用向量解决线段的长度问题">用向量解决线段的长度问题</li>
+                                <li class="knowledge-item" data-knowledge="向量与几何最值">向量与几何最值</li>
+                                <li class="knowledge-item" data-knowledge="向量在几何中的其他应用">向量在几何中的其他应用</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="平面向量在物理的应用">平面向量在物理的应用</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="向量新定义" data-toggle="l2_向量新定义">
+                            <span class="folder-icon">▶</span> 向量新定义
+                        </li>
+                        <ul class="sub-items hidden" id="l2_向量新定义">
+                        </ul>
+                    </ul>
+                </div>
+                <div class="knowledge-category">
+                    <h3 class="category-title" data-toggle="数列">🔢 数列</h3>
+                    <ul class="category-items" id="数列">
+                        <li class="knowledge-item knowledge-folder" data-knowledge="数列的概念与简单表示法" data-toggle="l2_数列的概念与简单表示法">
+                            <span class="folder-icon">▶</span> 数列的概念与简单表示法
+                        </li>
+                        <ul class="sub-items hidden" id="l2_数列的概念与简单表示法">
+                            <li class="knowledge-item" data-knowledge="数列的概念">数列的概念</li>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="递增数列与递减数列" data-toggle="l3_递增数列与递减数列">
+                                <span class="folder-icon">▶</span> 递增数列与递减数列
+                            </li>
+                            <ul class="sub-items hidden" id="l3_递增数列与递减数列">
+                                <li class="knowledge-item" data-knowledge="判断数列的增减性">判断数列的增减性</li>
+                                <li class="knowledge-item" data-knowledge="确定数列中的最大（小）项">确定数列中的最大（小）项</li>
+                                <li class="knowledge-item" data-knowledge="根据数列的单调性求参数">根据数列的单调性求参数</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="有穷数列和无穷数列">有穷数列和无穷数列</li>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="数列的通项公式" data-toggle="l3_数列的通项公式">
+                                <span class="folder-icon">▶</span> 数列的通项公式
+                            </li>
+                            <ul class="sub-items hidden" id="l3_数列的通项公式">
+                                <li class="knowledge-item" data-knowledge="判断或写出数列中的项">判断或写出数列中的项</li>
+                                <li class="knowledge-item" data-knowledge="累加法求数列通项">累加法求数列通项</li>
+                                <li class="knowledge-item" data-knowledge="累乘法求数列通项">累乘法求数列通项</li>
+                                <li class="knowledge-item" data-knowledge="利用 an 与 sn 关系求通项或项">利用 an 与 sn 关系求通项或项</li>
+                                <li class="knowledge-item" data-knowledge="构造法求数列通项">构造法求数列通项</li>
+                                <li class="knowledge-item" data-knowledge="观察法求数列通项">观察法求数列通项</li>
+                                <li class="knowledge-item" data-knowledge="定义法求数列通项">定义法求数列通项</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="递推数列" data-toggle="l3_递推数列">
+                                <span class="folder-icon">▶</span> 递推数列
+                            </li>
+                            <ul class="sub-items hidden" id="l3_递推数列">
+                                <li class="knowledge-item" data-knowledge="根据数列递推公式写出数列的项">根据数列递推公式写出数列的项</li>
+                                <li class="knowledge-item" data-knowledge="由递推关系式求通项公式">由递推关系式求通项公式</li>
+                                <li class="knowledge-item" data-knowledge="由递推数列研究数列的有关性质">由递推数列研究数列的有关性质</li>
+                                <li class="knowledge-item" data-knowledge="求递推关系式">求递推关系式</li>
+                                <li class="knowledge-item" data-knowledge="递推数列的实际应用">递推数列的实际应用</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="等差数列" data-toggle="l2_等差数列">
+                            <span class="folder-icon">▶</span> 等差数列
+                        </li>
+                        <ul class="sub-items hidden" id="l2_等差数列">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等差数列及其通项公式" data-toggle="l3_等差数列及其通项公式">
+                                <span class="folder-icon">▶</span> 等差数列及其通项公式
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等差数列及其通项公式">
+                                <li class="knowledge-item" data-knowledge="判断等差数列">判断等差数列</li>
+                                <li class="knowledge-item" data-knowledge="利用定义求等差数列通项公式">利用定义求等差数列通项公式</li>
+                                <li class="knowledge-item" data-knowledge="验证是否为等差数列中的项">验证是否为等差数列中的项</li>
+                                <li class="knowledge-item" data-knowledge="等差数列通项公式的基本量计算">等差数列通项公式的基本量计算</li>
+                                <li class="knowledge-item" data-knowledge="由递推关系证明数列是等差数列">由递推关系证明数列是等差数列</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等差中项" data-toggle="l3_等差中项">
+                                <span class="folder-icon">▶</span> 等差中项
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等差中项">
+                                <li class="knowledge-item" data-knowledge="求等差中项">求等差中项</li>
+                                <li class="knowledge-item" data-knowledge="等差中项的应用">等差中项的应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等差数列的性质" data-toggle="l3_等差数列的性质">
+                                <span class="folder-icon">▶</span> 等差数列的性质
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等差数列的性质">
+                                <li class="knowledge-item" data-knowledge="等差数列的性质计算">等差数列的性质计算</li>
+                                <li class="knowledge-item" data-knowledge="等差数列的应用">等差数列的应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等差数列的函数特性" data-toggle="l3_等差数列的函数特性">
+                                <span class="folder-icon">▶</span> 等差数列的函数特性
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等差数列的函数特性">
+                                <li class="knowledge-item" data-knowledge="等差数列的单调性">等差数列的单调性</li>
+                                <li class="knowledge-item" data-knowledge="求等差数列中的最大（小）项">求等差数列中的最大（小）项</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等差数列的前 n 项和" data-toggle="l3_等差数列的前_n_项和">
+                                <span class="folder-icon">▶</span> 等差数列的前 n 项和
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等差数列的前_n_项和">
+                                <li class="knowledge-item" data-knowledge="求等差数列前n项和">求等差数列前n项和</li>
+                                <li class="knowledge-item" data-knowledge="等差数列前n项和的基本量计算">等差数列前n项和的基本量计算</li>
+                                <li class="knowledge-item" data-knowledge="含绝对值的等差数列前n项和">含绝对值的等差数列前n项和</li>
+                                <li class="knowledge-item" data-knowledge="等差数列奇数项或偶数项的和">等差数列奇数项或偶数项的和</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="an 与 Sn 的关系" data-toggle="l3_an_与_Sn_的关系">
+                                <span class="folder-icon">▶</span> an 与 Sn 的关系
+                            </li>
+                            <ul class="sub-items hidden" id="l3_an_与_Sn_的关系">
+                                <li class="knowledge-item" data-knowledge="由前n项和判断数列是否是等差数列">由前n项和判断数列是否是等差数列</li>
+                                <li class="knowledge-item" data-knowledge="由Sn求通项公式">由Sn求通项公式</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等差数列前 n 项和的性质" data-toggle="l3_等差数列前_n_项和的性质">
+                                <span class="folder-icon">▶</span> 等差数列前 n 项和的性质
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等差数列前_n_项和的性质">
+                                <li class="knowledge-item" data-knowledge="等差数列片段和的性质及应用">等差数列片段和的性质及应用</li>
+                                <li class="knowledge-item" data-knowledge="前 n 项和与 n 的比所组成的等差数列">前 n 项和与 n 的比所组成的等差数列</li>
+                                <li class="knowledge-item" data-knowledge="两个等差数列的前 n 项和之比问题">两个等差数列的前 n 项和之比问题</li>
+                                <li class="knowledge-item" data-knowledge="等差数列前 n 项和的其他性质及应用">等差数列前 n 项和的其他性质及应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等差数列前 n 项和的函数特性" data-toggle="l3_等差数列前_n_项和的函数特性">
+                                <span class="folder-icon">▶</span> 等差数列前 n 项和的函数特性
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等差数列前_n_项和的函数特性">
+                                <li class="knowledge-item" data-knowledge="等差数列前 n 项和的二次函数特征">等差数列前 n 项和的二次函数特征</li>
+                                <li class="knowledge-item" data-knowledge="二次函数法求等差数列前 n 项和的最值">二次函数法求等差数列前 n 项和的最值</li>
+                                <li class="knowledge-item" data-knowledge="求等差数列前 n 项和的最值">求等差数列前 n 项和的最值</li>
+                                <li class="knowledge-item" data-knowledge="根据等差数列前 n 项和的最值求参数">根据等差数列前 n 项和的最值求参数</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="等差数列的简单应用">等差数列的简单应用</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="等比数列" data-toggle="l2_等比数列">
+                            <span class="folder-icon">▶</span> 等比数列
+                        </li>
+                        <ul class="sub-items hidden" id="l2_等比数列">
+                            <li class="knowledge-item" data-knowledge="等比数列的定义">等比数列的定义</li>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等比中项" data-toggle="l3_等比中项">
+                                <span class="folder-icon">▶</span> 等比中项
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等比中项">
+                                <li class="knowledge-item" data-knowledge="确定等比中项">确定等比中项</li>
+                                <li class="knowledge-item" data-knowledge="等比中项的应用">等比中项的应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等比数列的通项公式" data-toggle="l3_等比数列的通项公式">
+                                <span class="folder-icon">▶</span> 等比数列的通项公式
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等比数列的通项公式">
+                                <li class="knowledge-item" data-knowledge="写出等比数列的通项公式">写出等比数列的通项公式</li>
+                                <li class="knowledge-item" data-knowledge="由定义判定等比数列">由定义判定等比数列</li>
+                                <li class="knowledge-item" data-knowledge="等比数列通项公式的基本量计算">等比数列通项公式的基本量计算</li>
+                                <li class="knowledge-item" data-knowledge="由递推关系证明等比数列">由递推关系证明等比数列</li>
+                                <li class="knowledge-item" data-knowledge="验证是否为等比数列中的项">验证是否为等比数列中的项</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等比数列的性质" data-toggle="l3_等比数列的性质">
+                                <span class="folder-icon">▶</span> 等比数列的性质
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等比数列的性质">
+                                <li class="knowledge-item" data-knowledge="等比数列下标和性质及应用">等比数列下标和性质及应用</li>
+                                <li class="knowledge-item" data-knowledge="等比数列子数列性质及应用">等比数列子数列性质及应用</li>
+                                <li class="knowledge-item" data-knowledge="正项等比数列的对数成等差数列的应用">正项等比数列的对数成等差数列的应用</li>
+                                <li class="knowledge-item" data-knowledge="等比数列的其他性质">等比数列的其他性质</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等比数列的函数特性" data-toggle="l3_等比数列的函数特性">
+                                <span class="folder-icon">▶</span> 等比数列的函数特性
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等比数列的函数特性">
+                                <li class="knowledge-item" data-knowledge="等比数列的通项公式的指数函数特征">等比数列的通项公式的指数函数特征</li>
+                                <li class="knowledge-item" data-knowledge="等比数列的单调性">等比数列的单调性</li>
+                                <li class="knowledge-item" data-knowledge="求等比数列中的最大（小）项">求等比数列中的最大（小）项</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等比数列的前 n 项和" data-toggle="l3_等比数列的前_n_项和">
+                                <span class="folder-icon">▶</span> 等比数列的前 n 项和
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等比数列的前_n_项和">
+                                <li class="knowledge-item" data-knowledge="求等比数列前 n 项和">求等比数列前 n 项和</li>
+                                <li class="knowledge-item" data-knowledge="等比数列前 n 项和的基本量计算">等比数列前 n 项和的基本量计算</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="等比数列前 n 项和的性质" data-toggle="l3_等比数列前_n_项和的性质">
+                                <span class="folder-icon">▶</span> 等比数列前 n 项和的性质
+                            </li>
+                            <ul class="sub-items hidden" id="l3_等比数列前_n_项和的性质">
+                                <li class="knowledge-item" data-knowledge="等比数列片段和性质及应用">等比数列片段和性质及应用</li>
+                                <li class="knowledge-item" data-knowledge="等比数列奇、偶项和的性质及应用">等比数列奇、偶项和的性质及应用</li>
+                                <li class="knowledge-item" data-knowledge="等比数列前 n 项和的其他性质">等比数列前 n 项和的其他性质</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="an 与 Sn 的关系" data-toggle="l3_an_与_Sn_的关系">
+                                <span class="folder-icon">▶</span> an 与 Sn 的关系
+                            </li>
+                            <ul class="sub-items hidden" id="l3_an_与_Sn_的关系">
+                                <li class="knowledge-item" data-knowledge="前 n 项和特点">前 n 项和特点</li>
+                                <li class="knowledge-item" data-knowledge="前 n 项和与通项关系">前 n 项和与通项关系</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="等比数列的简单应用">等比数列的简单应用</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="数列求和" data-toggle="l2_数列求和">
+                            <span class="folder-icon">▶</span> 数列求和
+                        </li>
+                        <ul class="sub-items hidden" id="l2_数列求和">
+                            <li class="knowledge-item" data-knowledge="倒序相加法求和">倒序相加法求和</li>
+                            <li class="knowledge-item" data-knowledge="错位相减法求和">错位相减法求和</li>
+                            <li class="knowledge-item" data-knowledge="裂项相消法求和">裂项相消法求和</li>
+                            <li class="knowledge-item" data-knowledge="分组（并项）法求和">分组（并项）法求和</li>
+                            <li class="knowledge-item" data-knowledge="数列求和的其他方法">数列求和的其他方法</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="数列的综合应用" data-toggle="l2_数列的综合应用">
+                            <span class="folder-icon">▶</span> 数列的综合应用
+                        </li>
+                        <ul class="sub-items hidden" id="l2_数列的综合应用">
+                            <li class="knowledge-item" data-knowledge="分期付款">分期付款</li>
+                            <li class="knowledge-item" data-knowledge="产值增长">产值增长</li>
+                            <li class="knowledge-item" data-knowledge="其他模型">其他模型</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="数列的极限" data-toggle="l2_数列的极限">
+                            <span class="folder-icon">▶</span> 数列的极限
+                        </li>
+                        <ul class="sub-items hidden" id="l2_数列的极限">
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="无穷等比数列各项的和" data-toggle="l2_无穷等比数列各项的和">
+                            <span class="folder-icon">▶</span> 无穷等比数列各项的和
+                        </li>
+                        <ul class="sub-items hidden" id="l2_无穷等比数列各项的和">
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="等差数列与等比数列综合应用" data-toggle="l2_等差数列与等比数列综合应用">
+                            <span class="folder-icon">▶</span> 等差数列与等比数列综合应用
+                        </li>
+                        <ul class="sub-items hidden" id="l2_等差数列与等比数列综合应用">
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="数列新定义" data-toggle="l2_数列新定义">
+                            <span class="folder-icon">▶</span> 数列新定义
+                        </li>
+                        <ul class="sub-items hidden" id="l2_数列新定义">
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="数列不等式" data-toggle="l2_数列不等式">
+                            <span class="folder-icon">▶</span> 数列不等式
+                        </li>
+                        <ul class="sub-items hidden" id="l2_数列不等式">
+                            <li class="knowledge-item" data-knowledge="数列不等式恒成立问题">数列不等式恒成立问题</li>
+                            <li class="knowledge-item" data-knowledge="数列不等式能成立问题">数列不等式能成立问题</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="数学归纳法" data-toggle="l2_数学归纳法">
+                            <span class="folder-icon">▶</span> 数学归纳法
+                        </li>
+                        <ul class="sub-items hidden" id="l2_数学归纳法">
+                            <li class="knowledge-item" data-knowledge="数学归纳法的概念与步骤">数学归纳法的概念与步骤</li>
+                            <li class="knowledge-item" data-knowledge="用数学归纳法证明数列问题">用数学归纳法证明数列问题</li>
+                        </ul>
+                    </ul>
+                </div>
+                <div class="knowledge-category">
+                    <h3 class="category-title" data-toggle="直线与圆">⭕ 直线与圆</h3>
+                    <ul class="category-items" id="直线与圆">
+                        <li class="knowledge-item knowledge-folder" data-knowledge="直线与方程" data-toggle="l2_直线与方程">
+                            <span class="folder-icon">▶</span> 直线与方程
+                        </li>
+                        <ul class="sub-items hidden" id="l2_直线与方程">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="直线的倾斜角与斜率" data-toggle="l3_直线的倾斜角与斜率">
+                                <span class="folder-icon">▶</span> 直线的倾斜角与斜率
+                            </li>
+                            <ul class="sub-items hidden" id="l3_直线的倾斜角与斜率">
+                                <li class="knowledge-item" data-knowledge="直线的倾斜角">直线的倾斜角</li>
+                                <li class="knowledge-item" data-knowledge="直线的斜率">直线的斜率</li>
+                                <li class="knowledge-item" data-knowledge="斜率公式">斜率公式</li>
+                                <li class="knowledge-item" data-knowledge="两条直线的到（夹）角公式">两条直线的到（夹）角公式</li>
+                                <li class="knowledge-item" data-knowledge="两条直线的平行与垂直">两条直线的平行与垂直</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="直线的方程" data-toggle="l3_直线的方程">
+                                <span class="folder-icon">▶</span> 直线的方程
+                            </li>
+                            <ul class="sub-items hidden" id="l3_直线的方程">
+                                <li class="knowledge-item" data-knowledge="直线的方程的概念">直线的方程的概念</li>
+                                <li class="knowledge-item" data-knowledge="直线的法向量">直线的法向量</li>
+                                <li class="knowledge-item" data-knowledge="点斜式方程">点斜式方程</li>
+                                <li class="knowledge-item" data-knowledge="两点式方程">两点式方程</li>
+                                <li class="knowledge-item" data-knowledge="直线的一般式方程">直线的一般式方程</li>
+                                <li class="knowledge-item" data-knowledge="截距式方程">截距式方程</li>
+                                <li class="knowledge-item" data-knowledge="斜截式方程">斜截式方程</li>
+                                <li class="knowledge-item" data-knowledge="点方向式方程">点方向式方程</li>
+                                <li class="knowledge-item" data-knowledge="点法向式方程">点法向式方程</li>
+                                <li class="knowledge-item" data-knowledge="直线的方向向量">直线的方向向量</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="直线的交点坐标与距离公式" data-toggle="l3_直线的交点坐标与距离公式">
+                                <span class="folder-icon">▶</span> 直线的交点坐标与距离公式
+                            </li>
+                            <ul class="sub-items hidden" id="l3_直线的交点坐标与距离公式">
+                                <li class="knowledge-item" data-knowledge="相交直线的交点坐标">相交直线的交点坐标</li>
+                                <li class="knowledge-item" data-knowledge="两点间的距离公式">两点间的距离公式</li>
+                                <li class="knowledge-item" data-knowledge="点到直线的距离公式">点到直线的距离公式</li>
+                                <li class="knowledge-item" data-knowledge="两条平行线间的距离公式">两条平行线间的距离公式</li>
+                                <li class="knowledge-item" data-knowledge="轨迹问题——直线">轨迹问题——直线</li>
+                                <li class="knowledge-item" data-knowledge="直线方程的实际应用">直线方程的实际应用</li>
+                                <li class="knowledge-item" data-knowledge="直线综合">直线综合</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="直角坐标系中的基本公式" data-toggle="l3_直角坐标系中的基本公式">
+                                <span class="folder-icon">▶</span> 直角坐标系中的基本公式
+                            </li>
+                            <ul class="sub-items hidden" id="l3_直角坐标系中的基本公式">
+                                <li class="knowledge-item" data-knowledge="坐标轴上的公式">坐标轴上的公式</li>
+                                <li class="knowledge-item" data-knowledge="直角坐标系中的基本公式的应用">直角坐标系中的基本公式的应用</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="圆与方程" data-toggle="l2_圆与方程">
+                            <span class="folder-icon">▶</span> 圆与方程
+                        </li>
+                        <ul class="sub-items hidden" id="l2_圆与方程">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="圆的方程" data-toggle="l3_圆的方程">
+                                <span class="folder-icon">▶</span> 圆的方程
+                            </li>
+                            <ul class="sub-items hidden" id="l3_圆的方程">
+                                <li class="knowledge-item" data-knowledge="圆的标准方程">圆的标准方程</li>
+                                <li class="knowledge-item" data-knowledge="圆的一般方程">圆的一般方程</li>
+                                <li class="knowledge-item" data-knowledge="点与圆的位置关系">点与圆的位置关系</li>
+                                <li class="knowledge-item" data-knowledge="圆的几何性质">圆的几何性质</li>
+                                <li class="knowledge-item" data-knowledge="轨迹问题——圆">轨迹问题——圆</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="直线与圆的位置关系" data-toggle="l3_直线与圆的位置关系">
+                                <span class="folder-icon">▶</span> 直线与圆的位置关系
+                            </li>
+                            <ul class="sub-items hidden" id="l3_直线与圆的位置关系">
+                                <li class="knowledge-item" data-knowledge="直线与圆的位置关系">直线与圆的位置关系</li>
+                                <li class="knowledge-item" data-knowledge="圆的切线方程">圆的切线方程</li>
+                                <li class="knowledge-item" data-knowledge="圆的弦长与弦心距">圆的弦长与弦心距</li>
+                                <li class="knowledge-item" data-knowledge="直线与圆的应用">直线与圆的应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="圆与圆" data-toggle="l3_圆与圆">
+                                <span class="folder-icon">▶</span> 圆与圆
+                            </li>
+                            <ul class="sub-items hidden" id="l3_圆与圆">
+                                <li class="knowledge-item" data-knowledge="圆与圆的位置关系">圆与圆的位置关系</li>
+                                <li class="knowledge-item" data-knowledge="圆的公共弦">圆的公共弦</li>
+                                <li class="knowledge-item" data-knowledge="圆的公切线">圆的公切线</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="曲线与方程" data-toggle="l2_曲线与方程">
+                            <span class="folder-icon">▶</span> 曲线与方程
+                        </li>
+                        <ul class="sub-items hidden" id="l2_曲线与方程">
+                            <li class="knowledge-item" data-knowledge="曲线与方程的概念">曲线与方程的概念</li>
+                            <li class="knowledge-item" data-knowledge="用曲线方程研究曲线性质">用曲线方程研究曲线性质</li>
+                            <li class="knowledge-item" data-knowledge="曲线的交点问题">曲线的交点问题</li>
+                            <li class="knowledge-item" data-knowledge="轨迹问题">轨迹问题</li>
+                        </ul>
+                    </ul>
+                </div>
+                <div class="knowledge-category">
+                    <h3 class="category-title" data-toggle="空间向量与立体几何">🧊 空间向量与立体几何</h3>
+                    <ul class="category-items" id="空间向量与立体几何">
+                        <li class="knowledge-item knowledge-folder" data-knowledge="空间几何体" data-toggle="l2_空间几何体">
+                            <span class="folder-icon">▶</span> 空间几何体
+                        </li>
+                        <ul class="sub-items hidden" id="l2_空间几何体">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="空间几何体的结构" data-toggle="l3_空间几何体的结构">
+                                <span class="folder-icon">▶</span> 空间几何体的结构
+                            </li>
+                            <ul class="sub-items hidden" id="l3_空间几何体的结构">
+                                <li class="knowledge-item" data-knowledge="棱柱">棱柱</li>
+                                <li class="knowledge-item" data-knowledge="棱锥">棱锥</li>
+                                <li class="knowledge-item" data-knowledge="棱台">棱台</li>
+                                <li class="knowledge-item" data-knowledge="圆柱">圆柱</li>
+                                <li class="knowledge-item" data-knowledge="圆锥">圆锥</li>
+                                <li class="knowledge-item" data-knowledge="圆台">圆台</li>
+                                <li class="knowledge-item" data-knowledge="球">球</li>
+                                <li class="knowledge-item" data-knowledge="旋转体">旋转体</li>
+                                <li class="knowledge-item" data-knowledge="多面体">多面体</li>
+                                <li class="knowledge-item" data-knowledge="组合体">组合体</li>
+                                <li class="knowledge-item" data-knowledge="球面距离">球面距离</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="空间几何体的三视图和直观图" data-toggle="l3_空间几何体的三视图和直观图">
+                                <span class="folder-icon">▶</span> 空间几何体的三视图和直观图
+                            </li>
+                            <ul class="sub-items hidden" id="l3_空间几何体的三视图和直观图">
+                                <li class="knowledge-item" data-knowledge="中心投影与平行投影">中心投影与平行投影</li>
+                                <li class="knowledge-item" data-knowledge="三视图">三视图</li>
+                                <li class="knowledge-item" data-knowledge="直观图">直观图</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="空间几何体的表面积与体积" data-toggle="l3_空间几何体的表面积与体积">
+                                <span class="folder-icon">▶</span> 空间几何体的表面积与体积
+                            </li>
+                            <ul class="sub-items hidden" id="l3_空间几何体的表面积与体积">
+                                <li class="knowledge-item" data-knowledge="柱、锥、台的表面积">柱、锥、台的表面积</li>
+                                <li class="knowledge-item" data-knowledge="柱、锥、台的体积">柱、锥、台的体积</li>
+                                <li class="knowledge-item" data-knowledge="球的体积和表面积">球的体积和表面积</li>
+                                <li class="knowledge-item" data-knowledge="组合体的表面积和体积">组合体的表面积和体积</li>
+                                <li class="knowledge-item" data-knowledge="柱、锥、台体的轴截面">柱、锥、台体的轴截面</li>
+                                <li class="knowledge-item" data-knowledge="祖暅原理">祖暅原理</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="点线面之间的位置关系" data-toggle="l2_点线面之间的位置关系">
+                            <span class="folder-icon">▶</span> 点线面之间的位置关系
+                        </li>
+                        <ul class="sub-items hidden" id="l2_点线面之间的位置关系">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="空间点、直线、平面之间的位置关系" data-toggle="l3_空间点、直线、平面之间的位置关系">
+                                <span class="folder-icon">▶</span> 空间点、直线、平面之间的位置关系
+                            </li>
+                            <ul class="sub-items hidden" id="l3_空间点、直线、平面之间的位置关系">
+                                <li class="knowledge-item" data-knowledge="平面">平面</li>
+                                <li class="knowledge-item" data-knowledge="平面的基本性质">平面的基本性质</li>
+                                <li class="knowledge-item" data-knowledge="等角定量">等角定量</li>
+                                <li class="knowledge-item" data-knowledge="异面直线">异面直线</li>
+                                <li class="knowledge-item" data-knowledge="异面直线所成的角">异面直线所成的角</li>
+                                <li class="knowledge-item" data-knowledge="线面关系">线面关系</li>
+                                <li class="knowledge-item" data-knowledge="面面关系">面面关系</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="线面平行的判定与性质" data-toggle="l3_线面平行的判定与性质">
+                                <span class="folder-icon">▶</span> 线面平行的判定与性质
+                            </li>
+                            <ul class="sub-items hidden" id="l3_线面平行的判定与性质">
+                                <li class="knowledge-item" data-knowledge="线面平行的判定">线面平行的判定</li>
+                                <li class="knowledge-item" data-knowledge="面面平行的判定">面面平行的判定</li>
+                                <li class="knowledge-item" data-knowledge="线面平行的性质">线面平行的性质</li>
+                                <li class="knowledge-item" data-knowledge="面面平行的性质">面面平行的性质</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="线面垂直的判定与性质" data-toggle="l3_线面垂直的判定与性质">
+                                <span class="folder-icon">▶</span> 线面垂直的判定与性质
+                            </li>
+                            <ul class="sub-items hidden" id="l3_线面垂直的判定与性质">
+                                <li class="knowledge-item" data-knowledge="线面垂直的判定">线面垂直的判定</li>
+                                <li class="knowledge-item" data-knowledge="点面距离">点面距离</li>
+                                <li class="knowledge-item" data-knowledge="线面距离">线面距离</li>
+                                <li class="knowledge-item" data-knowledge="面面距离">面面距离</li>
+                                <li class="knowledge-item" data-knowledge="线面角">线面角</li>
+                                <li class="knowledge-item" data-knowledge="面面垂直的判定">面面垂直的判定</li>
+                                <li class="knowledge-item" data-knowledge="二面角">二面角</li>
+                                <li class="knowledge-item" data-knowledge="线面垂直的性质">线面垂直的性质</li>
+                                <li class="knowledge-item" data-knowledge="面面垂直的性质">面面垂直的性质</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="空间向量与立体几何" data-toggle="l2_空间向量与立体几何">
+                            <span class="folder-icon">▶</span> 空间向量与立体几何
+                        </li>
+                        <ul class="sub-items hidden" id="l2_空间向量与立体几何">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="空间直角坐标系" data-toggle="l3_空间直角坐标系">
+                                <span class="folder-icon">▶</span> 空间直角坐标系
+                            </li>
+                            <ul class="sub-items hidden" id="l3_空间直角坐标系">
+                                <li class="knowledge-item" data-knowledge="空间直角坐标系">空间直角坐标系</li>
+                                <li class="knowledge-item" data-knowledge="空间中点坐标公式">空间中点坐标公式</li>
+                                <li class="knowledge-item" data-knowledge="空间两点间距离公式">空间两点间距离公式</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="空间向量及其运算" data-toggle="l3_空间向量及其运算">
+                                <span class="folder-icon">▶</span> 空间向量及其运算
+                            </li>
+                            <ul class="sub-items hidden" id="l3_空间向量及其运算">
+                                <li class="knowledge-item" data-knowledge="空间向量的有关概念">空间向量的有关概念</li>
+                                <li class="knowledge-item" data-knowledge="空间向量及其加减运算">空间向量及其加减运算</li>
+                                <li class="knowledge-item" data-knowledge="空间共线向量定理">空间共线向量定理</li>
+                                <li class="knowledge-item" data-knowledge="空间共面向量定理">空间共面向量定理</li>
+                                <li class="knowledge-item" data-knowledge="空间向量的数乘运算">空间向量的数乘运算</li>
+                                <li class="knowledge-item" data-knowledge="空间向量的数量积运算">空间向量的数量积运算</li>
+                                <li class="knowledge-item" data-knowledge="空间向量的正交分解与坐标表示">空间向量的正交分解与坐标表示</li>
+                                <li class="knowledge-item" data-knowledge="空间向量运算的坐标表示">空间向量运算的坐标表示</li>
+                                <li class="knowledge-item" data-knowledge="空间中直线的方向向量">空间中直线的方向向量</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="空间向量的应用" data-toggle="l3_空间向量的应用">
+                                <span class="folder-icon">▶</span> 空间向量的应用
+                            </li>
+                            <ul class="sub-items hidden" id="l3_空间向量的应用">
+                                <li class="knowledge-item" data-knowledge="平面的法向量">平面的法向量</li>
+                                <li class="knowledge-item" data-knowledge="空间位置关系的向量证明">空间位置关系的向量证明</li>
+                                <li class="knowledge-item" data-knowledge="空间角的向量求法">空间角的向量求法</li>
+                                <li class="knowledge-item" data-knowledge="空间距离的向量求法">空间距离的向量求法</li>
+                                <li class="knowledge-item" data-knowledge="空间线段点的存在性问题">空间线段点的存在性问题</li>
+                                <li class="knowledge-item" data-knowledge="从平面向量到空间向量">从平面向量到空间向量</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="立体几何新定义" data-toggle="l2_立体几何新定义">
+                            <span class="folder-icon">▶</span> 立体几何新定义
+                        </li>
+                        <ul class="sub-items hidden" id="l2_立体几何新定义">
+                        </ul>
+                    </ul>
+                </div>
+                <div class="knowledge-category">
+                    <h3 class="category-title" data-toggle="等式与不等式">⚖️ 等式与不等式</h3>
+                    <ul class="category-items" id="等式与不等式">
+                        <li class="knowledge-item knowledge-folder" data-knowledge="不等式的性质" data-toggle="l2_不等式的性质">
+                            <span class="folder-icon">▶</span> 不等式的性质
+                        </li>
+                        <ul class="sub-items hidden" id="l2_不等式的性质">
+                            <li class="knowledge-item" data-knowledge="由已知条件判断所给不等式是否正确">由已知条件判断所给不等式是否正确</li>
+                            <li class="knowledge-item" data-knowledge="比较数（式）大小">比较数（式）大小</li>
+                            <li class="knowledge-item" data-knowledge="作差法比较代数式的大小">作差法比较代数式的大小</li>
+                            <li class="knowledge-item" data-knowledge="作商法比较代数式的大小">作商法比较代数式的大小</li>
+                            <li class="knowledge-item" data-knowledge="由不等式的性质证明不等式">由不等式的性质证明不等式</li>
+                            <li class="knowledge-item" data-knowledge="利用不等式求值或取值范围">利用不等式求值或取值范围</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="一元二次不等式" data-toggle="l2_一元二次不等式">
+                            <span class="folder-icon">▶</span> 一元二次不等式
+                        </li>
+                        <ul class="sub-items hidden" id="l2_一元二次不等式">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="一元二次不等式的解法" data-toggle="l3_一元二次不等式的解法">
+                                <span class="folder-icon">▶</span> 一元二次不等式的解法
+                            </li>
+                            <ul class="sub-items hidden" id="l3_一元二次不等式的解法">
+                                <li class="knowledge-item" data-knowledge="一元二次不等式的概念及辨析">一元二次不等式的概念及辨析</li>
+                                <li class="knowledge-item" data-knowledge="解不含参数的一元二次不等式">解不含参数的一元二次不等式</li>
+                                <li class="knowledge-item" data-knowledge="解含有参数的一元二次不等式">解含有参数的一元二次不等式</li>
+                                <li class="knowledge-item" data-knowledge="由一元二次不等式的解确定参数">由一元二次不等式的解确定参数</li>
+                                <li class="knowledge-item" data-knowledge="一元二次方程根的分布问题">一元二次方程根的分布问题</li>
+                                <li class="knowledge-item" data-knowledge="一元二次不等式与二次函数的关系">一元二次不等式与二次函数的关系</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="一元二次不等式恒成立问题" data-toggle="l3_一元二次不等式恒成立问题">
+                                <span class="folder-icon">▶</span> 一元二次不等式恒成立问题
+                            </li>
+                            <ul class="sub-items hidden" id="l3_一元二次不等式恒成立问题">
+                                <li class="knowledge-item" data-knowledge="一元二次不等式在实数集上恒成立问题">一元二次不等式在实数集上恒成立问题</li>
+                                <li class="knowledge-item" data-knowledge="一元二次不等式在某区间上的恒成立问题">一元二次不等式在某区间上的恒成立问题</li>
+                                <li class="knowledge-item" data-knowledge="一元二次不等式在某区间上有解问题">一元二次不等式在某区间上有解问题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="一元二次不等式的应用" data-toggle="l3_一元二次不等式的应用">
+                                <span class="folder-icon">▶</span> 一元二次不等式的应用
+                            </li>
+                            <ul class="sub-items hidden" id="l3_一元二次不等式的应用">
+                                <li class="knowledge-item" data-knowledge="一元二次不等式的实际应用">一元二次不等式的实际应用</li>
+                                <li class="knowledge-item" data-knowledge="一元二次不等式在几何中的应用">一元二次不等式在几何中的应用</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="其他不等式" data-toggle="l2_其他不等式">
+                            <span class="folder-icon">▶</span> 其他不等式
+                        </li>
+                        <ul class="sub-items hidden" id="l2_其他不等式">
+                            <li class="knowledge-item" data-knowledge="分式不等式">分式不等式</li>
+                            <li class="knowledge-item" data-knowledge="高次不等式">高次不等式</li>
+                            <li class="knowledge-item" data-knowledge="抽象不等式">抽象不等式</li>
+                            <li class="knowledge-item" data-knowledge="根式不等式">根式不等式</li>
+                            <li class="knowledge-item" data-knowledge="绝对值不等式的解法">绝对值不等式的解法</li>
+                            <li class="knowledge-item" data-knowledge="绝对值三角不等式">绝对值三角不等式</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="线性规划" data-toggle="l2_线性规划">
+                            <span class="folder-icon">▶</span> 线性规划
+                        </li>
+                        <ul class="sub-items hidden" id="l2_线性规划">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="二元一次不等式(组)确定的可行域" data-toggle="l3_二元一次不等式(组)确定的可行域">
+                                <span class="folder-icon">▶</span> 二元一次不等式(组)确定的可行域
+                            </li>
+                            <ul class="sub-items hidden" id="l3_二元一次不等式(组)确定的可行域">
+                                <li class="knowledge-item" data-knowledge="判断不等式是否为二元一次不等式">判断不等式是否为二元一次不等式</li>
+                                <li class="knowledge-item" data-knowledge="画（判断）不等式（组）表示的可行域">画（判断）不等式（组）表示的可行域</li>
+                                <li class="knowledge-item" data-knowledge="判断点是否在可行域内">判断点是否在可行域内</li>
+                                <li class="knowledge-item" data-knowledge="根据点与直线（可行域）的位置关系求参数">根据点与直线（可行域）的位置关系求参数</li>
+                                <li class="knowledge-item" data-knowledge="由可行域确定不等式（组）">由可行域确定不等式（组）</li>
+                                <li class="knowledge-item" data-knowledge="求可行域的面积">求可行域的面积</li>
+                                <li class="knowledge-item" data-knowledge="根据可行域的形状（面积）求参数">根据可行域的形状（面积）求参数</li>
+                                <li class="knowledge-item" data-knowledge="可行域内整点的个数">可行域内整点的个数</li>
+                                <li class="knowledge-item" data-knowledge="画含绝对值不等式的可行域">画含绝对值不等式的可行域</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="简单的线性规划问题" data-toggle="l3_简单的线性规划问题">
+                                <span class="folder-icon">▶</span> 简单的线性规划问题
+                            </li>
+                            <ul class="sub-items hidden" id="l3_简单的线性规划问题">
+                                <li class="knowledge-item" data-knowledge="线性规划的可行解的概念及辨析">线性规划的可行解的概念及辨析</li>
+                                <li class="knowledge-item" data-knowledge="根据线性规划求最值或范围">根据线性规划求最值或范围</li>
+                                <li class="knowledge-item" data-knowledge="根据最优解或最值求参数">根据最优解或最值求参数</li>
+                                <li class="knowledge-item" data-knowledge="线性规划问题的最优整数解问题">线性规划问题的最优整数解问题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="非线性的可行域与目标函数" data-toggle="l3_非线性的可行域与目标函数">
+                                <span class="folder-icon">▶</span> 非线性的可行域与目标函数
+                            </li>
+                            <ul class="sub-items hidden" id="l3_非线性的可行域与目标函数">
+                                <li class="knowledge-item" data-knowledge="含绝对值的不等式可行域的最值">含绝对值的不等式可行域的最值</li>
+                                <li class="knowledge-item" data-knowledge="与圆有关的可行域的最值">与圆有关的可行域的最值</li>
+                                <li class="knowledge-item" data-knowledge="求平方和型目标函数的最值">求平方和型目标函数的最值</li>
+                                <li class="knowledge-item" data-knowledge="求分式型目标函数的最值">求分式型目标函数的最值</li>
+                                <li class="knowledge-item" data-knowledge="其他形式的目标函数的最值">其他形式的目标函数的最值</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="线性规划的实际应用">线性规划的实际应用</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="基本不等式" data-toggle="l2_基本不等式">
+                            <span class="folder-icon">▶</span> 基本不等式
+                        </li>
+                        <ul class="sub-items hidden" id="l2_基本不等式">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="基本不等式（均值定理）" data-toggle="l3_基本不等式（均值定理）">
+                                <span class="folder-icon">▶</span> 基本不等式（均值定理）
+                            </li>
+                            <ul class="sub-items hidden" id="l3_基本不等式（均值定理）">
+                                <li class="knowledge-item" data-knowledge="基本不等式的内容及辨析">基本不等式的内容及辨析</li>
+                                <li class="knowledge-item" data-knowledge="由基本不等式比较大小">由基本不等式比较大小</li>
+                                <li class="knowledge-item" data-knowledge="由基本不等式证明不等关系">由基本不等式证明不等关系</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="基本（均值）不等式求最值" data-toggle="l3_基本（均值）不等式求最值">
+                                <span class="folder-icon">▶</span> 基本（均值）不等式求最值
+                            </li>
+                            <ul class="sub-items hidden" id="l3_基本（均值）不等式求最值">
+                                <li class="knowledge-item" data-knowledge="基本不等式求积的最大值">基本不等式求积的最大值</li>
+                                <li class="knowledge-item" data-knowledge="基本不等式求和的最小值">基本不等式求和的最小值</li>
+                                <li class="knowledge-item" data-knowledge="二次与二次（或一次）的商式的最值">二次与二次（或一次）的商式的最值</li>
+                                <li class="knowledge-item" data-knowledge="基本不等式“1”的妙用求最值">基本不等式“1”的妙用求最值</li>
+                                <li class="knowledge-item" data-knowledge="条件等式求最值">条件等式求最值</li>
+                                <li class="knowledge-item" data-knowledge="基本不等式的恒成立问题">基本不等式的恒成立问题</li>
+                                <li class="knowledge-item" data-knowledge="对勾函数求最值">对勾函数求最值</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="基本不等式的实际应用">基本不等式的实际应用</li>
+                            <li class="knowledge-item" data-knowledge="基本（均值）不等式的应用">基本（均值）不等式的应用</li>
+                            <li class="knowledge-item" data-knowledge="柯西不等式（二维形式）">柯西不等式（二维形式）</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="用不等式表示不等关系" data-toggle="l2_用不等式表示不等关系">
+                            <span class="folder-icon">▶</span> 用不等式表示不等关系
+                        </li>
+                        <ul class="sub-items hidden" id="l2_用不等式表示不等关系">
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="等式的性质与方程的解集" data-toggle="l2_等式的性质与方程的解集">
+                            <span class="folder-icon">▶</span> 等式的性质与方程的解集
+                        </li>
+                        <ul class="sub-items hidden" id="l2_等式的性质与方程的解集">
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="一元二次方程的解集及其根与系数的关系" data-toggle="l2_一元二次方程的解集及其根与系数的关系">
+                            <span class="folder-icon">▶</span> 一元二次方程的解集及其根与系数的关系
+                        </li>
+                        <ul class="sub-items hidden" id="l2_一元二次方程的解集及其根与系数的关系">
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="方程组的解集" data-toggle="l2_方程组的解集">
+                            <span class="folder-icon">▶</span> 方程组的解集
+                        </li>
+                        <ul class="sub-items hidden" id="l2_方程组的解集">
+                        </ul>
+                    </ul>
+                </div>
+                <div class="knowledge-category">
+                    <h3 class="category-title" data-toggle="计数原理与概率统计">📊 计数原理与概率统计</h3>
+                    <ul class="category-items" id="计数原理与概率统计">
+                        <li class="knowledge-item knowledge-folder" data-knowledge="统计" data-toggle="l2_统计">
+                            <span class="folder-icon">▶</span> 统计
+                        </li>
+                        <ul class="sub-items hidden" id="l2_统计">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="随机抽样" data-toggle="l3_随机抽样">
+                                <span class="folder-icon">▶</span> 随机抽样
+                            </li>
+                            <ul class="sub-items hidden" id="l3_随机抽样">
+                                <li class="knowledge-item" data-knowledge="普查与抽样">普查与抽样</li>
+                                <li class="knowledge-item" data-knowledge="总体与样本">总体与样本</li>
+                                <li class="knowledge-item" data-knowledge="简单随机抽样">简单随机抽样</li>
+                                <li class="knowledge-item" data-knowledge="系统抽样">系统抽样</li>
+                                <li class="knowledge-item" data-knowledge="分层抽样">分层抽样</li>
+                                <li class="knowledge-item" data-knowledge="三种抽样方法的比较">三种抽样方法的比较</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="用样本估计总体" data-toggle="l3_用样本估计总体">
+                                <span class="folder-icon">▶</span> 用样本估计总体
+                            </li>
+                            <ul class="sub-items hidden" id="l3_用样本估计总体">
+                                <li class="knowledge-item" data-knowledge="条形统计图">条形统计图</li>
+                                <li class="knowledge-item" data-knowledge="折线统计图">折线统计图</li>
+                                <li class="knowledge-item" data-knowledge="扇形统计图">扇形统计图</li>
+                                <li class="knowledge-item" data-knowledge="频率分布表">频率分布表</li>
+                                <li class="knowledge-item" data-knowledge="频率分布直方图">频率分布直方图</li>
+                                <li class="knowledge-item" data-knowledge="频率分布折线图">频率分布折线图</li>
+                                <li class="knowledge-item" data-knowledge="茎叶图">茎叶图</li>
+                                <li class="knowledge-item" data-knowledge="众数">众数</li>
+                                <li class="knowledge-item" data-knowledge="中位数">中位数</li>
+                                <li class="knowledge-item" data-knowledge="平均数">平均数</li>
+                                <li class="knowledge-item" data-knowledge="极差、方差、标准差">极差、方差、标准差</li>
+                                <li class="knowledge-item" data-knowledge="总体百分位数的估计">总体百分位数的估计</li>
+                                <li class="knowledge-item" data-knowledge="雷达图">雷达图</li>
+                                <li class="knowledge-item" data-knowledge="箱线图">箱线图</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="变量间的相关关系" data-toggle="l3_变量间的相关关系">
+                                <span class="folder-icon">▶</span> 变量间的相关关系
+                            </li>
+                            <ul class="sub-items hidden" id="l3_变量间的相关关系">
+                                <li class="knowledge-item" data-knowledge="相关关系">相关关系</li>
+                                <li class="knowledge-item" data-knowledge="散点图">散点图</li>
+                                <li class="knowledge-item" data-knowledge="回归直线方程">回归直线方程</li>
+                                <li class="knowledge-item" data-knowledge="最小二乘法">最小二乘法</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="统计案例" data-toggle="l2_统计案例">
+                            <span class="folder-icon">▶</span> 统计案例
+                        </li>
+                        <ul class="sub-items hidden" id="l2_统计案例">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="回归分析" data-toggle="l3_回归分析">
+                                <span class="folder-icon">▶</span> 回归分析
+                            </li>
+                            <ul class="sub-items hidden" id="l3_回归分析">
+                                <li class="knowledge-item" data-knowledge="线性回归">线性回归</li>
+                                <li class="knowledge-item" data-knowledge="相关系数r">相关系数r</li>
+                                <li class="knowledge-item" data-knowledge="误差分析">误差分析</li>
+                                <li class="knowledge-item" data-knowledge="非线性回归">非线性回归</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="独立性检验" data-toggle="l3_独立性检验">
+                                <span class="folder-icon">▶</span> 独立性检验
+                            </li>
+                            <ul class="sub-items hidden" id="l3_独立性检验">
+                                <li class="knowledge-item" data-knowledge="列联表">列联表</li>
+                                <li class="knowledge-item" data-knowledge="等高条形图">等高条形图</li>
+                                <li class="knowledge-item" data-knowledge="独立性检验">独立性检验</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="计数原理" data-toggle="l2_计数原理">
+                            <span class="folder-icon">▶</span> 计数原理
+                        </li>
+                        <ul class="sub-items hidden" id="l2_计数原理">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="加法原理与乘法原理" data-toggle="l3_加法原理与乘法原理">
+                                <span class="folder-icon">▶</span> 加法原理与乘法原理
+                            </li>
+                            <ul class="sub-items hidden" id="l3_加法原理与乘法原理">
+                                <li class="knowledge-item" data-knowledge="分类加法计数原理">分类加法计数原理</li>
+                                <li class="knowledge-item" data-knowledge="分步乘法计数原理">分步乘法计数原理</li>
+                                <li class="knowledge-item" data-knowledge="两个计数原理的综合应用">两个计数原理的综合应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="排列" data-toggle="l3_排列">
+                                <span class="folder-icon">▶</span> 排列
+                            </li>
+                            <ul class="sub-items hidden" id="l3_排列">
+                                <li class="knowledge-item" data-knowledge="排列与排列数公式">排列与排列数公式</li>
+                                <li class="knowledge-item" data-knowledge="排列应用题">排列应用题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="组合" data-toggle="l3_组合">
+                                <span class="folder-icon">▶</span> 组合
+                            </li>
+                            <ul class="sub-items hidden" id="l3_组合">
+                                <li class="knowledge-item" data-knowledge="组合与组合数公式">组合与组合数公式</li>
+                                <li class="knowledge-item" data-knowledge="组合应用题">组合应用题</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="二项式定理" data-toggle="l3_二项式定理">
+                                <span class="folder-icon">▶</span> 二项式定理
+                            </li>
+                            <ul class="sub-items hidden" id="l3_二项式定理">
+                                <li class="knowledge-item" data-knowledge="二项式定理的展开式">二项式定理的展开式</li>
+                                <li class="knowledge-item" data-knowledge="二项式系数">二项式系数</li>
+                                <li class="knowledge-item" data-knowledge="项的系数">项的系数</li>
+                                <li class="knowledge-item" data-knowledge="二项式定理的应用">二项式定理的应用</li>
+                                <li class="knowledge-item" data-knowledge="杨辉三角">杨辉三角</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="排列组合综合" data-toggle="l3_排列组合综合">
+                                <span class="folder-icon">▶</span> 排列组合综合
+                            </li>
+                            <ul class="sub-items hidden" id="l3_排列组合综合">
+                                <li class="knowledge-item" data-knowledge="捆绑法">捆绑法</li>
+                                <li class="knowledge-item" data-knowledge="插空法">插空法</li>
+                                <li class="knowledge-item" data-knowledge="分组分配问题">分组分配问题</li>
+                                <li class="knowledge-item" data-knowledge="隔板法">隔板法</li>
+                                <li class="knowledge-item" data-knowledge="定序问题缩倍法">定序问题缩倍法</li>
+                            </ul>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="概率" data-toggle="l2_概率">
+                            <span class="folder-icon">▶</span> 概率
+                        </li>
+                        <ul class="sub-items hidden" id="l2_概率">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="随机事件的概率" data-toggle="l3_随机事件的概率">
+                                <span class="folder-icon">▶</span> 随机事件的概率
+                            </li>
+                            <ul class="sub-items hidden" id="l3_随机事件的概率">
+                                <li class="knowledge-item" data-knowledge="随机现象">随机现象</li>
+                                <li class="knowledge-item" data-knowledge="随机事件">随机事件</li>
+                                <li class="knowledge-item" data-knowledge="频率与概率">频率与概率</li>
+                                <li class="knowledge-item" data-knowledge="生活中的概率">生活中的概率</li>
+                                <li class="knowledge-item" data-knowledge="事件的关系与运算">事件的关系与运算</li>
+                                <li class="knowledge-item" data-knowledge="互斥事件">互斥事件</li>
+                                <li class="knowledge-item" data-knowledge="对立事件">对立事件</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="古典概型" data-toggle="l3_古典概型">
+                                <span class="folder-icon">▶</span> 古典概型
+                            </li>
+                            <ul class="sub-items hidden" id="l3_古典概型">
+                                <li class="knowledge-item" data-knowledge="基本事件">基本事件</li>
+                                <li class="knowledge-item" data-knowledge="古典概型的特征">古典概型的特征</li>
+                                <li class="knowledge-item" data-knowledge="古典概型的概率计算公式">古典概型的概率计算公式</li>
+                                <li class="knowledge-item" data-knowledge="整数值随机数">整数值随机数</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="几何概型" data-toggle="l3_几何概型">
+                                <span class="folder-icon">▶</span> 几何概型
+                            </li>
+                            <ul class="sub-items hidden" id="l3_几何概型">
+                                <li class="knowledge-item" data-knowledge="几何概型的特征">几何概型的特征</li>
+                                <li class="knowledge-item" data-knowledge="几何概型计算公式">几何概型计算公式</li>
+                                <li class="knowledge-item" data-knowledge="均匀随机数的产生">均匀随机数的产生</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="概率综合">概率综合</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="随机变量及其分布" data-toggle="l2_随机变量及其分布">
+                            <span class="folder-icon">▶</span> 随机变量及其分布
+                        </li>
+                        <ul class="sub-items hidden" id="l2_随机变量及其分布">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="离散型随机变量及其分布列" data-toggle="l3_离散型随机变量及其分布列">
+                                <span class="folder-icon">▶</span> 离散型随机变量及其分布列
+                            </li>
+                            <ul class="sub-items hidden" id="l3_离散型随机变量及其分布列">
+                                <li class="knowledge-item" data-knowledge="随机变量">随机变量</li>
+                                <li class="knowledge-item" data-knowledge="离散型随机变量">离散型随机变量</li>
+                                <li class="knowledge-item" data-knowledge="离散型随机变量的分布列">离散型随机变量的分布列</li>
+                                <li class="knowledge-item" data-knowledge="两点分布">两点分布</li>
+                                <li class="knowledge-item" data-knowledge="超几何分布">超几何分布</li>
+                                <li class="knowledge-item" data-knowledge="随机变量函数的分布列">随机变量函数的分布列</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="条件概率" data-toggle="l3_条件概率">
+                                <span class="folder-icon">▶</span> 条件概率
+                            </li>
+                            <ul class="sub-items hidden" id="l3_条件概率">
+                                <li class="knowledge-item" data-knowledge="计算条件概率">计算条件概率</li>
+                                <li class="knowledge-item" data-knowledge="条件概率性质的应用">条件概率性质的应用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="全概率公式" data-toggle="l3_全概率公式">
+                                <span class="folder-icon">▶</span> 全概率公式
+                            </li>
+                            <ul class="sub-items hidden" id="l3_全概率公式">
+                                <li class="knowledge-item" data-knowledge="利用全概率公式求概率">利用全概率公式求概率</li>
+                                <li class="knowledge-item" data-knowledge="利用贝叶斯公式求概率">利用贝叶斯公式求概率</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="二项分布及其应用" data-toggle="l3_二项分布及其应用">
+                                <span class="folder-icon">▶</span> 二项分布及其应用
+                            </li>
+                            <ul class="sub-items hidden" id="l3_二项分布及其应用">
+                                <li class="knowledge-item" data-knowledge="事件的独立性">事件的独立性</li>
+                                <li class="knowledge-item" data-knowledge="独立重复试验">独立重复试验</li>
+                                <li class="knowledge-item" data-knowledge="二项分布">二项分布</li>
+                                <li class="knowledge-item" data-knowledge="乘法公式">乘法公式</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="离散型随机变量的均值与方差" data-toggle="l3_离散型随机变量的均值与方差">
+                                <span class="folder-icon">▶</span> 离散型随机变量的均值与方差
+                            </li>
+                            <ul class="sub-items hidden" id="l3_离散型随机变量的均值与方差">
+                                <li class="knowledge-item" data-knowledge="离散型随机变量的均值">离散型随机变量的均值</li>
+                                <li class="knowledge-item" data-knowledge="常用分布的均值">常用分布的均值</li>
+                                <li class="knowledge-item" data-knowledge="离散型随机变量的方差">离散型随机变量的方差</li>
+                                <li class="knowledge-item" data-knowledge="常用分布的方差">常用分布的方差</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="正态分布" data-toggle="l3_正态分布">
+                                <span class="folder-icon">▶</span> 正态分布
+                            </li>
+                            <ul class="sub-items hidden" id="l3_正态分布">
+                                <li class="knowledge-item" data-knowledge="正态密度函数">正态密度函数</li>
+                                <li class="knowledge-item" data-knowledge="正态曲线">正态曲线</li>
+                                <li class="knowledge-item" data-knowledge="3δ原则">3δ原则</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="几何分布" data-toggle="l3_几何分布">
+                                <span class="folder-icon">▶</span> 几何分布
+                            </li>
+                            <ul class="sub-items hidden" id="l3_几何分布">
+                                <li class="knowledge-item" data-knowledge="几何分布的概念">几何分布的概念</li>
+                                <li class="knowledge-item" data-knowledge="几何分布的特征">几何分布的特征</li>
+                                <li class="knowledge-item" data-knowledge="几何分布的期望与方差">几何分布的期望与方差</li>
+                            </ul>
+                        </ul>
+                    </ul>
+                </div>
+                <div class="knowledge-category">
+                    <h3 class="category-title" data-toggle="集合与常用逻辑用语">📦 集合与常用逻辑用语</h3>
+                    <ul class="category-items" id="集合与常用逻辑用语">
+                        <li class="knowledge-item knowledge-folder" data-knowledge="集合" data-toggle="l2_集合">
+                            <span class="folder-icon">▶</span> 集合
+                        </li>
+                        <ul class="sub-items hidden" id="l2_集合">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="集合的含义与表示" data-toggle="l3_集合的含义与表示">
+                                <span class="folder-icon">▶</span> 集合的含义与表示
+                            </li>
+                            <ul class="sub-items hidden" id="l3_集合的含义与表示">
+                                <li class="knowledge-item" data-knowledge="集合的概念">集合的概念</li>
+                                <li class="knowledge-item" data-knowledge="元素与集合">元素与集合</li>
+                                <li class="knowledge-item" data-knowledge="集合中元素的特性">集合中元素的特性</li>
+                                <li class="knowledge-item" data-knowledge="集合的表示方法">集合的表示方法</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="集合间的基本关系" data-toggle="l3_集合间的基本关系">
+                                <span class="folder-icon">▶</span> 集合间的基本关系
+                            </li>
+                            <ul class="sub-items hidden" id="l3_集合间的基本关系">
+                                <li class="knowledge-item" data-knowledge="子集与真子集">子集与真子集</li>
+                                <li class="knowledge-item" data-knowledge="包含关系">包含关系</li>
+                                <li class="knowledge-item" data-knowledge="相等关系">相等关系</li>
+                                <li class="knowledge-item" data-knowledge="空集">空集</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="集合间的基本运算" data-toggle="l3_集合间的基本运算">
+                                <span class="folder-icon">▶</span> 集合间的基本运算
+                            </li>
+                            <ul class="sub-items hidden" id="l3_集合间的基本运算">
+                                <li class="knowledge-item" data-knowledge="交集">交集</li>
+                                <li class="knowledge-item" data-knowledge="并集">并集</li>
+                                <li class="knowledge-item" data-knowledge="补集与全集">补集与全集</li>
+                                <li class="knowledge-item" data-knowledge="集合的交并补">集合的交并补</li>
+                                <li class="knowledge-item" data-knowledge="Venn图">Venn图</li>
+                            </ul>
+                            <li class="knowledge-item" data-knowledge="集合新定义">集合新定义</li>
+                        </ul>
+                        <li class="knowledge-item knowledge-folder" data-knowledge="常用逻辑用语" data-toggle="l2_常用逻辑用语">
+                            <span class="folder-icon">▶</span> 常用逻辑用语
+                        </li>
+                        <ul class="sub-items hidden" id="l2_常用逻辑用语">
+                            <li class="knowledge-item knowledge-folder" data-knowledge="命题及其关系" data-toggle="l3_命题及其关系">
+                                <span class="folder-icon">▶</span> 命题及其关系
+                            </li>
+                            <ul class="sub-items hidden" id="l3_命题及其关系">
+                                <li class="knowledge-item" data-knowledge="命题">命题</li>
+                                <li class="knowledge-item" data-knowledge="四种命题">四种命题</li>
+                                <li class="knowledge-item" data-knowledge="四种命题的相互关系">四种命题的相互关系</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="充分条件与必要条件" data-toggle="l3_充分条件与必要条件">
+                                <span class="folder-icon">▶</span> 充分条件与必要条件
+                            </li>
+                            <ul class="sub-items hidden" id="l3_充分条件与必要条件">
+                                <li class="knowledge-item" data-knowledge="充分条件">充分条件</li>
+                                <li class="knowledge-item" data-knowledge="必要条件">必要条件</li>
+                                <li class="knowledge-item" data-knowledge="充要条件">充要条件</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="简单的逻辑联结词" data-toggle="l3_简单的逻辑联结词">
+                                <span class="folder-icon">▶</span> 简单的逻辑联结词
+                            </li>
+                            <ul class="sub-items hidden" id="l3_简单的逻辑联结词">
+                                <li class="knowledge-item" data-knowledge="且">且</li>
+                                <li class="knowledge-item" data-knowledge="或">或</li>
+                                <li class="knowledge-item" data-knowledge="非">非</li>
+                                <li class="knowledge-item" data-knowledge="综合运用">综合运用</li>
+                            </ul>
+                            <li class="knowledge-item knowledge-folder" data-knowledge="全称量词与存在量词" data-toggle="l3_全称量词与存在量词">
+                                <span class="folder-icon">▶</span> 全称量词与存在量词
+                            </li>
+                            <ul class="sub-items hidden" id="l3_全称量词与存在量词">
+                                <li class="knowledge-item" data-knowledge="全称量词与存在命题">全称量词与存在命题</li>
+                                <li class="knowledge-item" data-knowledge="存在量词与特称命题">存在量词与特称命题</li>
+                                <li class="knowledge-item" data-knowledge="含有一个量词的命题否定">含有一个量词的命题否定</li>
+                            </ul>
+                        </ul>
+                    </ul>
+                </div>
+                <div class="knowledge-category">
+                    <h3 class="category-title" data-toggle="未分类">📂 未分类</h3>
+                    <ul class="category-items" id="未分类">
+                        <li class="knowledge-item" data-knowledge="未分类">未分类</li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Panel - Question Cards -->
+        <section class="question-panel" data-panel="question-bank">
+            <div class="panel-header">
+                <h2>题目列表</h2>
+                <span class="question-count" id="questionCount">共 0 题</span>
+            </div>
+            <!-- Filter Bar -->
+            <div class="filter-bar collapsed" id="filterBar">
+                <div class="filter-bar-toggle" id="filterToggle">
+                    <span>🔍 筛选</span>
+                    <span class="filter-arrow">▶</span>
+                </div>
+                <div class="filter-bar-body" id="filterBarBody">
+                    <div class="filter-bar-row">
+                        <span class="filter-bar-label">题型：</span>
+                        <span class="filter-bar-tags" id="typeFilters"></span>
+                    </div>
+                    <div class="filter-bar-row">
+                        <span class="filter-bar-label">年份：</span>
+                        <span class="filter-bar-tags" id="yearFilters"></span>
+                    </div>
+                    <div class="filter-bar-row">
+                        <span class="filter-bar-label">地区：</span>
+                        <span class="filter-bar-tags" id="regionFilters"></span>
+                    </div>
+                    <div class="filter-bar-row">
+                        <span class="filter-bar-label">年级：</span>
+                        <span class="filter-bar-tags" id="gradeFilters"></span>
+                    </div>
+                    <div class="filter-bar-row">
+                        <span class="filter-bar-label">类型：</span>
+                        <span class="filter-bar-tags" id="examTypeFilters"></span>
+                    </div>
+                    <div class="filter-bar-row">
+                        <span class="filter-bar-label">题号：</span>
+                        <span class="filter-bar-tags" id="questionNumFilters"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="question-cards" id="questionCards">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            <div class="pagination-nav" id="paginationNav">
+                <button class="page-btn" onclick="goToPage(1)">⏮ 首页</button>
+                <button class="page-btn" onclick="goPrevPage()">◀ 上一页</button>
+                <span class="page-info" id="pageInfo">第 1 / 1 页</span>
+                <button class="page-btn" onclick="goNextPage()">下一页 ▶</button>
+                <button class="page-btn" onclick="goToLastPage()">⏭ 末页</button>
+                <span class="go-page-wrapper">
+                    <input type="number" class="go-page-input" id="goPageInput" min="1" placeholder="页码" onkeydown="if(event.key==='Enter'){goToPageInput()}">
+                    <button class="go-page-btn" onclick="goToPageInput()">跳转</button>
+                </span>
+                </span>
+        </section>
+
+        <!-- Paper Maker Panel -->
+        <section class="question-panel" data-panel="paper-maker" style="display:none;">
+            <div class="panel-header">
+                <h2>组卷中心</h2>
+            </div>
+            <div class="paper-config" style="padding: 16px;">
+                <h3 style="margin-bottom: 12px; color: #303133;">📋 组卷配置</h3>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-size: 13px; color: #606266;">简单题数量：</label>
+                        <input type="number" id="easyCount" value="2" min="0" max="10"
+                            style="width: 60px; padding: 4px 8px; border: 1px solid #dcdfe6; border-radius: 4px;">
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-size: 13px; color: #606266;">中等题数量：</label>
+                        <input type="number" id="mediumCount" value="3" min="0" max="10"
+                            style="width: 60px; padding: 4px 8px; border: 1px solid #dcdfe6; border-radius: 4px;">
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-size: 13px; color: #606266;">困难题数量：</label>
+                        <input type="number" id="hardCount" value="2" min="0" max="10"
+                            style="width: 60px; padding: 4px 8px; border: 1px solid #dcdfe6; border-radius: 4px;">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-generate" onclick="generatePaper()">🎲 随机组卷</button>
+                    <button class="btn-print" onclick="printPaper()">🖨️ 打印试卷</button>
+                </div>
+            </div>
+            <div id="paperArea" style="flex: 1; overflow-y: auto; padding: 16px;">
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <p>配置组卷参数后点击"随机组卷"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Materials Panel -->
+        <section class="question-panel" data-panel="materials" style="display:none;">
+            <div class="panel-header">
+                <h2>资料中心</h2>
+            </div>
+            <div class="materials-content" style="flex: 1; overflow-y: auto; padding: 16px;">
+                <div class="material-card">
+                    <h3 style="color: #409eff; margin-bottom: 8px;">📐 公式速查表</h3>
+                    <div class="formula-list">
+                        <p><strong>二次方程求根公式：</strong></p>
+                        <p>$ax^2 + bx + c = 0$ 的根为 $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$</p>
+                        <p style="margin-top: 12px;"><strong>三角恒等式：</strong></p>
+                        <p>$\sin^2\alpha + \cos^2\alpha = 1$</p>
+                        <p>$\sin(\alpha \pm \beta) = \sin\alpha\cos\beta \pm \cos\alpha\sin\beta$</p>
+                        <p>$\cos(\alpha \pm \beta) = \cos\alpha\cos\beta \mp \sin\alpha\sin\beta$</p>
+                        <p style="margin-top: 12px;"><strong>等差数列求和：</strong></p>
+                        <p>$S_n = \frac{n(a_1 + a_n)}{2} = na_1 + \frac{n(n-1)}{2}d$</p>
+                        <p style="margin-top: 12px;"><strong>等比数列求和：</strong></p>
+                        <p>$S_n = \frac{a_1(1 - q^n)}{1 - q} \quad (q \neq 1)$</p>
+                    </div>
+                </div>
+                <div class="material-card" style="margin-top: 16px;">
+                    <h3 style="color: #67c23a; margin-bottom: 8px;">💡 解题技巧</h3>
+                    <ul class="tip-list">
+                        <li><strong>选择题排除法：</strong>先排除明显错误的选项，缩小范围后再计算。</li>
+                        <li><strong>特殊值法：</strong>对于含参数的题目，可代入特殊值快速验证。</li>
+                        <li><strong>数形结合：</strong>将代数问题转化为图形分析，直观理解题意。</li>
+                        <li><strong>分类讨论：</strong>遇到绝对值、参数范围等问题时，注意分情况讨论。</li>
+                        <li><strong>逆向思维：</strong>从结论出发反推条件，寻找解题突破口。</li>
+                    </ul>
+                </div>
+                <div class="material-card" style="margin-top: 16px;">
+                    <h3 style="color: #e6a23c; margin-bottom: 8px;">📊 考点分布</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">总题数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">年级覆盖</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">8</div>
+                            <div class="stat-label">知识点</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">题型种类</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question Entry Panel -->
+        <section class="question-panel" data-panel="question-entry" style="display:none;">
+            <div class="panel-header">
+                <h2>录题中心</h2>
+            </div>
+            <div style="flex:1;display:flex;overflow:hidden;">
+                <!-- Left: LaTeX Input -->
+                <div style="width:45%;display:flex;flex-direction:column;border-right:1px solid #e4e7ed;padding:16px;overflow-y:auto;">
+                    <h3 style="color:#409eff;margin:0 0 8px 0;font-size:16px;">📝 LaTeX 智能解析</h3>
+                    <p style="font-size:12px;color:#909399;margin:0 0 10px 0;">粘贴 LaTeX 题目，自动识别题型、选项、答案和解析。支持批量。</p>
+                    <textarea id="latexInput" rows="18" style="width:100%;flex:1;min-height:200px;font-family:Consolas,monospace;font-size:13px;padding:10px;border:1px solid #dcdfe6;border-radius:4px;resize:vertical;box-sizing:border-box;" placeholder="粘贴 LaTeX 题目，自动解析，例如：&#10;\begin{example}{4}&#10;  已知关于 $x$ 的方程...&#10;\end{example}&#10;\begin{proof}&#10;  \begin{answer} 答案 \end{answer}&#10;  \begin{solutions} 解析 \end{solutions}&#10;\end{proof}"></textarea>
+                    <div style="margin-top:10px;display:flex;gap:10px;align-items:center;">
+                        <button type="button" class="btn-submit" onclick="addAllParsedToBank()" style="background:#409eff;">📥 一键添加到题库</button>
+                        <button type="button" class="btn-import-tex" onclick="document.getElementById('texFileInput').click()" style="background:#fff;border:1px solid #dcdfe6;border-radius:4px;padding:8px 16px;cursor:pointer;font-size:13px;color:#606266;">📂 导入 .tex</button>
+                        <input type="file" id="texFileInput" accept=".tex,.txt" style="display:none;" onchange="importTexFile(event)">
+                        <button type="button" class="btn-reset" onclick="document.getElementById('latexInput').value='';document.getElementById('parsePreview').innerHTML='<div style=text-align:center;color:#c0c4cc;padding:60px 0;><div style=font-size:40px;margin-bottom:10px;>📄</div><p>粘贴 LaTeX 后自动解析</p></div>';document.getElementById('previewCount').textContent='';document.getElementById('parseResult').textContent='';">清空</button>
+                        <span id="parseResult" style="font-size:12px;"></span>
+                    </div>
+                </div>
+                <!-- Right: Preview & Add -->
+                <div style="width:55%;display:flex;flex-direction:column;padding:16px;overflow-y:auto;">
+                    <h3 style="color:#67c23a;margin:0 0 10px 0;font-size:16px;">📋 解析预览 <span id="previewCount" style="font-size:12px;color:#909399;font-weight:normal;"></span></h3>
+                    <div id="parsePreview" style="flex:1;overflow-y:auto;">
+                        <div style="text-align:center;color:#c0c4cc;padding:60px 0;">
+                            <div style="font-size:40px;margin-bottom:10px;">📄</div>
+                            <p>粘贴 LaTeX 后自动解析</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/questions.js"></script>
+    <script src="js/app.js"></script>
+    <!-- TikZJax fonts for rendered SVGs -->
+    <link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css">
+</body>
+</html>

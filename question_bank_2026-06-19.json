@@ -1,0 +1,633 @@
+{
+  "version": "1.0",
+  "exportDate": "2026-06-19T09:45:40.845Z",
+  "totalQuestions": 19,
+  "questions": [
+    {
+      "id": 1,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "单选题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "样本数据2，8，14，16，20的平均数为(\\quad)",
+      "options": [
+        {
+          "label": "A",
+          "text": "$8$"
+        },
+        {
+          "label": "B",
+          "text": "$9$"
+        },
+        {
+          "label": "C",
+          "text": "$12$"
+        },
+        {
+          "label": "D",
+          "text": "$18$"
+        }
+      ],
+      "answer": "C",
+      "solution": "平均数计算公式：$\\bar{x}=\\dfrac{2+8+14+16+20}{5}=12$，故选C。",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第1题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{1}[2025][全国2卷][高三][高考][第1题]\n\n样本数据2，8，14，16，20的平均数为\\blankbox\n\\begin{choices}\n\\choice{$8$}\n\\choice{$9$}\n\\choice{$12$}\n\\choice{$18$}\n\\end{choices}\n\n\n\\begin{proof}\n\t\\begin{answer}\n\t\tC\n\t\\end{answer}\n\t\\begin{solutions}\n\t\t平均数计算公式：$\\bar{x}=\\dfrac{2+8+14+16+20}{5}=12$，故选C。\n\t\\end{solutions}\n\\end{proof}\n\\end{example}"
+    },
+    {
+      "id": 2,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "单选题",
+      "knowledge": "复数加减法的代数运算",
+      "knowledgeList": [
+        "复数加减法的代数运算"
+      ],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "若$z=1+\\text{i}$，则$\\dfrac{1}{z-1}=$(\\quad)",
+      "options": [
+        {
+          "label": "A",
+          "text": "$-\\text{i}$"
+        },
+        {
+          "label": "B",
+          "text": "$\\text{i}$"
+        },
+        {
+          "label": "C",
+          "text": "$-1$"
+        },
+        {
+          "label": "D",
+          "text": "$1$"
+        }
+      ],
+      "answer": "A",
+      "solution": "由$z=1+\\text{i}$，得$z-1=\\text{i}$，则$\\dfrac{1}{z-1}=\\dfrac{1}{\\text{i}}=-\\text{i}$，故选A。",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第2题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{1}[2025][全国2卷][高三][高考][第2题]\n\n若$z=1+\\text{i}$，则$\\dfrac{1}{z-1}=$\\blankbox\n\\begin{choices}\n\\choice{$-\\text{i}$}\n\\choice{$\\text{i}$}\n\\choice{$-1$}\n\\choice{$1$}\n\\end{choices}\n\n\n\\kaodian{复数-复数代数形式的四则运算-复数的加减-复数加减法的代数运算}\n\\begin{proof}\n\t\\begin{answer}\n\t\tA\n\t\\end{answer}\n\t\\begin{solutions}\n\t\t由$z=1+\\text{i}$，得$z-1=\\text{i}$，则$\\dfrac{1}{z-1}=\\dfrac{1}{\\text{i}}=-\\text{i}$，故选A。\n\t\\end{solutions}\n\\end{proof}\n\\end{example}"
+    },
+    {
+      "id": 3,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "单选题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "设集合$A=\\{-4,0,1,2,8\\}$，$B=\\{x\\mid x^3=x\\}$，则$A\\cap B=$(\\quad)",
+      "options": [
+        {
+          "label": "A",
+          "text": "$\\{0,1,2\\}$"
+        },
+        {
+          "label": "B",
+          "text": "$\\{1,2,8\\}$"
+        },
+        {
+          "label": "C",
+          "text": "$\\{2,8\\}$"
+        },
+        {
+          "label": "D",
+          "text": "$\\{0,1\\}$"
+        }
+      ],
+      "answer": "D",
+      "solution": "由$x^3=x$得$x(x^2-1)=0$，解得$x=-1,0,1$，即$B=\\{-1,0,1\\}$。\n又$A=\\{-4,0,1,2,8\\}$，故$A\\cap B=\\{0,1\\}$，选D。",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第3题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{1}[2025][全国2卷][高三][高考][第3题]\n设集合$A=\\{-4,0,1,2,8\\}$，$B=\\{x\\mid x^3=x\\}$，则$A\\cap B=$\\blankbox\n\\begin{choices}\n\\choice{$\\{0,1,2\\}$}\n\\choice{$\\{1,2,8\\}$}\n\\choice{$\\{2,8\\}$}\n\\choice{$\\{0,1\\}$}\n\\end{choices}\n\\begin{proof}\n\t\\begin{answer}\n\t\tD\n\t\\end{answer}\n\t\\begin{solutions}\n\t\t由$x^3=x$得$x(x^2-1)=0$，解得$x=-1,0,1$，即$B=\\{-1,0,1\\}$。\n\t\t又$A=\\{-4,0,1,2,8\\}$，故$A\\cap B=\\{0,1\\}$，选D。\n\t\\end{solutions}\n\\end{proof}\n\\end{example}"
+    },
+    {
+      "id": 4,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "单选题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "不等式$\\dfrac{x-4}{x-1}\\ge 2$的解集是(\\quad)",
+      "options": [
+        {
+          "label": "A",
+          "text": "$\\{x\\mid -2\\le x\\le 1\\}$"
+        },
+        {
+          "label": "B",
+          "text": "$\\{x\\mid x\\le -2\\}$"
+        },
+        {
+          "label": "C",
+          "text": "$\\{x\\mid -2\\le x<1\\}$"
+        },
+        {
+          "label": "D",
+          "text": "$\\{x\\mid x>1\\}$"
+        }
+      ],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第4题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{1}[2025][全国2卷][高三][高考][第4题]\n不等式$\\dfrac{x-4}{x-1}\\ge 2$的解集是\\blankbox\n\\begin{choices}\n\\choice{$\\{x\\mid -2\\le x\\le 1\\}$}\n\\choice{$\\{x\\mid x\\le -2\\}$}\n\\choice{$\\{x\\mid -2\\le x<1\\}$}\n\\choice{$\\{x\\mid x>1\\}$}\n\\end{choices}\n\n\\end{example}"
+    },
+    {
+      "id": 5,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "单选题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "在$\\triangle ABC$中，$AB=\\sqrt{6}$，$BC=2$，$AC=1+\\sqrt{3}$，则$A=$(\\quad)",
+      "options": [
+        {
+          "label": "A",
+          "text": "$45^\\circ$"
+        },
+        {
+          "label": "B",
+          "text": "$60^\\circ$"
+        },
+        {
+          "label": "C",
+          "text": "$120^\\circ$"
+        },
+        {
+          "label": "D",
+          "text": "$135^\\circ$"
+        }
+      ],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第5题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{1}[2025][全国2卷][高三][高考][第5题]\n在$\\triangle ABC$中，$AB=\\sqrt{6}$，$BC=2$，$AC=1+\\sqrt{3}$，则$A=$\\blankbox\n\\begin{choices}\n\\choice{$45^\\circ$}\n\\choice{$60^\\circ$}\n\\choice{$120^\\circ$}\n\\choice{$135^\\circ$}\n\\end{choices}\n\n\\end{example}"
+    },
+    {
+      "id": 6,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "单选题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "设抛物线$C:y^2=2px(p>0)$的焦点为$F$，点$A$在$C$上，过$A$作$C$的准线的垂线，垂足为$B$，若$BF:y=-2x+2$，则$|AF|=$(\\quad)",
+      "options": [
+        {
+          "label": "A",
+          "text": "$3$"
+        },
+        {
+          "label": "B",
+          "text": "$4$"
+        },
+        {
+          "label": "C",
+          "text": "$5$"
+        },
+        {
+          "label": "D",
+          "text": "$6$"
+        }
+      ],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第6题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{1}[2025][全国2卷][高三][高考][第6题]\n设抛物线$C:y^2=2px(p>0)$的焦点为$F$，点$A$在$C$上，过$A$作$C$的准线的垂线，垂足为$B$，若$BF:y=-2x+2$，则$|AF|=$\\blankbox\n\\begin{choices}\n\\choice{$3$}\n\\choice{$4$}\n\\choice{$5$}\n\\choice{$6$}\n\\end{choices}\n\\end{example}"
+    },
+    {
+      "id": 7,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "单选题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "记$S_n$等差数列$\\{a_n\\}$的前$n$项和，若$S_3=6$，$S_5=-5$，则$S_6=$(\\quad)",
+      "options": [
+        {
+          "label": "A",
+          "text": "$-20$"
+        },
+        {
+          "label": "B",
+          "text": "$-15$"
+        },
+        {
+          "label": "C",
+          "text": "$-10$"
+        },
+        {
+          "label": "D",
+          "text": "$-5$"
+        }
+      ],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第7题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{1}[2025][全国2卷][高三][高考][第7题]\n记$S_n$等差数列$\\{a_n\\}$的前$n$项和，若$S_3=6$，$S_5=-5$，则$S_6=$\\blankbox\n\\begin{choices}\n\\choice{$-20$}\n\\choice{$-15$}\n\\choice{$-10$}\n\\choice{$-5$}\n\\end{choices}\n\\end{example}"
+    },
+    {
+      "id": 8,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "单选题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "设$0<\\theta<\\pi$，若$\\cos\\dfrac{\\theta}{2}=\\dfrac{\\sqrt{5}}{5}$，则$\\sin\\left(\\theta-\\dfrac{\\pi}{4}\\right)=$(\\quad)",
+      "options": [
+        {
+          "label": "A",
+          "text": "$\\dfrac{\\sqrt{2}}{10}$"
+        },
+        {
+          "label": "B",
+          "text": "$\\dfrac{\\sqrt{2}}{5}$"
+        },
+        {
+          "label": "C",
+          "text": "$\\dfrac{3\\sqrt{2}}{10}$"
+        },
+        {
+          "label": "D",
+          "text": "$\\dfrac{7\\sqrt{2}}{10}$"
+        }
+      ],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第8题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{1}[2025][全国2卷][高三][高考][第8题]\n设$0<\\theta<\\pi$，若$\\cos\\dfrac{\\theta}{2}=\\dfrac{\\sqrt{5}}{5}$，则$\\sin\\left(\\theta-\\dfrac{\\pi}{4}\\right)=$\\blankbox\n\\begin{choices}\n\\choice{$\\dfrac{\\sqrt{2}}{10}$}\n\\choice{$\\dfrac{\\sqrt{2}}{5}$}\n\\choice{$\\dfrac{3\\sqrt{2}}{10}$}\n\\choice{$\\dfrac{7\\sqrt{2}}{10}$}\n\\end{choices}\n\\end{example}"
+    },
+    {
+      "id": 9,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "多选题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "记$S_n$等比数列$\\{a_n\\}$的前$n$项和，$\\{a_n\\}$的公比为$q$，若$q>0$，$S_3=7$，$a_3=1$，则(\\quad)",
+      "options": [
+        {
+          "label": "A",
+          "text": "$q=\\dfrac{1}{2}$"
+        },
+        {
+          "label": "B",
+          "text": "$a_5=\\dfrac{1}{9}$"
+        },
+        {
+          "label": "C",
+          "text": "$S_5=8$"
+        },
+        {
+          "label": "D",
+          "text": "$a_n+S_n=8$"
+        }
+      ],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第9题",
+        "multiSelect": true
+      },
+      "source": "\\begin{example}{2}[2025][全国2卷][高三][高考][第9题][多选]\n记$S_n$等比数列$\\{a_n\\}$的前$n$项和，$\\{a_n\\}$的公比为$q$，若$q>0$，$S_3=7$，$a_3=1$，则\\blankbox\n\\begin{choices}\n\\choice{$q=\\dfrac{1}{2}$}\n\\choice{$a_5=\\dfrac{1}{9}$}\n\\choice{$S_5=8$}\n\\choice{$a_n+S_n=8$}\n\\end{choices}\n\\end{example}"
+    },
+    {
+      "id": 10,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "多选题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "已知$f(x)$是定义在$\\mathbf{R}$上的奇函数，且当$x>0$时，$f(x)=(x^2-3)\\text{e}^x+2$，则(\\quad)",
+      "options": [
+        {
+          "label": "A",
+          "text": "$f(0)=0$"
+        },
+        {
+          "label": "B",
+          "text": "当$x<0$时，$f(x)=-(x^2-3)\\text{e}^{-x}-2$"
+        },
+        {
+          "label": "C",
+          "text": "$f(x)\\ge 2$当且仅当$x\\ge \\sqrt{3}$"
+        },
+        {
+          "label": "D",
+          "text": "$x=-1$是$f(x)$的极大值点"
+        }
+      ],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第10题",
+        "multiSelect": true
+      },
+      "source": "\\begin{example}{2}[2025][全国2卷][高三][高考][第10题][多选]\n已知$f(x)$是定义在$\\mathbf{R}$上的奇函数，且当$x>0$时，$f(x)=(x^2-3)\\text{e}^x+2$，则\\blankbox\n\\begin{choices}\n\\choice{$f(0)=0$}\n\\choice{当$x<0$时，$f(x)=-(x^2-3)\\text{e}^{-x}-2$}\n\\choice{$f(x)\\ge 2$当且仅当$x\\ge \\sqrt{3}$}\n\\choice{$x=-1$是$f(x)$的极大值点}\n\\end{choices}\n\\end{example}"
+    },
+    {
+      "id": 11,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "多选题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "双曲线$C:\\dfrac{x^2}{a^2}-\\dfrac{y^2}{b^2}=1(a>0,b>0)$的左右焦点分别为$F_1,F_2$．左右顶点分别为$A_1,A_2$，以$F_1F_2$为直径的圆与$C$的一条渐近线交于$M$，$N$两点，若$\\angle MA_1N=\\dfrac{5\\pi}{6}$，则(\\quad)",
+      "options": [
+        {
+          "label": "A",
+          "text": "$\\angle A_1MA_2=\\dfrac{\\pi}{6}$"
+        },
+        {
+          "label": "B",
+          "text": "$|MA_1|=2|MA_2|$"
+        },
+        {
+          "label": "C",
+          "text": "$C$离心率为$\\sqrt{13}$"
+        },
+        {
+          "label": "D",
+          "text": "当$a=\\sqrt{2}$时，四边形$A_1MA_2N$的面积为$8\\sqrt{3}$"
+        }
+      ],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第11题",
+        "multiSelect": true
+      },
+      "source": "\\begin{example}{2}[2025][全国2卷][高三][高考][第11题][多选]\n双曲线$C:\\dfrac{x^2}{a^2}-\\dfrac{y^2}{b^2}=1(a>0,b>0)$的左右焦点分别为$F_1,F_2$．左右顶点分别为$A_1,A_2$，以$F_1F_2$为直径的圆与$C$的一条渐近线交于$M$，$N$两点，若$\\angle MA_1N=\\dfrac{5\\pi}{6}$，则\\blankbox\n\\begin{choices}\n\\choice{$\\angle A_1MA_2=\\dfrac{\\pi}{6}$}\n\\choice{$|MA_1|=2|MA_2|$}\n\\choice{$C$离心率为$\\sqrt{13}$}\n\\choice{当$a=\\sqrt{2}$时，四边形$A_1MA_2N$的面积为$8\\sqrt{3}$}\n\\end{choices}\n\\end{example}"
+    },
+    {
+      "id": 12,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "填空题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "已知平面向量$\\boldsymbol{a}=(x,1)$，$\\boldsymbol{b}=(x-1,2x)$，若$\\boldsymbol{a}\\perp(\\boldsymbol{a}-\\boldsymbol{b})$，则$|\\boldsymbol{a}|=$______",
+      "options": [],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第12题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{3}[2025][全国2卷][高三][高考][第12题]\n已知平面向量$\\boldsymbol{a}=(x,1)$，$\\boldsymbol{b}=(x-1,2x)$，若$\\boldsymbol{a}\\perp(\\boldsymbol{a}-\\boldsymbol{b})$，则$|\\boldsymbol{a}|=$\\blankline\n\\end{example}"
+    },
+    {
+      "id": 13,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "填空题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "若$x=2$是$f(x)=(x-1)(x-2)(x-a)$的极值点，则$f(0)=$______",
+      "options": [],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第13题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{3}[2025][全国2卷][高三][高考][第13题]\n若$x=2$是$f(x)=(x-1)(x-2)(x-a)$的极值点，则$f(0)=$\\blankline\n\\end{example}"
+    },
+    {
+      "id": 14,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "填空题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "一个底面半径为$4\\,\\text{cm}$，高为$9\\,\\text{cm}$的封闭圆柱形容器（容器壁厚忽略不计）内有两个半径相等的铁球，则铁球半径的最大值为______$\\text{cm}$．",
+      "options": [],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第14题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{3}[2025][全国2卷][高三][高考][第14题]\n一个底面半径为$4\\,\\text{cm}$，高为$9\\,\\text{cm}$的封闭圆柱形容器（容器壁厚忽略不计）内有两个半径相等的铁球，则铁球半径的最大值为\\blankline$\\text{cm}$．\n\\end{example}"
+    },
+    {
+      "id": 15,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "解答题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "已知$f(x)=\\cos(2x+\\varphi)(0\\le \\varphi<\\pi)$，$f(0)=\\dfrac{1}{2}$．\n\\begin{enumerate}\n    \\item 求$\\varphi$；\n    \\item 设$g(x)=f(x)+f\\left(x-\\dfrac{\\pi}{6}\\right)$，求$g(x)$值域和单调区间．\n\\end{enumerate}",
+      "options": [],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第15题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{4}[2025][全国2卷][高三][高考][第15题]\n已知$f(x)=\\cos(2x+\\varphi)(0\\le \\varphi<\\pi)$，$f(0)=\\dfrac{1}{2}$．\n\\begin{enumerate}\n    \\item 求$\\varphi$；\n    \\item 设$g(x)=f(x)+f\\left(x-\\dfrac{\\pi}{6}\\right)$，求$g(x)$值域和单调区间．\n\\end{enumerate}\n\\end{example}"
+    },
+    {
+      "id": 16,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "解答题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "已知椭圆$C:\\dfrac{x^2}{a^2}+\\dfrac{y^2}{b^2}=1(a>b>0)$的离心率为$\\dfrac{\\sqrt{2}}{2}$，长轴长为$4$．\n\\begin{enumerate}\n    \\item 求$C$的方程；\n    \\item 过点$(0,-2)$的直线$l$与$C$交于$A$，$B$两点，$O$为坐标原点，若$\\triangle OAB$面积为$\\sqrt{2}$，求$|AB|$．\n\\end{enumerate}",
+      "options": [],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第16题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{4}[2025][全国2卷][高三][高考][第16题]\n已知椭圆$C:\\dfrac{x^2}{a^2}+\\dfrac{y^2}{b^2}=1(a>b>0)$的离心率为$\\dfrac{\\sqrt{2}}{2}$，长轴长为$4$．\n\\begin{enumerate}\n    \\item 求$C$的方程；\n    \\item 过点$(0,-2)$的直线$l$与$C$交于$A$，$B$两点，$O$为坐标原点，若$\\triangle OAB$面积为$\\sqrt{2}$，求$|AB|$．\n\\end{enumerate}\n\\end{example}"
+    },
+    {
+      "id": 17,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "解答题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "如图，在四边形$ABCD$中，$AB\\parallel CD$，$\\angle DAB=90^\\circ$，$F$为$CD$中点，$E$在$AB$上，$EF\\parallel AD$，$AB=3AD$，$CD=2AD$．将四边形$EFDA$沿$EF$翻折至四边形$EFD'A'$，使得面$EFD'A'$与面$EFCB$所成的二面角为$60^\\circ$．\n\\begin{enumerate}\n    \\item 证明：$A'B\\parallel$平面$CD'F$；\n    \\item 求平面$BCD'$与面$EFD'A'$所成二面角的正弦值．\n\\end{enumerate}\n\n\\begin{tikzpicture}[scale=1.5, >=latex]\n\t% 1. 定义底面固定坐标（不变）\n\t\\coordinate (A) at (-1.5,-0.5);\n\t\\coordinate (D) at (-0.7,0.3);\n\t\\coordinate (E) at (-0.3,-0.5);\n\t\\coordinate (F) at (0.5,0.3);\n\t\n\t% 右侧固定点（不变）\n\t\\coordinate (B) at (2.5,-0.5);\n\t\\coordinate (C) at (1.7,0.3);\n\t\n\t% 核心修改：调整 A'、D' 坐标，模拟 120° 空间翻折角\n\t\\coordinate (A') at (0.1, 0.9);   % 120°翻折后 A 的投影\n\t\\coordinate (D') at (0.9, 1.7);   % 120°翻折后 D 的投影\n\t\n\t% 2. 绘制不可见线与原平面残留（虚线段）\n\t\\draw[dashed, thick] (A) -- (D) -- (F) -- (E) -- (A);\n\t\\draw[dashed, thick] (F) -- (C) -- (B);\n\t\\draw[dashed, thick] (D') -- (F);\n\t\\draw[dashed, thick] (D') -- (C);\n\t\n\t% 3. 绘制可见线（实线段）\n\t\\draw[thick] (E) -- (B);\n\t\\draw[thick] (E) -- (A') -- (D') -- (B);\n\t\\draw[thick] (A') -- (B);\n\t\n\t% 4. 顶点标注\n\t\\node[left] at (A) {$A$};\n\t\\node[above] at (D) {$D$};\n\t\\node[below] at (E) {$E$};\n\t\\node[below right] at (F) {$F$};\n\t\\node[right] at (B) {$B$};\n\t\\node[above right] at (C) {$C$};\n\t\\node[above left] at (A') {$A'$};\n\t\\node[above] at (D') {$D'$};\n\t\n\\end{tikzpicture}",
+      "options": [],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第17题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{4}[2025][全国2卷][高三][高考][第17题]\n如图，在四边形$ABCD$中，$AB\\parallel CD$，$\\angle DAB=90^\\circ$，$F$为$CD$中点，$E$在$AB$上，$EF\\parallel AD$，$AB=3AD$，$CD=2AD$．将四边形$EFDA$沿$EF$翻折至四边形$EFD'A'$，使得面$EFD'A'$与面$EFCB$所成的二面角为$60^\\circ$．\n\\begin{enumerate}\n    \\item 证明：$A'B\\parallel$平面$CD'F$；\n    \\item 求平面$BCD'$与面$EFD'A'$所成二面角的正弦值．\n\\end{enumerate}\n\n\\begin{tikzpicture}[scale=1.5, >=latex]\n\t% 1. 定义底面固定坐标（不变）\n\t\\coordinate (A) at (-1.5,-0.5);\n\t\\coordinate (D) at (-0.7,0.3);\n\t\\coordinate (E) at (-0.3,-0.5);\n\t\\coordinate (F) at (0.5,0.3);\n\t\n\t% 右侧固定点（不变）\n\t\\coordinate (B) at (2.5,-0.5);\n\t\\coordinate (C) at (1.7,0.3);\n\t\n\t% 核心修改：调整 A'、D' 坐标，模拟 120° 空间翻折角\n\t\\coordinate (A') at (0.1, 0.9);   % 120°翻折后 A 的投影\n\t\\coordinate (D') at (0.9, 1.7);   % 120°翻折后 D 的投影\n\t\n\t% 2. 绘制不可见线与原平面残留（虚线段）\n\t\\draw[dashed, thick] (A) -- (D) -- (F) -- (E) -- (A);\n\t\\draw[dashed, thick] (F) -- (C) -- (B);\n\t\\draw[dashed, thick] (D') -- (F);\n\t\\draw[dashed, thick] (D') -- (C);\n\t\n\t% 3. 绘制可见线（实线段）\n\t\\draw[thick] (E) -- (B);\n\t\\draw[thick] (E) -- (A') -- (D') -- (B);\n\t\\draw[thick] (A') -- (B);\n\t\n\t% 4. 顶点标注\n\t\\node[left] at (A) {$A$};\n\t\\node[above] at (D) {$D$};\n\t\\node[below] at (E) {$E$};\n\t\\node[below right] at (F) {$F$};\n\t\\node[right] at (B) {$B$};\n\t\\node[above right] at (C) {$C$};\n\t\\node[above left] at (A') {$A'$};\n\t\\node[above] at (D') {$D'$};\n\t\n\\end{tikzpicture}\n\\end{example}"
+    },
+    {
+      "id": 18,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "解答题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "已知函数$f(x)=\\ln(1+x)-x+\\dfrac{1}{2}x^2-kx^3$，其中$0<k<\\dfrac{1}{3}$．\n\\begin{enumerate}\n    \\item 证明：$f(x)$在$(0,+\\infty)$存在唯一极值点和唯一零点；\n    \\item 设$x_1,x_2$为$f(x)$在$(0,+\\infty)$的极值点和零点．\n    \\begin{enumerate}\n        \\item 设函数$g(t)=f(x_1+t)-f(x_1-t)$，证明：$g(t)$在$(0,x_1)$单调递减；\n        \\item 比较$2x_1$与$x_2$的大小，并证明．\n    \\end{enumerate}\n\\end{enumerate}",
+      "options": [],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第18题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{4}[2025][全国2卷][高三][高考][第18题]\n已知函数$f(x)=\\ln(1+x)-x+\\dfrac{1}{2}x^2-kx^3$，其中$0<k<\\dfrac{1}{3}$．\n\\begin{enumerate}\n    \\item 证明：$f(x)$在$(0,+\\infty)$存在唯一极值点和唯一零点；\n    \\item 设$x_1,x_2$为$f(x)$在$(0,+\\infty)$的极值点和零点．\n    \\begin{enumerate}\n        \\item 设函数$g(t)=f(x_1+t)-f(x_1-t)$，证明：$g(t)$在$(0,x_1)$单调递减；\n        \\item 比较$2x_1$与$x_2$的大小，并证明．\n    \\end{enumerate}\n\\end{enumerate}\n\\end{example}"
+    },
+    {
+      "id": 19,
+      "grade": "高三",
+      "difficulty": "medium",
+      "type": "解答题",
+      "knowledge": "未分类",
+      "knowledgeList": [],
+      "knowledgeCategory": "algebra",
+      "year": "2025",
+      "question": "甲、乙两人进行乒乓球练习，每个球胜者得1分，负者得0分．设每个球甲胜概率为$p\\left(\\dfrac{1}{2}<p<1\\right)$，乙胜概率为$q$，$p+q=1$，且各球的胜负相互独立．对正整数$k\\ge 2$，记$P_k$为打完$k$个球后甲比乙至少多得2分的概率，$q_k$为打完$k$个球后乙比甲至少多得2分的概率．\n\\begin{enumerate}\n    \\item 求$P_3$，$P_4$（用$p$表示）；\n    \\item 若$\\dfrac{P_4-P_3}{q_4-q_3}=4$，求$p$；\n    \\item 证明：当$m\\in \\mathbf{N}^*$时，$P_{2m+1}-q_{2m+1}<P_{2m}-q_{2m}<P_{2m+2}-q_{2m+2}$．\n\\end{enumerate}",
+      "options": [],
+      "answer": "",
+      "solution": "",
+      "meta": {
+        "year": "2025",
+        "region": "全国2卷",
+        "grade": "高三",
+        "examType": "高考",
+        "questionNum": "第19题",
+        "multiSelect": false
+      },
+      "source": "\\begin{example}{4}[2025][全国2卷][高三][高考][第19题]\n甲、乙两人进行乒乓球练习，每个球胜者得1分，负者得0分．设每个球甲胜概率为$p\\left(\\dfrac{1}{2}<p<1\\right)$，乙胜概率为$q$，$p+q=1$，且各球的胜负相互独立．对正整数$k\\ge 2$，记$P_k$为打完$k$个球后甲比乙至少多得2分的概率，$q_k$为打完$k$个球后乙比甲至少多得2分的概率．\n\\begin{enumerate}\n    \\item 求$P_3$，$P_4$（用$p$表示）；\n    \\item 若$\\dfrac{P_4-P_3}{q_4-q_3}=4$，求$p$；\n    \\item 证明：当$m\\in \\mathbf{N}^*$时，$P_{2m+1}-q_{2m+1}<P_{2m}-q_{2m}<P_{2m+2}-q_{2m+2}$．\n\\end{enumerate}\n\\end{example}"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+var ref = card.querySelector('.parsed-q-meta') || card.querySelector('.card-body');
+                    if (ref) {
+                        if (ref.classList.contains('card-body')) {
+                            ref.appendChild(gallery);
+                        } else {
+                            card.insertBefore(gallery, ref);
+                        }
+                    } else {
+                        car
