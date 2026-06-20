@@ -2085,7 +2085,7 @@ function addAllParsedToBank() {
     renderFilterBar();
 
     document.getElementById('latexInput').value = '';
-    document.getElementById('parsePreview').innerHTML = '<div style="text-align:center;color:#c0c4cc;padding:60px 0;"><div style="font-size:40px;margin-bottom:10px;"><span class="icon icon-document icon-xxl" aria-hidden="true"></span></div><p>粘贴 LaTeX 后自动解析</p></div>';
+    document.getElementById('parsePreview').innerHTML = '<div class="preview-placeholder"><div class="placeholder-icon"><span class="icon icon-document" aria-hidden="true"></span></div><p>粘贴 LaTeX 后自动解析</p></div>';
     document.getElementById('previewCount').textContent = '';
     var rs = document.getElementById('parseResult');
     if (rs) {
