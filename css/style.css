@@ -260,17 +260,8 @@ body {
 .filter-bar-toggle:hover {
     background: #f0f2f5;
 }
-.filter-arrow {
-    font-size: 10px;
-    transition: transform 0.2s;
-    color: #909399;
-    transform: rotate(90deg);
-}
 .filter-bar.collapsed .filter-bar-toggle {
     border-bottom: none;
-}
-.filter-bar.collapsed .filter-arrow {
-    transform: rotate(0deg);
 }
 .filter-bar-body {
     overflow: hidden;
@@ -495,6 +486,8 @@ body {
 
 /* ========== Question Card ========== */
 .question-card {
+    position: relative;
+    z-index: 0;
     background: #fff;
     border-radius: 8px;
     margin-bottom: 16px;
@@ -1109,6 +1102,8 @@ body {
 
 /* ========== Parsed Preview Cards (录题中心) ========== */
 .parsed-question-card {
+    position: relative;
+    z-index: 0;
     background: #fff;
     border-radius: 8px;
     margin-bottom: 16px;
@@ -1346,15 +1341,169 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    justify-content: center;
-    padding: 8px 16px 12px;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 8px 16px 16px;
     width: 100%;
     box-sizing: border-box;
+    min-height: 48px;
 }
 .tikz-images svg {
     max-width: 400px;
+    max-height: 250px;
     height: auto;
     display: block;
+    cursor: grab;
+}
+.tikz-images svg.tikz-dragging {
+    cursor: grabbing;
+    z-index: 10;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+}
+
+/* ========== Paper Maker New ========== */
+.paper-section {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #ebeef5;
+}
+.paper-section:last-of-type {
+    border-bottom: none;
+}
+.paper-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #606266;
+    margin-bottom: 10px;
+}
+.paper-type-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.paper-type-row label {
+    font-size: 13px;
+    color: #606266;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.paper-type-input {
+    width: 56px;
+    padding: 4px 6px;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    font-size: 13px;
+    text-align: center;
+    outline: none;
+}
+.paper-type-input:focus {
+    border-color: #409eff;
+}
+
+/* Paper maker knowledge point search */
+.paper-kp-search-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.paper-kp-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.paper-kp-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #f5f7fa;
+    border: 1px solid #e4e7ed;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #303133;
+    flex-wrap: wrap;
+}
+.paper-kp-tag .kp-name {
+    font-weight: 600;
+    color: #409eff;
+    min-width: 80px;
+    flex-shrink: 0;
+}
+.paper-kp-tag .kp-counts {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+.paper-kp-tag .kp-counts label {
+    font-size: 12px;
+    color: #606266;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.paper-kp-tag .kp-counts input {
+    width: 44px;
+    padding: 2px 4px;
+    border: 1px solid #dcdfe6;
+    border-radius: 3px;
+    font-size: 12px;
+    text-align: center;
+    outline: none;
+}
+.paper-kp-tag .kp-counts input:focus {
+    border-color: #409eff;
+}
+.paper-kp-tag .kp-remove {
+    cursor: pointer;
+    color: #c0c4cc;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 2px;
+    flex-shrink: 0;
+}
+.paper-kp-tag .kp-remove:hover {
+    color: #f56c6c;
+}
+.paper-kp-input-wrapper {
+    position: relative;
+}
+.paper-kp-search-input {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+    box-sizing: border-box;
+}
+.paper-kp-search-input:focus {
+    border-color: #409eff;
+}
+.paper-kp-dropdown {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #e4e7ed;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    margin-bottom: 2px;
+}
+.paper-kp-dropdown-item {
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    color: #606266;
+}
+.paper-kp-dropdown-item:hover {
+    background: #ecf5ff;
+    color: #409eff;
 }
 
 /* ========== Edit Modal ========== */
@@ -1431,6 +1580,8 @@ body {
 .btn-primary:hover { background: #66b1ff; }
 .btn-danger { background: #f56c6c; color: #fff; }
 .btn-danger:hover { background: #f78989; }
+.btn-replace { background: #e6a23c; color: #fff; }
+.btn-replace:hover { background: #ebb563; }
 
 /* ========== Card Footer ========== */
 .card-footer {
@@ -1451,4 +1602,754 @@ body {
 .btn-edit:hover {
     border-color: #409eff;
     color: #409eff;
+}
+
+/* ========== CSS Icons (replacing emoji) ========== */
+.icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    flex-shrink: 0;
+    position: relative;
+}
+.icon::before,
+.icon::after,
+.icon [class*="icon-"]::before,
+.icon [class*="icon-"]::after {
+    box-sizing: border-box;
+}
+.icon-lg {
+    width: 1.4em;
+    height: 1.4em;
+    vertical-align: -0.2em;
+    position: relative;
+}
+.icon-xl {
+    width: 2em;
+    height: 2em;
+    vertical-align: -0.3em;
+    position: relative;
+}
+.icon-xxl {
+    width: 2.8em;
+    height: 2.8em;
+    vertical-align: -0.35em;
+    position: relative;
+}
+
+/* Book */
+.icon-book::before {
+    content: '';
+    position: absolute;
+    left: 15%; top: 10%;
+    width: 70%; height: 80%;
+    border: 2px solid currentColor;
+    border-radius: 2px 6px 6px 2px;
+    background: linear-gradient(90deg, transparent 45%, currentColor 45%, currentColor 48%, transparent 48%);
+}
+
+/* Pen */
+.icon-pen::before {
+    content: '';
+    position: absolute;
+    left: 30%; top: 15%;
+    width: 3px; height: 70%;
+    background: currentColor;
+    transform: rotate(-30deg);
+    border-radius: 1px;
+}
+.icon-pen::after {
+    content: '';
+    position: absolute;
+    left: 18%; top: 68%;
+    border: 6px solid transparent;
+    border-bottom-color: currentColor;
+    transform: rotate(-30deg);
+}
+
+/* Clipboard / List */
+.icon-clipboard::before {
+    content: '';
+    position: absolute;
+    left: 20%; top: 10%;
+    width: 60%; height: 80%;
+    border: 2px solid currentColor;
+    border-radius: 3px;
+}
+.icon-clipboard::after {
+    content: '';
+    position: absolute;
+    left: 30%; top: 30%;
+    width: 40%; height: 2px;
+    background: currentColor;
+    box-shadow: 0 6px 0 currentColor, 0 12px 0 currentColor;
+}
+
+/* Plus */
+.icon-plus::before,
+.icon-plus::after {
+    content: '';
+    position: absolute;
+    background: currentColor;
+    border-radius: 1px;
+}
+.icon-plus::before {
+    left: 20%; top: 45%;
+    width: 60%; height: 10%;
+}
+.icon-plus::after {
+    left: 45%; top: 20%;
+    width: 10%; height: 60%;
+}
+
+/* Upload */
+.icon-upload::before {
+    content: '';
+    position: absolute;
+    left: 20%; top: 55%;
+    width: 60%; height: 35%;
+    border: 2px solid currentColor;
+    border-radius: 2px 2px 0 0;
+    border-bottom: none;
+    background: transparent;
+}
+.icon-upload::after {
+    content: '';
+    position: absolute;
+    left: 45%; top: 20%;
+    width: 10%; height: 40%;
+    background: currentColor;
+    box-shadow: -5px 5px 0 -2px currentColor, 5px 5px 0 -2px currentColor;
+    border-radius: 1px;
+}
+
+/* Download */
+.icon-download::before {
+    content: '';
+    position: absolute;
+    left: 20%; top: 10%;
+    width: 60%; height: 35%;
+    border: 2px solid currentColor;
+    border-radius: 2px 2px 0 0;
+    border-bottom: none;
+    background: transparent;
+}
+.icon-download::after {
+    content: '';
+    position: absolute;
+    left: 45%; top: 38%;
+    width: 10%; height: 40%;
+    background: currentColor;
+    border-radius: 1px;
+    box-shadow: -5px -5px 0 -2px currentColor, 5px -5px 0 -2px currentColor;
+}
+
+/* Trash */
+.icon-trash::before {
+    content: '';
+    position: absolute;
+    left: 25%; top: 30%;
+    width: 50%; height: 60%;
+    border: 2px solid currentColor;
+    border-radius: 0 0 3px 3px;
+    border-top: none;
+    background: transparent;
+}
+.icon-trash::after {
+    content: '';
+    position: absolute;
+    left: 30%; top: 10%;
+    width: 40%; height: 22%;
+    border: 2px solid currentColor;
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+    background: transparent;
+}
+
+/* Triangle / Ruler */
+.icon-triangle::before {
+    content: '';
+    position: absolute;
+    left: 10%; top: 10%;
+    width: 80%; height: 80%;
+    border: 2px solid currentColor;
+    border-right: none;
+    border-bottom: none;
+    transform: rotate(-45deg);
+    border-radius: 2px 0 0 0;
+}
+.icon-triangle::after {
+    content: '';
+    position: absolute;
+    left: 15%; bottom: 18%;
+    width: 35%; height: 2px;
+    background: currentColor;
+    box-shadow: 0 5px 0 currentColor, 0 10px 0 currentColor;
+    transform: rotate(-45deg);
+    transform-origin: left center;
+}
+
+/* Wave */
+.icon-wave::before {
+    content: '';
+    position: absolute;
+    left: 10%; top: 40%;
+    width: 80%; height: 20%;
+    border-radius: 0 0 50% 50% / 0 0 100% 100%;
+    border: 2px solid currentColor;
+    border-top: none;
+    background: transparent;
+}
+.icon-wave::after {
+    content: '';
+    position: absolute;
+    left: 10%; top: 40%;
+    width: 80%; height: 20%;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    border: 2px solid currentColor;
+    border-bottom: none;
+    background: transparent;
+}
+
+/* Spiral */
+.icon-spiral::before {
+    content: '';
+    position: absolute;
+    left: 10%; top: 10%;
+    width: 80%; height: 80%;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0deg 270deg, currentColor 270deg 360deg);
+    mask: radial-gradient(circle, transparent 40%, #000 40%);
+    -webkit-mask: radial-gradient(circle, transparent 40%, #000 40%);
+}
+
+/* Chart Up */
+.icon-chart-up::before {
+    content: '';
+    position: absolute;
+    left: 15%; bottom: 20%;
+    width: 70%; height: 60%;
+    border-left: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+}
+.icon-chart-up::after {
+    content: '';
+    position: absolute;
+    left: 22%; bottom: 20%;
+    width: 4px; height: 50%;
+    background: currentColor;
+    border-radius: 1px;
+    box-shadow: 12px -10px 0 currentColor, 24px 10px 0 currentColor, 36px -20px 0 currentColor;
+}
+
+/* Right Arrow (also used for next page) */
+.icon-arrow::before {
+    content: '';
+    position: absolute;
+    left: 25%; top: 45%;
+    width: 50%; height: 10%;
+    background: currentColor;
+    border-radius: 1px;
+}
+.icon-arrow::after {
+    content: '';
+    position: absolute;
+    left: 50%; top: 25%;
+    border: 10px solid transparent;
+    border-left-color: currentColor;
+    border-right: none;
+}
+
+/* Left Arrow */
+.icon-arrow-left::before {
+    content: '';
+    position: absolute;
+    left: 25%; top: 45%;
+    width: 50%; height: 10%;
+    background: currentColor;
+    border-radius: 1px;
+}
+.icon-arrow-left::after {
+    content: '';
+    position: absolute;
+    left: 30%; top: 25%;
+    border: 10px solid transparent;
+    border-right-color: currentColor;
+    border-left: none;
+}
+
+/* Double Right Arrow (last) */
+.icon-arrow-double-right::before {
+    content: '';
+    position: absolute;
+    left: 15%; top: 45%;
+    width: 50%; height: 10%;
+    background: currentColor;
+    border-radius: 1px;
+    box-shadow: 16px 0 0 currentColor;
+}
+.icon-arrow-double-right::after {
+    content: '';
+    position: absolute;
+    left: 35%; top: 25%;
+    border: 10px solid transparent;
+    border-left-color: currentColor;
+    border-right: none;
+    box-shadow: 16px 0 0 0 currentColor, 20px 0 0 0 transparent;
+}
+
+/* Double Left Arrow (first) */
+.icon-arrow-double-left::before {
+    content: '';
+    position: absolute;
+    left: 15%; top: 45%;
+    width: 50%; height: 10%;
+    background: currentColor;
+    border-radius: 1px;
+}
+.icon-arrow-double-left::after {
+    content: '';
+    position: absolute;
+    left: 15%; top: 25%;
+    border: 10px solid transparent;
+    border-right-color: currentColor;
+    border-left: none;
+    box-shadow: 16px 0 0 0 currentColor, 20px 0 0 0 transparent;
+}
+
+/* Number 123 */
+.icon-number::before {
+    content: '123';
+    position: absolute;
+    font-size: 0.7em;
+    font-weight: 700;
+    font-family: serif;
+    left: 10%; top: 10%;
+    width: 80%; height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid currentColor;
+    border-radius: 3px;
+    color: currentColor;
+}
+
+/* Circle (空圆) */
+.icon-circle::before {
+    content: '';
+    position: absolute;
+    left: 10%; top: 10%;
+    width: 80%; height: 80%;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+}
+
+/* 3D Cube */
+.icon-cube::before {
+    content: '';
+    position: absolute;
+    left: 15%; top: 25%;
+    width: 70%; height: 50%;
+    border: 2px solid currentColor;
+    background: transparent;
+}
+.icon-cube::after {
+    content: '';
+    position: absolute;
+    left: 25%; top: 5%;
+    width: 70%; height: 50%;
+    border: 2px solid currentColor;
+    background: transparent;
+    border-bottom: none;
+}
+
+/* Balance Scale - simplified */
+.icon-balance::before {
+    content: '';
+    position: absolute;
+    left: 10%; top: 35%;
+    width: 80%; height: 2px;
+    background: currentColor;
+    box-shadow: 0 28px 0 currentColor;
+}
+.icon-balance::after {
+    content: '';
+    position: absolute;
+    left: 46%; top: 35%;
+    width: 8%; height: 50%;
+    background: currentColor;
+    border-radius: 2px;
+    box-shadow: -20px 10px 0 -4px currentColor, 20px 10px 0 -4px currentColor;
+}
+
+/* Bar Chart */
+.icon-bar-chart::before {
+    content: '';
+    position: absolute;
+    left: 15%; bottom: 20%;
+    width: 70%; height: 60%;
+    border-left: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+}
+.icon-bar-chart::after {
+    content: '';
+    position: absolute;
+    left: 22%; bottom: 20%;
+    width: 10%; height: 50%;
+    background: currentColor;
+    border-radius: 1px 1px 0 0;
+    box-shadow: 16px -10px 0 currentColor, 32px -30px 0 currentColor;
+}
+
+/* Package Box */
+.icon-box::before {
+    content: '';
+    position: absolute;
+    left: 15%; top: 25%;
+    width: 70%; height: 60%;
+    border: 2px solid currentColor;
+    border-radius: 2px;
+}
+.icon-box::after {
+    content: '';
+    position: absolute;
+    left: 15%; top: 25%;
+    width: 35%; height: 35%;
+    border: 2px solid currentColor;
+    border-top: none;
+    border-left: none;
+    border-radius: 0 4px 0 0;
+}
+
+/* Folder */
+.icon-folder::before {
+    content: '';
+    position: absolute;
+    left: 10%; top: 30%;
+    width: 80%; height: 55%;
+    border: 2px solid currentColor;
+    border-radius: 0 4px 4px 4px;
+    border-top: none;
+}
+.icon-folder::after {
+    content: '';
+    position: absolute;
+    left: 10%; top: 22%;
+    width: 35%; height: 12%;
+    border: 2px solid currentColor;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+}
+
+/* Search / Magnifying Glass */
+.icon-search::before {
+    content: '';
+    position: absolute;
+    left: 15%; top: 15%;
+    width: 45%; height: 45%;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+}
+.icon-search::after {
+    content: '';
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 3px; height: 30%;
+    background: currentColor;
+    transform: rotate(-45deg);
+    transform-origin: top left;
+    border-radius: 1px;
+}
+
+/* Dice */
+.icon-dice::before {
+    content: '';
+    position: absolute;
+    left: 15%; top: 15%;
+    width: 70%; height: 70%;
+    border: 2px solid currentColor;
+    border-radius: 4px;
+}
+.icon-dice::after {
+    content: '';
+    position: absolute;
+    left: 30%; top: 30%;
+    width: 6px; height: 6px;
+    background: currentColor;
+    border-radius: 50%;
+    box-shadow: 20px 0 0 currentColor, 0 20px 0 currentColor, 20px 20px 0 currentColor,
+                10px 10px 0 currentColor;
+}
+
+/* Printer */
+.icon-printer::before {
+    content: '';
+    position: absolute;
+    left: 15%; top: 25%;
+    width: 70%; height: 45%;
+    border: 2px solid currentColor;
+    border-radius: 2px;
+    background: transparent;
+}
+.icon-printer::after {
+    content: '';
+    position: absolute;
+    left: 25%; top: 55%;
+    width: 50%; height: 35%;
+    border: 2px solid currentColor;
+    border-top: none;
+    background: transparent;
+}
+
+/* Lightbulb */
+.icon-bulb::before {
+    content: '';
+    position: absolute;
+    left: 22%; top: 8%;
+    width: 56%; height: 60%;
+    border: 2px solid currentColor;
+    border-radius: 50% 50% 40% 40%;
+}
+.icon-bulb::after {
+    content: '';
+    position: absolute;
+    left: 40%; top: 65%;
+    width: 20%; height: 20%;
+    border: 2px solid currentColor;
+    border-top: none;
+    border-radius: 0 0 2px 2px;
+}
+
+/* Calendar */
+.icon-calendar::before {
+    content: '';
+    position: absolute;
+    left: 10%; top: 20%;
+    width: 80%; height: 70%;
+    border: 2px solid currentColor;
+    border-radius: 3px;
+    background: transparent;
+}
+.icon-calendar::after {
+    content: '';
+    position: absolute;
+    left: 10%; top: 40%;
+    width: 80%; height: 2px;
+    background: currentColor;
+    box-shadow: 0 -10px 0 currentColor;
+}
+
+/* Checkmark */
+.icon-check::before {
+    content: '';
+    position: absolute;
+    left: 15%; top: 40%;
+    width: 25%; height: 35%;
+    border: 3px solid currentColor;
+    border-top: none;
+    border-right: none;
+    transform: rotate(-45deg);
+}
+
+/* Warning */
+.icon-warning::before {
+    content: '!';
+    position: absolute;
+    left: 15%; top: 15%;
+    width: 70%; height: 70%;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1em;
+    font-weight: 700;
+    color: currentColor;
+    line-height: 1;
+}
+
+/* Document */
+.icon-document::before {
+    content: '';
+    position: absolute;
+    left: 20%; top: 10%;
+    width: 55%; height: 80%;
+    border: 2px solid currentColor;
+    border-radius: 2px;
+}
+.icon-document::after {
+    content: '';
+    position: absolute;
+    left: 30%; top: 30%;
+    width: 35%; height: 2px;
+    background: currentColor;
+    box-shadow: 0 6px 0 currentColor, 0 12px 0 currentColor;
+}
+
+/* Scroll */
+.icon-scroll::before {
+    content: '';
+    position: absolute;
+    left: 25%; top: 10%;
+    width: 50%; height: 80%;
+    border: 2px solid currentColor;
+    border-radius: 0 6px 6px 0;
+}
+.icon-scroll::after {
+    content: '';
+    position: absolute;
+    left: 25%; top: 10%;
+    width: 25%; height: 40%;
+    border: 2px solid currentColor;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    background: transparent;
+}
+
+/* Cross / X */
+.icon-cross::before,
+.icon-cross::after {
+    content: '';
+    position: absolute;
+    left: 48%; top: 15%;
+    width: 4%; height: 70%;
+    background: currentColor;
+    border-radius: 1px;
+}
+.icon-cross::before { transform: rotate(45deg); }
+.icon-cross::after { transform: rotate(-45deg); }
+
+/* Small times (×) for remove buttons */
+.icon-times::before,
+.icon-times::after {
+    content: '';
+    position: absolute;
+    left: 48%; top: 20%;
+    width: 4%; height: 60%;
+    background: currentColor;
+    border-radius: 1px;
+}
+.icon-times::before { transform: rotate(45deg); }
+.icon-times::after { transform: rotate(-45deg); }
+
+/* Folder toggle arrow */
+.icon-folder-toggle {
+    display: inline-block;
+    width: 0.6em;
+    height: 0.6em;
+    vertical-align: middle;
+    position: relative;
+}
+.icon-folder-toggle::before {
+    content: '';
+    position: absolute;
+    left: 20%; top: 40%;
+    width: 60%; height: 15%;
+    background: currentColor;
+    border-radius: 1px;
+}
+.icon-folder-toggle::after {
+    content: '';
+    position: absolute;
+    left: 40%; top: 18%;
+    border: 6px solid transparent;
+    border-left-color: currentColor;
+    border-right: none;
+}
+
+/* Solution arrow (▶/▼) - reuse arrow + rotate */
+.icon-solution-arrow {
+    display: inline-block;
+    width: 0.6em;
+    height: 0.6em;
+    transition: transform 0.2s;
+    vertical-align: middle;
+    position: relative;
+}
+.icon-solution-arrow::before {
+    content: '';
+    position: absolute;
+    left: 20%; top: 40%;
+    width: 60%; height: 15%;
+    background: currentColor;
+    border-radius: 1px;
+}
+.icon-solution-arrow::after {
+    content: '';
+    position: absolute;
+    left: 40%; top: 18%;
+    border: 7px solid transparent;
+    border-left-color: currentColor;
+    border-right: none;
+}
+.icon-solution-arrow.expanded {
+    transform: rotate(90deg);
+}
+
+/* Filter arrow (▶) */
+.icon-filter-arrow {
+    display: inline-block;
+    width: 0.6em;
+    height: 0.6em;
+    transition: transform 0.2s;
+    color: #909399;
+    position: relative;
+}
+.icon-filter-arrow::before {
+    content: '';
+    position: absolute;
+    left: 20%; top: 40%;
+    width: 60%; height: 15%;
+    background: currentColor;
+    border-radius: 1px;
+}
+.icon-filter-arrow::after {
+    content: '';
+    position: absolute;
+    left: 40%; top: 18%;
+    border: 7px solid transparent;
+    border-left-color: currentColor;
+    border-right: none;
+}
+.filter-bar.collapsed .icon-filter-arrow {
+    transform: rotate(0deg);
+}
+.filter-bar:not(.collapsed) .icon-filter-arrow {
+    transform: rotate(90deg);
+}
+
+/* Category arrow dropdown (▾) */
+.category-title .icon-cat-arrow {
+    display: inline-block;
+    width: 0.6em;
+    height: 0.6em;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+.category-title .icon-cat-arrow::before {
+    content: '';
+    position: absolute;
+    left: 15%; top: 30%;
+    width: 70%; height: 15%;
+    background: currentColor;
+    border-radius: 1px;
+}
+.category-title .icon-cat-arrow::after {
+    content: '';
+    position: absolute;
+    left: 30%; top: 15%;
+    border: 6px solid transparent;
+    border-top-color: currentColor;
+    border-bottom: none;
+}
+.category-title.collapsed .icon-cat-arrow {
+    transform: rotate(-90deg);
+}
+
+/* Nav icons - bigger, centered */
+.nav-icon .icon {
+    width: 1.2em;
+    height: 1.2em;
 }

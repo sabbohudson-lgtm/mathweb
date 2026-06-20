@@ -6,7 +6,7 @@ try {
     _stored = localStorage.getItem('math_question_bank');
 } catch(e) {}
 
-const questionBank = _stored ? JSON.parse(_stored) : [];
+let questionBank = _stored ? JSON.parse(_stored) : [];
 
 // 自动保存函数
 function saveQuestionBank() {

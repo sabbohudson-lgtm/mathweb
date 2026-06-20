@@ -26,24 +26,24 @@
         <!-- Left Navigation Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h1>📚 数学题库</h1>
+                <h1><span class="icon icon-book" aria-hidden="true"></span> 数学题库</h1>
             </div>
             <nav class="sidebar-nav">
                 <ul>
                     <li class="nav-item active" data-tab="question-bank">
-                        <span class="nav-icon">📝</span>
+                        <span class="nav-icon"><span class="icon icon-pen" aria-hidden="true"></span></span>
                         <span class="nav-text">题库中心</span>
                     </li>
                     <li class="nav-item" data-tab="paper-maker">
-                        <span class="nav-icon">📋</span>
+                        <span class="nav-icon"><span class="icon icon-clipboard" aria-hidden="true"></span></span>
                         <span class="nav-text">组卷中心</span>
                     </li>
                     <li class="nav-item" data-tab="materials">
-                        <span class="nav-icon">📖</span>
+                        <span class="nav-icon"><span class="icon icon-book" aria-hidden="true"></span></span>
                         <span class="nav-text">资料中心</span>
                     </li>
                     <li class="nav-item" data-tab="question-entry">
-                        <span class="nav-icon">➕</span>
+                        <span class="nav-icon"><span class="icon icon-plus" aria-hidden="true"></span></span>
                         <span class="nav-text">录题中心</span>
                     </li>
                 </ul>
@@ -54,11 +54,11 @@
             </div>
             <!-- Import/Export Data -->
             <div class="sidebar-import-export">
-                <button class="sidebar-btn btn-export-data" onclick="showExportMenu()" title="导出题库">📤 导出题库</button>
-                <button class="sidebar-btn btn-import-data" onclick="document.getElementById('importFileInput').click()" title="从 JSON 文件导入题库">📥 导入题库</button>
+                <button class="sidebar-btn btn-export-data" onclick="showExportMenu()" title="导出题库"><span class="icon icon-upload" aria-hidden="true"></span> 导出题库</button>
+                <button class="sidebar-btn btn-import-data" onclick="document.getElementById('importFileInput').click()" title="从 JSON 文件导入题库"><span class="icon icon-download" aria-hidden="true"></span> 导入题库</button>
                 <input type="file" id="importFileInput" accept=".json" style="display:none;" onchange="importQuestionBank(event)">
                 <div id="importStatus" class="import-status"></div>
-                <button class="sidebar-btn btn-clear-data" onclick="clearAllData()" title="清空所有题目数据" style="margin-top:6px;">🗑️ 清空浏览器缓存</button>
+                <button class="sidebar-btn btn-clear-data" onclick="clearAllData()" title="清空所有题目数据" style="margin-top:6px;"><span class="icon icon-trash" aria-hidden="true"></span> 清空浏览器缓存</button>
             </div>
             <!-- Progress Bar Overlay -->
             <div class="progress-overlay" id="progressOverlay" style="display:none;">
@@ -71,6 +71,24 @@
                 </div>
             </div>
             <!-- Edit Modal -->
+            <!-- Import Modal -->
+            <div class="modal-overlay" id="importModal" style="display:none;">
+                <div class="modal-box" style="width:440px;">
+                    <div class="modal-header">
+                        <span>导入题库</span>
+                        <span class="modal-close" onclick="closeImportModal()">&times;</span>
+                    </div>
+                    <div class="modal-body" style="min-height:auto;padding:24px 20px;">
+                        <div id="importModalMessage" style="font-size:15px;line-height:1.6;"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-replace" id="btnImportReplace" onclick="doImportReplace()">替换全部</button>
+                        <button class="btn btn-primary" id="btnImportMerge" onclick="doImportMerge()">合并到现有</button>
+                        <button class="btn" style="background:#fff;color:#606266;border:1px solid #dcdfe6;" onclick="closeImportModal()">取消</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="modal-overlay" id="editModal" style="display:none;">
                 <div class="modal-box">
                     <div class="modal-header">
@@ -95,7 +113,7 @@
             </div>
             <div class="knowledge-list" id="knowledgeList">
                 <div class="knowledge-category">
-                    <h3 class="category-title" data-toggle="三角函数与解三角形">📐 三角函数与解三角形</h3>
+                    <h3 class="category-title" data-toggle="三角函数与解三角形"><span class="icon icon-triangle" aria-hidden="true"></span> 三角函数与解三角形</h3>
                     <ul class="category-items" id="三角函数与解三角形">
                         <li class="knowledge-item knowledge-folder" data-knowledge="三角函数" data-toggle="l2_三角函数">
                             <span class="folder-icon">▶</span> 三角函数
@@ -220,7 +238,7 @@
                     </ul>
                 </div>
                 <div class="knowledge-category">
-                    <h3 class="category-title" data-toggle="圆锥曲线">〰️ 圆锥曲线</h3>
+                    <h3 class="category-title" data-toggle="圆锥曲线"><span class="icon icon-wave" aria-hidden="true"></span> 圆锥曲线</h3>
                     <ul class="category-items" id="圆锥曲线">
                         <li class="knowledge-item knowledge-folder" data-knowledge="椭圆" data-toggle="l2_椭圆">
                             <span class="folder-icon">▶</span> 椭圆
@@ -586,7 +604,7 @@
                     </ul>
                 </div>
                 <div class="knowledge-category">
-                    <h3 class="category-title" data-toggle="复数">🌀 复数</h3>
+                    <h3 class="category-title" data-toggle="复数"><span class="icon icon-spiral" aria-hidden="true"></span> 复数</h3>
                     <ul class="category-items" id="复数">
                         <li class="knowledge-item knowledge-folder" data-knowledge="数系的扩充与复数的概念" data-toggle="l2_数系的扩充与复数的概念">
                             <span class="folder-icon">▶</span> 数系的扩充与复数的概念
@@ -683,7 +701,7 @@
                     </ul>
                 </div>
                 <div class="knowledge-category">
-                    <h3 class="category-title" data-toggle="导数与函数">📈 导数与函数</h3>
+                    <h3 class="category-title" data-toggle="导数与函数"><span class="icon icon-chart-up" aria-hidden="true"></span> 导数与函数</h3>
                     <ul class="category-items" id="导数与函数">
                         <li class="knowledge-item knowledge-folder" data-knowledge="函数及其性质" data-toggle="l2_函数及其性质">
                             <span class="folder-icon">▶</span> 函数及其性质
@@ -861,7 +879,7 @@
                     </ul>
                 </div>
                 <div class="knowledge-category">
-                    <h3 class="category-title" data-toggle="平面向量">➡️ 平面向量</h3>
+                    <h3 class="category-title" data-toggle="平面向量"><span class="icon icon-arrow" aria-hidden="true"></span> 平面向量</h3>
                     <ul class="category-items" id="平面向量">
                         <li class="knowledge-item knowledge-folder" data-knowledge="平面向量的实际背景及基本概念" data-toggle="l2_平面向量的实际背景及基本概念">
                             <span class="folder-icon">▶</span> 平面向量的实际背景及基本概念
@@ -1003,7 +1021,7 @@
                     </ul>
                 </div>
                 <div class="knowledge-category">
-                    <h3 class="category-title" data-toggle="数列">🔢 数列</h3>
+                    <h3 class="category-title" data-toggle="数列"><span class="icon icon-number" aria-hidden="true"></span> 数列</h3>
                     <ul class="category-items" id="数列">
                         <li class="knowledge-item knowledge-folder" data-knowledge="数列的概念与简单表示法" data-toggle="l2_数列的概念与简单表示法">
                             <span class="folder-icon">▶</span> 数列的概念与简单表示法
@@ -1231,7 +1249,7 @@
                     </ul>
                 </div>
                 <div class="knowledge-category">
-                    <h3 class="category-title" data-toggle="直线与圆">⭕ 直线与圆</h3>
+                    <h3 class="category-title" data-toggle="直线与圆"><span class="icon icon-circle" aria-hidden="true"></span> 直线与圆</h3>
                     <ul class="category-items" id="直线与圆">
                         <li class="knowledge-item knowledge-folder" data-knowledge="直线与方程" data-toggle="l2_直线与方程">
                             <span class="folder-icon">▶</span> 直线与方程
@@ -1326,7 +1344,7 @@
                     </ul>
                 </div>
                 <div class="knowledge-category">
-                    <h3 class="category-title" data-toggle="空间向量与立体几何">🧊 空间向量与立体几何</h3>
+                    <h3 class="category-title" data-toggle="空间向量与立体几何"><span class="icon icon-cube" aria-hidden="true"></span> 空间向量与立体几何</h3>
                     <ul class="category-items" id="空间向量与立体几何">
                         <li class="knowledge-item knowledge-folder" data-knowledge="空间几何体" data-toggle="l2_空间几何体">
                             <span class="folder-icon">▶</span> 空间几何体
@@ -1454,7 +1472,7 @@
                     </ul>
                 </div>
                 <div class="knowledge-category">
-                    <h3 class="category-title" data-toggle="等式与不等式">⚖️ 等式与不等式</h3>
+                    <h3 class="category-title" data-toggle="等式与不等式"><span class="icon icon-balance" aria-hidden="true"></span> 等式与不等式</h3>
                     <ul class="category-items" id="等式与不等式">
                         <li class="knowledge-item knowledge-folder" data-knowledge="不等式的性质" data-toggle="l2_不等式的性质">
                             <span class="folder-icon">▶</span> 不等式的性质
@@ -1599,7 +1617,7 @@
                     </ul>
                 </div>
                 <div class="knowledge-category">
-                    <h3 class="category-title" data-toggle="计数原理与概率统计">📊 计数原理与概率统计</h3>
+                    <h3 class="category-title" data-toggle="计数原理与概率统计"><span class="icon icon-bar-chart" aria-hidden="true"></span> 计数原理与概率统计</h3>
                     <ul class="category-items" id="计数原理与概率统计">
                         <li class="knowledge-item knowledge-folder" data-knowledge="统计" data-toggle="l2_统计">
                             <span class="folder-icon">▶</span> 统计
@@ -1816,7 +1834,7 @@
                     </ul>
                 </div>
                 <div class="knowledge-category">
-                    <h3 class="category-title" data-toggle="集合与常用逻辑用语">📦 集合与常用逻辑用语</h3>
+                    <h3 class="category-title" data-toggle="集合与常用逻辑用语"><span class="icon icon-box" aria-hidden="true"></span> 集合与常用逻辑用语</h3>
                     <ul class="category-items" id="集合与常用逻辑用语">
                         <li class="knowledge-item knowledge-folder" data-knowledge="集合" data-toggle="l2_集合">
                             <span class="folder-icon">▶</span> 集合
@@ -1893,7 +1911,7 @@
                     </ul>
                 </div>
                 <div class="knowledge-category">
-                    <h3 class="category-title" data-toggle="未分类">📂 未分类</h3>
+                    <h3 class="category-title" data-toggle="未分类"><span class="icon icon-folder" aria-hidden="true"></span> 未分类</h3>
                     <ul class="category-items" id="未分类">
                         <li class="knowledge-item" data-knowledge="未分类">未分类</li>
                     </ul>
@@ -1911,8 +1929,8 @@
             <!-- Filter Bar -->
             <div class="filter-bar collapsed" id="filterBar">
                 <div class="filter-bar-toggle" id="filterToggle">
-                    <span>🔍 筛选</span>
-                    <span class="filter-arrow">▶</span>
+                    <span><span class="icon icon-search" aria-hidden="true"></span> 筛选</span>
+                    <span class="icon-filter-arrow" aria-hidden="true"></span>
                 </div>
                 <div class="filter-bar-body" id="filterBarBody">
                     <div class="filter-bar-row">
@@ -1945,11 +1963,11 @@
                 <!-- Questions will be dynamically inserted here -->
             </div>
             <div class="pagination-nav" id="paginationNav">
-                <button class="page-btn" onclick="goToPage(1)">⏮ 首页</button>
-                <button class="page-btn" onclick="goPrevPage()">◀ 上一页</button>
+                <button class="page-btn" onclick="goToPage(1)">首页</button>
+                <button class="page-btn" onclick="goPrevPage()">上一页</button>
                 <span class="page-info" id="pageInfo">第 1 / 1 页</span>
-                <button class="page-btn" onclick="goNextPage()">下一页 ▶</button>
-                <button class="page-btn" onclick="goToLastPage()">⏭ 末页</button>
+                <button class="page-btn" onclick="goNextPage()">下一页</button>
+                <button class="page-btn" onclick="goToLastPage()">末页</button>
                 <span class="go-page-wrapper">
                     <input type="number" class="go-page-input" id="goPageInput" min="1" placeholder="页码" onkeydown="if(event.key==='Enter'){goToPageInput()}">
                     <button class="go-page-btn" onclick="goToPageInput()">跳转</button>
@@ -1963,32 +1981,37 @@
                 <h2>组卷中心</h2>
             </div>
             <div class="paper-config" style="padding: 16px;">
-                <h3 style="margin-bottom: 12px; color: #303133;">📋 组卷配置</h3>
-                <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
-                    <div style="flex: 1; min-width: 150px;">
-                        <label style="font-size: 13px; color: #606266;">简单题数量：</label>
-                        <input type="number" id="easyCount" value="2" min="0" max="10"
-                            style="width: 60px; padding: 4px 8px; border: 1px solid #dcdfe6; border-radius: 4px;">
-                    </div>
-                    <div style="flex: 1; min-width: 150px;">
-                        <label style="font-size: 13px; color: #606266;">中等题数量：</label>
-                        <input type="number" id="mediumCount" value="3" min="0" max="10"
-                            style="width: 60px; padding: 4px 8px; border: 1px solid #dcdfe6; border-radius: 4px;">
-                    </div>
-                    <div style="flex: 1; min-width: 150px;">
-                        <label style="font-size: 13px; color: #606266;">困难题数量：</label>
-                        <input type="number" id="hardCount" value="2" min="0" max="10"
-                            style="width: 60px; padding: 4px 8px; border: 1px solid #dcdfe6; border-radius: 4px;">
+                <h3 style="margin-bottom: 12px; color: #303133;"><span class="icon icon-clipboard" aria-hidden="true"></span> 组卷配置</h3>
+                <!-- Global Type Counts -->
+                <div class="paper-section">
+                    <div class="paper-section-title">全局题目数量</div>
+                    <div class="paper-type-row">
+                        <label>单选题 <input type="number" id="paperSingleChoice" value="0" min="0" class="paper-type-input"></label>
+                        <label>多选题 <input type="number" id="paperMultiChoice" value="0" min="0" class="paper-type-input"></label>
+                        <label>填空题 <input type="number" id="paperFillBlank" value="0" min="0" class="paper-type-input"></label>
+                        <label>解答题 <input type="number" id="paperEssay" value="0" min="0" class="paper-type-input"></label>
                     </div>
                 </div>
-                <div style="display: flex; gap: 8px;">
-                    <button class="btn-generate" onclick="generatePaper()">🎲 随机组卷</button>
-                    <button class="btn-print" onclick="printPaper()">🖨️ 打印试卷</button>
+                <!-- Knowledge Point Selection -->
+                <div class="paper-section">
+                    <div class="paper-section-title">按知识点组卷（可选，留空则使用全局数量从全部题目中抽取）</div>
+                    <div class="paper-kp-search-wrapper">
+                        <div class="paper-kp-tags" id="paperKpTags"></div>
+                        <div class="paper-kp-input-wrapper">
+                            <input class="paper-kp-search-input" id="paperKpSearchInput" placeholder="搜索并选择知识点..." autocomplete="off">
+                            <div class="paper-kp-dropdown" id="paperKpDropdown" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 8px; margin-top: 12px;">
+                    <button class="btn-generate" onclick="generatePaper()"><span class="icon icon-dice" aria-hidden="true"></span> 随机组卷</button>
+                    <button class="btn-print" onclick="printPaper()"><span class="icon icon-printer" aria-hidden="true"></span> 打印试卷</button>
                 </div>
             </div>
             <div id="paperArea" style="flex: 1; overflow-y: auto; padding: 16px;">
                 <div class="empty-state">
-                    <div class="empty-icon">📋</div>
+                    <div class="empty-icon"><span class="icon icon-clipboard icon-xl" aria-hidden="true"></span></div>
                     <p>配置组卷参数后点击"随机组卷"</p>
                 </div>
             </div>
@@ -2001,7 +2024,7 @@
             </div>
             <div class="materials-content" style="flex: 1; overflow-y: auto; padding: 16px;">
                 <div class="material-card">
-                    <h3 style="color: #409eff; margin-bottom: 8px;">📐 公式速查表</h3>
+                    <h3 style="color: #409eff; margin-bottom: 8px;"><span class="icon icon-triangle" aria-hidden="true"></span> 公式速查表</h3>
                     <div class="formula-list">
                         <p><strong>二次方程求根公式：</strong></p>
                         <p>$ax^2 + bx + c = 0$ 的根为 $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$</p>
@@ -2016,7 +2039,7 @@
                     </div>
                 </div>
                 <div class="material-card" style="margin-top: 16px;">
-                    <h3 style="color: #67c23a; margin-bottom: 8px;">💡 解题技巧</h3>
+                    <h3 style="color: #67c23a; margin-bottom: 8px;"><span class="icon icon-bulb" aria-hidden="true"></span> 解题技巧</h3>
                     <ul class="tip-list">
                         <li><strong>选择题排除法：</strong>先排除明显错误的选项，缩小范围后再计算。</li>
                         <li><strong>特殊值法：</strong>对于含参数的题目，可代入特殊值快速验证。</li>
@@ -2026,7 +2049,7 @@
                     </ul>
                 </div>
                 <div class="material-card" style="margin-top: 16px;">
-                    <h3 style="color: #e6a23c; margin-bottom: 8px;">📊 考点分布</h3>
+                    <h3 style="color: #e6a23c; margin-bottom: 8px;"><span class="icon icon-bar-chart" aria-hidden="true"></span> 考点分布</h3>
                     <div class="stats-grid">
                         <div class="stat-item">
                             <div class="stat-number">12</div>
@@ -2057,23 +2080,23 @@
             <div style="flex:1;display:flex;overflow:hidden;">
                 <!-- Left: LaTeX Input -->
                 <div style="width:45%;display:flex;flex-direction:column;border-right:1px solid #e4e7ed;padding:16px;overflow-y:auto;">
-                    <h3 style="color:#409eff;margin:0 0 8px 0;font-size:16px;">📝 LaTeX 智能解析</h3>
+                    <h3 style="color:#409eff;margin:0 0 8px 0;font-size:16px;"><span class="icon icon-pen" aria-hidden="true"></span> LaTeX 智能解析</h3>
                     <p style="font-size:12px;color:#909399;margin:0 0 10px 0;">粘贴 LaTeX 题目，自动识别题型、选项、答案和解析。支持批量。</p>
                     <textarea id="latexInput" rows="18" style="width:100%;flex:1;min-height:200px;font-family:Consolas,monospace;font-size:13px;padding:10px;border:1px solid #dcdfe6;border-radius:4px;resize:vertical;box-sizing:border-box;" placeholder="粘贴 LaTeX 题目，自动解析，例如：&#10;\begin{example}{4}&#10;  已知关于 $x$ 的方程...&#10;\end{example}&#10;\begin{proof}&#10;  \begin{answer} 答案 \end{answer}&#10;  \begin{solutions} 解析 \end{solutions}&#10;\end{proof}"></textarea>
                     <div style="margin-top:10px;display:flex;gap:10px;align-items:center;">
-                        <button type="button" class="btn-submit" onclick="addAllParsedToBank()" style="background:#409eff;">📥 一键添加到题库</button>
-                        <button type="button" class="btn-import-tex" onclick="document.getElementById('texFileInput').click()" style="background:#fff;border:1px solid #dcdfe6;border-radius:4px;padding:8px 16px;cursor:pointer;font-size:13px;color:#606266;">📂 导入 .tex</button>
+                        <button type="button" class="btn-submit" onclick="addAllParsedToBank()" style="background:#409eff;"><span class="icon icon-download" aria-hidden="true"></span> 一键添加到题库</button>
+                        <button type="button" class="btn-import-tex" onclick="document.getElementById('texFileInput').click()" style="background:#fff;border:1px solid #dcdfe6;border-radius:4px;padding:8px 16px;cursor:pointer;font-size:13px;color:#606266;"><span class="icon icon-folder" aria-hidden="true"></span> 导入 .tex</button>
                         <input type="file" id="texFileInput" accept=".tex,.txt" style="display:none;" onchange="importTexFile(event)">
-                        <button type="button" class="btn-reset" onclick="document.getElementById('latexInput').value='';document.getElementById('parsePreview').innerHTML='<div style=text-align:center;color:#c0c4cc;padding:60px 0;><div style=font-size:40px;margin-bottom:10px;>📄</div><p>粘贴 LaTeX 后自动解析</p></div>';document.getElementById('previewCount').textContent='';document.getElementById('parseResult').textContent='';">清空</button>
+                        <button type="button" class="btn-reset" onclick="document.getElementById('latexInput').value='';document.getElementById('parsePreview').innerHTML='<div style=\"text-align:center;color:#c0c4cc;padding:60px 0;\"><div style=\"font-size:40px;margin-bottom:10px;\"><span class=\"icon icon-document icon-xxl\" aria-hidden=\"true\"></span></div><p>粘贴 LaTeX 后自动解析</p></div>';document.getElementById('previewCount').textContent='';document.getElementById('parseResult').textContent='';">清空</button>
                         <span id="parseResult" style="font-size:12px;"></span>
                     </div>
                 </div>
                 <!-- Right: Preview & Add -->
                 <div style="width:55%;display:flex;flex-direction:column;padding:16px;overflow-y:auto;">
-                    <h3 style="color:#67c23a;margin:0 0 10px 0;font-size:16px;">📋 解析预览 <span id="previewCount" style="font-size:12px;color:#909399;font-weight:normal;"></span></h3>
+                    <h3 style="color:#67c23a;margin:0 0 10px 0;font-size:16px;"><span class="icon icon-clipboard" aria-hidden="true"></span> 解析预览 <span id="previewCount" style="font-size:12px;color:#909399;font-weight:normal;"></span></h3>
                     <div id="parsePreview" style="flex:1;overflow-y:auto;">
                         <div style="text-align:center;color:#c0c4cc;padding:60px 0;">
-                            <div style="font-size:40px;margin-bottom:10px;">📄</div>
+                            <div style="font-size:40px;margin-bottom:10px;"><span class="icon icon-document icon-xxl" aria-hidden="true"></span></div>
                             <p>粘贴 LaTeX 后自动解析</p>
                         </div>
                     </div>

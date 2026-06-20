@@ -38,7 +38,7 @@ function ensureKnowledgePath(pathStr) {
             var newH3 = document.createElement('h3');
             newH3.className = 'category-title';
             newH3.setAttribute('data-toggle', parts[0]);
-            newH3.textContent = '\u2795 ' + parts[0];
+            newH3.innerHTML = '<span class="icon icon-plus" aria-hidden="true"></span> ' + parts[0];
             newCatDiv.appendChild(newH3);
             var catUl = document.createElement('ul');
             catUl.className = 'category-items';
@@ -70,7 +70,7 @@ function ensureKnowledgePath(pathStr) {
         var newH3 = document.createElement('h3');
         newH3.className = 'category-title';
         newH3.setAttribute('data-toggle', catName);
-        newH3.textContent = '\u2795 ' + catName;
+        newH3.innerHTML = '<span class="icon icon-plus" aria-hidden="true"></span> ' + catName;
         newCatDiv.appendChild(newH3);
         catUl = document.createElement('ul');
         catUl.className = 'category-items';
@@ -143,7 +143,7 @@ function ensureKnowledgePath(pathStr) {
                 folderLi.setAttribute('data-knowledge', partName);
                 var folderSpan = document.createElement('span');
                 folderSpan.className = 'folder-icon';
-                folderSpan.textContent = '\u25b6';
+                folderSpan.innerHTML = '<span class="icon-folder-toggle"></span>';
                 folderLi.appendChild(folderSpan);
                 folderLi.appendChild(document.createTextNode(' ' + partName));
                 currentUl.appendChild(folderLi);
@@ -458,6 +458,75 @@ async function typesetMath(container) {
 // Uses postMessage + MutationObserver inside iframe for reliable detection
 // (TikZJax CDN only scans for script[type=text/tikz] once on window.onload)
 
+function makeTikzDraggable(svg) {
+    if (svg.dataset.tikzDrag === '1') return;
+    svg.dataset.tikzDrag = '1';
+
+    // Ensure SVG starts with relative positioning
+    if (getComputedStyle(svg).position === 'static') {
+        svg.style.position = 'relative';
+        svg.style.left = '0px';
+        svg.style.top = '0px';
+    }
+    // Set z-index only within the card's stacking context
+    svg.style.cursor = 'grab';
+
+    function startDrag(e) {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        var card = svg.closest('.question-card, .parsed-question-card');
+        if (!card) return;
+
+        var cs = getComputedStyle(svg);
+        var origLeft = parseInt(svg.style.left, 10) || parseInt(cs.left, 10) || 0;
+        var origTop = parseInt(svg.style.top, 10) || parseInt(cs.top, 10) || 0;
+        var startX = e.clientX;
+        var startY = e.clientY;
+
+        // Compute natural position (where SVG sits at left:0,top:0)
+        var cardRect = card.getBoundingClientRect();
+        var svgRect = svg.getBoundingClientRect();
+        var naturalLeft = svgRect.left - cardRect.left - origLeft;
+        var naturalTop = svgRect.top - cardRect.top - origTop;
+        var svgW = svgRect.width;
+        var svgH = svgRect.height;
+
+        svg.classList.add('tikz-dragging');
+
+        function onMove(e2) {
+            var dx = e2.clientX - startX;
+            var dy = e2.clientY - startY;
+
+            // Visual position relative to card
+            var visualLeft = naturalLeft + origLeft + dx;
+            var visualTop = naturalTop + origTop + dy;
+
+            // Clamp to card's content area
+            var cRect = card.getBoundingClientRect();
+            var maxLeft = cRect.width - svgW;
+            var maxTop = cRect.height - svgH;
+            if (maxLeft < 0) maxLeft = 0;
+            if (maxTop < 0) maxTop = 0;
+            visualLeft = Math.max(0, Math.min(visualLeft, maxLeft));
+            visualTop = Math.max(0, Math.min(visualTop, maxTop));
+
+            svg.style.left = (visualLeft - naturalLeft) + 'px';
+            svg.style.top = (visualTop - naturalTop) + 'px';
+        }
+
+        function onUp() {
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+            svg.classList.remove('tikz-dragging');
+        }
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+    }
+
+    svg.addEventListener('mousedown', startDrag);
+}
+
 function renderTikzInContainer(container) {
     if (!container) return;
     container.querySelectorAll('script[type="text/tikz"]').forEach(function(script) {
@@ -466,8 +535,9 @@ function renderTikzInContainer(container) {
         ph.className = 'tikz-rendering';
         ph.textContent = '[TikZ渲染中...]';
         script.parentNode.replaceChild(ph, script);
-        renderOneTikz(code, function(svg) {
+        renderOneTikz(code, function(svgHtml) {
             var card = ph.closest('.parsed-question-card, .question-card');
+            var svgEl = null;
             if (card) {
                 var gallery = card.querySelector('.tikz-images');
                 if (!gallery) {
@@ -475,10 +545,16 @@ function renderTikzInContainer(container) {
                     gallery.className = 'tikz-images';
                     card.appendChild(gallery);
                 }
-                gallery.insertAdjacentHTML('beforeend', svg);
+                gallery.insertAdjacentHTML('beforeend', svgHtml);
+                svgEl = gallery.lastElementChild;
                 ph.remove();
             } else {
-                ph.outerHTML = svg;
+                ph.insertAdjacentHTML('afterend', svgHtml);
+                svgEl = ph.nextElementSibling;
+                ph.remove();
+            }
+            if (svgEl && svgEl.tagName.toLowerCase() === 'svg') {
+                makeTikzDraggable(svgEl);
             }
         });
     });
@@ -542,7 +618,7 @@ function renderQuestionCards(questions) {
     if (!container) return;
 
     if (questions.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-icon">\ud83d\udd0d</div><p>\u6ca1\u6709\u627e\u5230\u5339\u914d\u7684\u9898\u76ee</p></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon"><span class="icon icon-search icon-lg" aria-hidden="true"></span></div><p>\u6ca1\u6709\u627e\u5230\u5339\u914d\u7684\u9898\u76ee</p></div>';
         updateQuestionCount(0);
         renderPagination(0);
         return;
@@ -561,7 +637,7 @@ function renderQuestionCards(questions) {
     pageQuestions.forEach(function(q) {
         var isExpanded = state.expandedSolutions.has(q.id);
         var solutionDisplay = isExpanded ? 'show' : '';
-        var solutionArrow = isExpanded ? '\u25bc' : '\u25b6';
+        var solutionArrow = '<span class="icon-solution-arrow' + (isExpanded ? ' expanded' : '') + '"></span>';
 
         var optionsHtml = '';
         if (q.options && q.options.length > 0) {
@@ -601,15 +677,15 @@ function renderQuestionCards(questions) {
             if (q.meta.questionNum) html += '<span class="tag tag-meta-num" title="题号" style="background:#f4f4f5;color:#909399;border:1px solid #e9e9eb;">' + escapeHtml(q.meta.questionNum) + '</span>';
             if (q.meta.multiSelect) html += '<span class="tag tag-meta-multi" title="多选" style="background:#fdfaff;color:#9c36cc;border:1px solid #f0d6f5;">多选</span>';
         }
-        html += '</div><div class="card-meta"><span>\ud83d\udcc5 ' + escapeHtml(q.year || '') + '</span>';
+        html += '</div><div class="card-meta"><span><span class="icon icon-calendar" aria-hidden="true"></span> ' + escapeHtml(q.year || '') + '</span>';
         if (q.source) {
-            html += '<span class="copy-source-btn" onclick="copySource(' + q.id + ')">\ud83d\udccb 复制源码</span>';
+            html += '<span class="copy-source-btn" onclick="copySource(' + q.id + ')"><span class="icon icon-clipboard" aria-hidden="true"></span> 复制源码</span>';
         }
         html += '</div></div>';
         html += '<div class="card-body"><div class="question-text">' + prepareDisplayText(q.question) + '</div>';
         html += optionsHtml + answerHtml;
         html += '<div class="solution-section">' + solutionHtml + '</div></div>';
-        html += '<div class="card-footer"><button class="btn-edit" onclick="showEditModal(' + q.id + ')">\u270f\ufe0f \u7f16\u8f91</button></div></div>';
+        html += '<div class="card-footer"><button class="btn-edit" onclick="showEditModal(' + q.id + ')"><span class="icon icon-pen" aria-hidden="true"></span> \u7f16\u8f91</button></div></div>';
     });
 
     // Pagination info
@@ -630,8 +706,8 @@ function renderPagination(totalPages) {
     nav.style.display = 'flex';
 
     var html = '';
-    html += '<button class="page-btn' + (state.currentPage === 1 ? ' disabled' : '') + '" onclick="goToPage(1)"' + (state.currentPage === 1 ? ' disabled' : '') + '>⏮ 首页</button>';
-    html += '<button class="page-btn' + (state.currentPage === 1 ? ' disabled' : '') + '" onclick="goToPage(' + (state.currentPage - 1) + ')"' + (state.currentPage === 1 ? ' disabled' : '') + '>◀ 上一页</button>';
+    html += '<button class="page-btn' + (state.currentPage === 1 ? ' disabled' : '') + '" onclick="goToPage(1)"' + (state.currentPage === 1 ? ' disabled' : '') + '>首页</button>';
+    html += '<button class="page-btn' + (state.currentPage === 1 ? ' disabled' : '') + '" onclick="goToPage(' + (state.currentPage - 1) + ')"' + (state.currentPage === 1 ? ' disabled' : '') + '>上一页</button>';
 
     var pages = [];
     pages.push(1);
@@ -653,8 +729,8 @@ function renderPagination(totalPages) {
         }
     });
 
-    html += '<button class="page-btn' + (state.currentPage === totalPages ? ' disabled' : '') + '" onclick="goToPage(' + (state.currentPage + 1) + ')"' + (state.currentPage === totalPages ? ' disabled' : '') + '>下一页 ▶</button>';
-    html += '<button class="page-btn' + (state.currentPage === totalPages ? ' disabled' : '') + '" onclick="goToPage(' + totalPages + ')"' + (state.currentPage === totalPages ? ' disabled' : '') + '>⏭ 末页</button>';
+    html += '<button class="page-btn' + (state.currentPage === totalPages ? ' disabled' : '') + '" onclick="goToPage(' + (state.currentPage + 1) + ')"' + (state.currentPage === totalPages ? ' disabled' : '') + '>下一页</button>';
+    html += '<button class="page-btn' + (state.currentPage === totalPages ? ' disabled' : '') + '" onclick="goToPage(' + totalPages + ')"' + (state.currentPage === totalPages ? ' disabled' : '') + '>末页</button>';
 
     nav.innerHTML = html;
 
@@ -732,7 +808,7 @@ function copySource(id) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(q.source).then(function() {
             var btn = document.querySelector('.question-card[data-id="' + id + '"] .copy-source-btn');
-            if (btn) { btn.textContent = '✅ 已复制'; btn.style.color = '#67c23a'; }
+            if (btn) { btn.innerHTML = '<span class="icon icon-check" aria-hidden="true"></span> 已复制'; btn.style.color = '#67c23a'; }
         });
     }
 }
@@ -1022,30 +1098,201 @@ function switchTab(tabName) {
         if (mc) typesetMath(mc);
     }
 
+    // Initialize paper maker knowledge search when switching to paper-maker tab
+    if (tabName === "paper-maker") {
+        initPaperKpSearch();
+        renderPaperKpTags();
+    }
+
 }
 
 // ========== Paper Generation ==========
+// Paper maker knowledge point state: array of { leaf: string, counts: { single:0, multi:0, fill:0, essay:0 } }
+var paperKpState = [];
+
+function renderPaperKpTags() {
+    var container = document.getElementById('paperKpTags');
+    if (!container) return;
+    var html = '';
+    paperKpState.forEach(function(item, idx) {
+        var fp = knowledgePathMap[item.leaf] || item.leaf;
+        html += '<div class="paper-kp-tag" data-kp-idx="' + idx + '">';
+        html += '<span class="kp-name" title="' + escapeHtml(fp) + '">' + escapeHtml(item.leaf) + '</span>';
+        html += '<span class="kp-counts">';
+        html += '<label>单选 <input type="number" class="kp-type-input" data-idx="' + idx + '" data-type="single" value="' + item.counts.single + '" min="0"></label>';
+        html += '<label>多选 <input type="number" class="kp-type-input" data-idx="' + idx + '" data-type="multi" value="' + item.counts.multi + '" min="0"></label>';
+        html += '<label>填空 <input type="number" class="kp-type-input" data-idx="' + idx + '" data-type="fill" value="' + item.counts.fill + '" min="0"></label>';
+        html += '<label>解答 <input type="number" class="kp-type-input" data-idx="' + idx + '" data-type="essay" value="' + item.counts.essay + '" min="0"></label>';
+        html += '</span>';
+        html += '<span class="kp-remove" data-idx="' + idx + '"><span class="icon icon-times" aria-hidden="true"></span></span>';
+        html += '</div>';
+    });
+    container.innerHTML = html;
+
+    // Attach change handlers for count inputs
+    container.querySelectorAll('.kp-type-input').forEach(function(inp) {
+        inp.addEventListener('change', function() {
+            var idx = parseInt(this.dataset.idx);
+            var type = this.dataset.type;
+            var val = parseInt(this.value) || 0;
+            if (idx >= 0 && idx < paperKpState.length) {
+                paperKpState[idx].counts[type] = val;
+            }
+        });
+    });
+
+    // Attach remove handlers
+    container.querySelectorAll('.kp-remove').forEach(function(el) {
+        el.addEventListener('click', function() {
+            var idx = parseInt(this.dataset.idx);
+            if (idx >= 0 && idx < paperKpState.length) {
+                paperKpState.splice(idx, 1);
+                renderPaperKpTags();
+            }
+        });
+    });
+}
+
+function initPaperKpSearch() {
+    var input = document.getElementById('paperKpSearchInput');
+    var dd = document.getElementById('paperKpDropdown');
+    if (!input || !dd) return;
+
+    // Remove old listeners by cloning
+    var newInput = input.cloneNode(true);
+    input.parentNode.replaceChild(newInput, input);
+    input = newInput;
+    input.id = 'paperKpSearchInput';
+
+    input.addEventListener('input', function() {
+        var query = this.value.trim().toLowerCase();
+        if (!query) { dd.style.display = 'none'; return; }
+        var matches = [];
+        for (var leaf in knowledgePathMap) {
+            var fp = knowledgePathMap[leaf];
+            if (leaf.toLowerCase().indexOf(query) !== -1 || fp.toLowerCase().indexOf(query) !== -1) {
+                // Exclude already selected
+                var already = paperKpState.some(function(item) { return item.leaf === leaf; });
+                if (!already) {
+                    matches.push({ leaf: leaf, path: fp });
+                }
+            }
+            if (matches.length >= 10) break;
+        }
+        if (matches.length === 0) { dd.style.display = 'none'; return; }
+        var ddHtml = '';
+        matches.forEach(function(m) {
+            ddHtml += '<div class="paper-kp-dropdown-item" data-leaf="' + escapeHtml(m.leaf) + '">' + escapeHtml(m.path) + '</div>';
+        });
+        dd.innerHTML = ddHtml;
+        dd.style.display = 'block';
+    });
+
+    input.addEventListener('blur', function() {
+        setTimeout(function() { dd.style.display = 'none'; }, 200);
+    });
+
+    input.addEventListener('focus', function() {
+        if (this.value.trim()) this.dispatchEvent(new Event('input'));
+    });
+
+    dd.addEventListener('mousedown', function(e) {
+        var item = e.target.closest('.paper-kp-dropdown-item');
+        if (!item) return;
+        var leaf = item.dataset.leaf;
+        // Check not already added
+        var already = paperKpState.some(function(ex) { return ex.leaf === leaf; });
+        if (!already) {
+            paperKpState.push({ leaf: leaf, counts: { single: 0, multi: 0, fill: 0, essay: 0 } });
+            renderPaperKpTags();
+        }
+        input.value = '';
+        input.focus();
+        dd.style.display = 'none';
+    });
+}
+
 function generatePaper() {
     var container = document.getElementById("paperArea");
     if (!container) return;
 
-    var easyCount = parseInt(document.getElementById("easyCount").value) || 0;
-    var mediumCount = parseInt(document.getElementById("mediumCount").value) || 0;
-    var hardCount = parseInt(document.getElementById("hardCount").value) || 0;
+    // Read global type counts
+    var globalSingle = parseInt(document.getElementById("paperSingleChoice").value) || 0;
+    var globalMulti = parseInt(document.getElementById("paperMultiChoice").value) || 0;
+    var globalFill = parseInt(document.getElementById("paperFillBlank").value) || 0;
+    var globalEssay = parseInt(document.getElementById("paperEssay").value) || 0;
 
-    var easyQs = questionBank.filter(function(q) { return q.difficulty === "easy"; });
-    var mediumQs = questionBank.filter(function(q) { return q.difficulty === "medium"; });
-    var hardQs = questionBank.filter(function(q) { return q.difficulty === "hard"; });
+    // Read per-KP counts from rendered inputs (already synced via change handlers)
+    // paperKpState is already up-to-date
+
+    var typeMap = { '单选题': 'single', '多选题': 'multi', '填空题': 'fill', '解答题': 'essay' };
+    var reverseTypeMap = { single: '单选题', multi: '多选题', fill: '填空题', essay: '解答题' };
 
     function randomPick(arr, count) {
         var s = arr.slice().sort(function() { return Math.random() - 0.5; });
         return s.slice(0, Math.min(count, s.length));
     }
 
-    var selected = randomPick(easyQs, easyCount).concat(randomPick(mediumQs, mediumCount)).concat(randomPick(hardQs, hardCount));
+    function filterByType(qs, typeName) {
+        return qs.filter(function(q) { return q.type === typeName; });
+    }
+
+    var selected = [];
+
+    if (paperKpState.length === 0) {
+        // Global mode: no knowledge point filter
+        var pool = questionBank.slice();
+        selected = selected.concat(randomPick(filterByType(pool, '单选题'), globalSingle));
+        selected = selected.concat(randomPick(filterByType(pool, '多选题'), globalMulti));
+        selected = selected.concat(randomPick(filterByType(pool, '填空题'), globalFill));
+        selected = selected.concat(randomPick(filterByType(pool, '解答题'), globalEssay));
+    } else {
+        // Per-knowledge-point mode
+        paperKpState.forEach(function(kp) {
+            var leaf = kp.leaf;
+            var descendantLeaves = knowledgeDescendantsMap[leaf];
+            var pool = questionBank.filter(function(q) {
+                var kl = q.knowledgeList && q.knowledgeList.length > 0 ? q.knowledgeList : (q.knowledge ? [q.knowledge] : []);
+                if (descendantLeaves) {
+                    return kl.some(function(k) { return k === leaf || descendantLeaves.indexOf(k) !== -1; });
+                } else {
+                    return kl.indexOf(leaf) !== -1;
+                }
+            });
+            selected = selected.concat(randomPick(filterByType(pool, '单选题'), kp.counts.single));
+            selected = selected.concat(randomPick(filterByType(pool, '多选题'), kp.counts.multi));
+            selected = selected.concat(randomPick(filterByType(pool, '填空题'), kp.counts.fill));
+            selected = selected.concat(randomPick(filterByType(pool, '解答题'), kp.counts.essay));
+        });
+        // If per-KP counts are all zero, fall back to global
+        var hasAnyKpCount = paperKpState.some(function(kp) {
+            return kp.counts.single > 0 || kp.counts.multi > 0 || kp.counts.fill > 0 || kp.counts.essay > 0;
+        });
+        if (!hasAnyKpCount && (globalSingle > 0 || globalMulti > 0 || globalFill > 0 || globalEssay > 0)) {
+            // Use global counts but scoped to selected knowledge points
+            var kpLeaves = [];
+            paperKpState.forEach(function(kp) {
+                var dl = knowledgeDescendantsMap[kp.leaf];
+                if (dl) {
+                    kpLeaves = kpLeaves.concat(dl);
+                } else {
+                    kpLeaves.push(kp.leaf);
+                }
+            });
+            var pool = questionBank.filter(function(q) {
+                var kl = q.knowledgeList && q.knowledgeList.length > 0 ? q.knowledgeList : (q.knowledge ? [q.knowledge] : []);
+                return kl.some(function(k) { return kpLeaves.indexOf(k) !== -1; });
+            });
+            selected = [];
+            selected = selected.concat(randomPick(filterByType(pool, '单选题'), globalSingle));
+            selected = selected.concat(randomPick(filterByType(pool, '多选题'), globalMulti));
+            selected = selected.concat(randomPick(filterByType(pool, '填空题'), globalFill));
+            selected = selected.concat(randomPick(filterByType(pool, '解答题'), globalEssay));
+        }
+    }
 
     if (selected.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-icon">\u26a0\ufe0f</div><p>\u8bf7\u81f3\u5c11\u9009\u62e9\u4e00\u4e2a\u9898\u76ee\u6570\u91cf</p></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon"><span class="icon icon-warning icon-lg" aria-hidden="true"></span></div><p>\u8bf7\u81f3\u5c11\u9009\u62e9\u4e00\u4e2a\u9898\u76ee\u6570\u91cf</p></div>';
         return;
     }
 
@@ -1075,14 +1322,17 @@ function generatePaper() {
             html += '<div class="paper-solution"><strong>\u89e3\u6790\uff1a</strong> <span>' + prepareDisplayText(q.solution) + '</span></div>';
         }
 
-        // Difficulty tag
-        var diffTag = '';
+        // Type + Difficulty tag
+        var metaParts = [];
+        if (q.type) metaParts.push('<span class="tag tag-type" style="font-size:11px;padding:1px 6px;">' + escapeHtml(q.type) + '</span>');
         if (q.difficulty) {
             var diffLabel = { easy: '\u7b80\u5355', medium: '\u4e2d\u7b49', hard: '\u56f0\u96be' }[q.difficulty] || q.difficulty;
             var diffColor = { easy: '#67c23a', medium: '#e6a23c', hard: '#f56c6c' }[q.difficulty] || '#909399';
-            diffTag = '<span class="paper-diff-tag" style="background:' + diffColor + ';color:#fff;padding:2px 8px;border-radius:3px;font-size:12px;margin-left:8px;">' + diffLabel + '</span>';
+            metaParts.push('<span class="paper-diff-tag" style="background:' + diffColor + ';color:#fff;padding:1px 6px;border-radius:3px;font-size:11px;">' + diffLabel + '</span>');
         }
-        html += '<div class="paper-meta">' + diffTag + '</div>';
+        if (metaParts.length > 0) {
+            html += '<div class="paper-meta" style="margin-top:6px;display:flex;gap:4px;align-items:center;">' + metaParts.join('') + '</div>';
+        }
 
         html += '</div></div>';
     });
@@ -1133,7 +1383,7 @@ function showProgress(title, current, total) {
     var textEl = document.getElementById('progressText');
     if (!overlay || !fill) return;
     overlay.style.display = 'flex';
-    if (titleEl) titleEl.textContent = title;
+    if (titleEl) titleEl.innerHTML = title;
     var pct = total > 0 ? Math.min(100, Math.round(current / total * 100)) : 0;
     fill.style.width = pct + '%';
     if (textEl) textEl.textContent = current + ' / ' + total;
@@ -1148,8 +1398,8 @@ function showExportMenu() {
     var menu = document.createElement('div');
     menu.className = 'export-menu';
     menu.innerHTML = '<div class="export-menu-title">选择导出格式</div>' +
-        '<div class="export-menu-item" onclick="exportQuestionBankJson();this.closest(\'.export-menu\').remove()">📄 JSON 文件</div>' +
-        '<div class="export-menu-item" onclick="exportQuestionBankSource();this.closest(\'.export-menu\').remove()">📜 源码 (.tex)</div>' +
+        '<div class="export-menu-item" onclick="exportQuestionBankJson();this.closest(\'.export-menu\').remove()"><span class="icon icon-document" aria-hidden="true"></span> JSON 文件</div>' +
+        '<div class="export-menu-item" onclick="exportQuestionBankSource();this.closest(\'.export-menu\').remove()"><span class="icon icon-scroll" aria-hidden="true"></span> 源码 (.tex)</div>' +
         '<div class="export-menu-item cancel" onclick="this.closest(\'.export-menu\').remove()">取消</div>';
     document.body.appendChild(menu);
     // Position near the button
@@ -1186,7 +1436,7 @@ function exportQuestionBankJson() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        showProgress('✅ 导出完成', 1, 1);
+        showProgress('<span class="icon icon-check" aria-hidden="true"></span> 导出完成', 1, 1);
         setTimeout(hideProgress, 1200);
     }, 100);
 }
@@ -1226,7 +1476,7 @@ function exportQuestionBankSource() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        showProgress('✅ 导出完成', total, total);
+        showProgress('<span class="icon icon-check" aria-hidden="true"></span> 导出完成', total, total);
         setTimeout(hideProgress, 1200);
     }, 100);
 }
@@ -1245,7 +1495,7 @@ function importTexFile(event) {
             var evt = new Event('input', { bubbles: true });
             input.dispatchEvent(evt);
         }
-        showProgress('✅ 已加载 ' + file.name, 1, 1);
+        showProgress('<span class="icon icon-check" aria-hidden="true"></span> 已加载 ' + file.name, 1, 1);
         setTimeout(hideProgress, 1000);
     };
     reader.readAsText(file, 'utf-8');
@@ -1267,8 +1517,54 @@ function clearAllData() {
     renderFilterBar();
     applyFiltersAndRender();
     var statusEl = document.getElementById('importStatus');
-    if (statusEl) { statusEl.textContent = '✅ 已清空所有题目数据'; statusEl.style.color = '#67c23a'; }
+    if (statusEl) { statusEl.innerHTML = '<span class="icon icon-check" aria-hidden="true"></span> 已清空所有题目数据'; statusEl.style.color = '#67c23a'; }
     setTimeout(function() { if (statusEl) { statusEl.textContent = ''; } }, 3000);
+}
+
+var _pendingImport = null;
+
+function closeImportModal() {
+    document.getElementById('importModal').style.display = 'none';
+    var pi = _pendingImport;
+    _pendingImport = null;
+    if (pi) {
+        if (pi.statusEl) pi.statusEl.innerHTML = '<span class="icon icon-cross" aria-hidden="true"></span> 已取消导入';
+        setTimeout(function(){ if(pi.statusEl) pi.statusEl.textContent = ''; }, 3000);
+        hideProgress();
+    }
+}
+
+function doImportMerge() {
+    var pi = _pendingImport;
+    if (!pi) return;
+    _pendingImport = null;
+    document.getElementById('importModal').style.display = 'none';
+    finishImport(pi.questions, pi.statusEl, false);
+}
+
+function doImportReplace() {
+    var pi = _pendingImport;
+    if (!pi) return;
+    _pendingImport = null;
+    document.getElementById('importModal').style.display = 'none';
+    finishImport(pi.questions, pi.statusEl, true);
+}
+
+function finishImport(imported, statusEl, replace) {
+    if (replace) {
+        questionBank = imported.slice();
+    } else {
+        questionBank = questionBank.concat(imported);
+    }
+    nextId = questionBank.length > 0 ? Math.max(...questionBank.map(function(q){return q.id})) + 1 : 1;
+    saveQuestionBank();
+    buildFilterValues();
+    renderFilterBar();
+    applyFiltersAndRender();
+    var msg = '<span class="icon icon-check" aria-hidden="true"></span> 已导入 ' + imported.length + ' 题，当前共 ' + questionBank.length + ' 题';
+    if (statusEl) statusEl.innerHTML = msg;
+    setTimeout(function(){ if(statusEl) statusEl.textContent = ''; }, 5000);
+    hideProgress();
 }
 
 function importQuestionBank(event) {
@@ -1307,27 +1603,14 @@ function importQuestionBank(event) {
                 showProgress('正在处理导入...', i + 1, total);
             });
             showProgress('正在合并题库...', total, total);
-            // Confirm merge
-            var msg = '检测到 ' + imported.length + ' 道题，是否合并到现有题库（共 ' + questionBank.length + ' 道）？';
-            if (confirm(msg)) {
-                questionBank = questionBank.concat(imported);
-                // Rebuild nextId
-                nextId = Math.max(...questionBank.map(function(q){return q.id})) + 1;
-                saveQuestionBank();
-                buildFilterValues();
-                renderFilterBar();
-                applyFiltersAndRender();
-                if (statusEl) statusEl.textContent = '✅ 已导入 ' + imported.length + ' 题，当前共 ' + questionBank.length + ' 题';
-                setTimeout(function(){ if(statusEl) statusEl.textContent = ''; }, 5000);
-                showProgress('✅ 导入完成', total, total);
-                setTimeout(hideProgress, 1200);
-            } else {
-                if (statusEl) statusEl.textContent = '❌ 已取消导入';
-                setTimeout(function(){ if(statusEl) statusEl.textContent = ''; }, 3000);
-                hideProgress();
-            }
+            // Show import modal with merge/replace options
+            _pendingImport = { questions: imported, statusEl: statusEl };
+            var modal = document.getElementById('importModal');
+            var msgEl = document.getElementById('importModalMessage');
+            msgEl.innerHTML = '检测到 <strong>' + imported.length + '</strong> 道题。<br>当前题库共 <strong>' + questionBank.length + '</strong> 道题。<br><br>请选择导入方式：';
+            modal.style.display = 'flex';
         } catch(err) {
-            if (statusEl) statusEl.textContent = '❌ 导入失败: ' + err.message;
+            if (statusEl) statusEl.innerHTML = '<span class="icon icon-cross" aria-hidden="true"></span> 导入失败: ' + escapeHtml(err.message);
             setTimeout(function(){ if(statusEl) statusEl.textContent = ''; }, 5000);
             hideProgress();
         }
@@ -1372,7 +1655,7 @@ function addQuestion(e) {
     saveQuestionBank();
 
     var c = document.getElementById("addedQuestions");
-    var msg = '<div class="added-question-item">\u2705 \u9898\u76ee\u5df2\u6210\u529f\u6dfb\u52a0\uff01\u5f53\u524d\u9898\u5e93\u5171 ' + questionBank.length + ' \u9898</div>';
+    var msg = '<div class="added-question-item"><span class="icon icon-check" aria-hidden="true"></span> \u9898\u76ee\u5df2\u6210\u529f\u6dfb\u52a0\uff01\u5f53\u524d\u9898\u5e93\u5171 ' + questionBank.length + ' \u9898</div>';
     c.innerHTML = msg + (c.innerHTML || "");
 
     document.getElementById("addQuestionForm").reset();
@@ -1572,7 +1855,7 @@ function parseLatexInput() {
 
     parsedQuestionsCache = questions;
     renderParsedPreview(questions);
-    resultSpan.textContent = '✅ 已解析 ' + questions.length + ' 题';
+    resultSpan.innerHTML = '<span class="icon icon-check" aria-hidden="true"></span> 已解析 ' + questions.length + ' 题';
     resultSpan.style.color = '#67c23a';
 }
 
@@ -1629,7 +1912,7 @@ function renderParsedPreview(questions) {
         html += '<div class="knowledge-dropdown" id="knowledgeDropdown_' + i + '" style="display:none;"></div>';
         html += '</div>';
         html += '</div></div></div>';
-        html += '<button class="btn-submit btn-add-to-bank" onclick="addParsedToBank(' + i + ')" style="margin-top:8px;font-size:13px;padding:6px 16px;">📥 添加到题库</button>';
+        html += '<button class="btn-submit btn-add-to-bank" onclick="addParsedToBank(' + i + ')" style="margin-top:8px;font-size:13px;padding:6px 16px;"><span class="icon icon-download" aria-hidden="true"></span> 添加到题库</button>';
         html += '</div></div>';
     });
 
@@ -1740,7 +2023,7 @@ function addParsedToBank(idx) {
     renderFilterBar();
 
     var btn = card.querySelector('.btn-add-to-bank');
-    btn.textContent = '✅ 已添加';
+    btn.innerHTML = '<span class="icon icon-check" aria-hidden="true"></span> 已添加';
     btn.disabled = true;
     btn.style.opacity = '0.6';
     btn.style.cursor = 'default';
@@ -1749,7 +2032,7 @@ function addParsedToBank(idx) {
     if (!msg) {
         msg = document.getElementById('parseResult');
         if (msg) {
-            msg.textContent = '✅ 已成功添加至题库（未分类），当前题库共 ' + questionBank.length + ' 题';
+            msg.innerHTML = '<span class="icon icon-check" aria-hidden="true"></span> 已成功添加至题库（未分类），当前题库共 ' + questionBank.length + ' 题';
             msg.style.color = '#67c23a';
         }
     }
@@ -1802,11 +2085,11 @@ function addAllParsedToBank() {
     renderFilterBar();
 
     document.getElementById('latexInput').value = '';
-    document.getElementById('parsePreview').innerHTML = '<div style="text-align:center;color:#c0c4cc;padding:60px 0;"><div style="font-size:40px;margin-bottom:10px;">📄</div><p>粘贴 LaTeX 后自动解析</p></div>';
+    document.getElementById('parsePreview').innerHTML = '<div style="text-align:center;color:#c0c4cc;padding:60px 0;"><div style="font-size:40px;margin-bottom:10px;"><span class="icon icon-document icon-xxl" aria-hidden="true"></span></div><p>粘贴 LaTeX 后自动解析</p></div>';
     document.getElementById('previewCount').textContent = '';
     var rs = document.getElementById('parseResult');
     if (rs) {
-        rs.textContent = '✅ 已添加 ' + count + ' 题至题库，当前共 ' + questionBank.length + ' 题';
+        rs.innerHTML = '<span class="icon icon-check" aria-hidden="true"></span> 已添加 ' + count + ' 题至题库，当前共 ' + questionBank.length + ' 题';
         rs.style.color = '#67c23a';
     }
     parsedQuestionsCache = [];
