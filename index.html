@@ -2077,26 +2077,30 @@
             <div class="panel-header">
                 <h2>录题中心</h2>
             </div>
-            <div style="flex:1;display:flex;overflow:hidden;">
+            <div class="question-entry-layout">
                 <!-- Left: LaTeX Input -->
-                <div style="width:45%;display:flex;flex-direction:column;border-right:1px solid #e4e7ed;padding:16px;overflow-y:auto;">
-                    <h3 style="color:#409eff;margin:0 0 8px 0;font-size:16px;"><span class="icon icon-pen" aria-hidden="true"></span> LaTeX 智能解析</h3>
-                    <p style="font-size:12px;color:#909399;margin:0 0 10px 0;">粘贴 LaTeX 题目，自动识别题型、选项、答案和解析。支持批量。</p>
-                    <textarea id="latexInput" rows="18" style="width:100%;flex:1;min-height:200px;font-family:Consolas,monospace;font-size:13px;padding:10px;border:1px solid #dcdfe6;border-radius:4px;resize:vertical;box-sizing:border-box;" placeholder="粘贴 LaTeX 题目，自动解析，例如：&#10;\begin{example}{4}&#10;  已知关于 $x$ 的方程...&#10;\end{example}&#10;\begin{proof}&#10;  \begin{answer} 答案 \end{answer}&#10;  \begin{solutions} 解析 \end{solutions}&#10;\end{proof}"></textarea>
-                    <div style="margin-top:10px;display:flex;gap:10px;align-items:center;">
-                        <button type="button" class="btn-submit" onclick="addAllParsedToBank()" style="background:#409eff;"><span class="icon icon-download" aria-hidden="true"></span> 一键添加到题库</button>
-                        <button type="button" class="btn-import-tex" onclick="document.getElementById('texFileInput').click()" style="background:#fff;border:1px solid #dcdfe6;border-radius:4px;padding:8px 16px;cursor:pointer;font-size:13px;color:#606266;"><span class="icon icon-folder" aria-hidden="true"></span> 导入 .tex</button>
-                        <input type="file" id="texFileInput" accept=".tex,.txt" style="display:none;" onchange="importTexFile(event)">
-                        <button type="button" class="btn-reset" onclick="document.getElementById('latexInput').value='';document.getElementById('parsePreview').innerHTML='<div style=\"text-align:center;color:#c0c4cc;padding:60px 0;\"><div style=\"font-size:40px;margin-bottom:10px;\"><span class=\"icon icon-document icon-xxl\" aria-hidden=\"true\"></span></div><p>粘贴 LaTeX 后自动解析</p></div>';document.getElementById('previewCount').textContent='';document.getElementById('parseResult').textContent='';">清空</button>
-                        <span id="parseResult" style="font-size:12px;"></span>
+                <div class="question-entry-input">
+                    <div class="input-card">
+                        <h3 class="section-header"><span class="icon icon-pen accent-blue" aria-hidden="true"></span> LaTeX 智能解析</h3>
+                        <p class="section-desc">粘贴 LaTeX 题目，自动识别题型、选项、答案和解析。支持批量。</p>
+                        <textarea id="latexInput" rows="18" placeholder="粘贴 LaTeX 题目，自动解析，例如：&#10;\begin{example}{4}&#10;  已知关于 $x$ 的方程...&#10;\end{example}&#10;\begin{proof}&#10;  \begin{answer} 答案 \end{answer}&#10;  \begin{solutions} 解析 \end{solutions}&#10;\end{proof}"></textarea>
+                        <div class="input-actions">
+                            <button type="button" class="btn-submit" onclick="addAllParsedToBank()"><span class="icon icon-download" aria-hidden="true"></span> 一键添加到题库</button>
+                            <button type="button" class="btn-import" onclick="document.getElementById('texFileInput').click()"><span class="icon icon-folder" aria-hidden="true"></span> 导入 .tex</button>
+                            <input type="file" id="texFileInput" accept=".tex,.txt" style="display:none;" onchange="importTexFile(event)">
+                            <button type="button" class="btn-reset" onclick='document.getElementById("latexInput").value="";document.getElementById("parsePreview").innerHTML="<div class=\"preview-placeholder\"><div class=\"placeholder-icon\"><span class=\"icon icon-document\" aria-hidden=\"true\"></span></div><p>粘贴 LaTeX 后自动解析</p></div>";document.getElementById("previewCount").textContent="";document.getElementById("parseResult").textContent="";'><span class="icon icon-trash" aria-hidden="true"></span> 清空</button>
+                            <span class="parse-status" id="parseResult"></span>
+                        </div>
                     </div>
                 </div>
                 <!-- Right: Preview & Add -->
-                <div style="width:55%;display:flex;flex-direction:column;padding:16px;overflow-y:auto;">
-                    <h3 style="color:#67c23a;margin:0 0 10px 0;font-size:16px;"><span class="icon icon-clipboard" aria-hidden="true"></span> 解析预览 <span id="previewCount" style="font-size:12px;color:#909399;font-weight:normal;"></span></h3>
-                    <div id="parsePreview" style="flex:1;overflow-y:auto;">
-                        <div style="text-align:center;color:#c0c4cc;padding:60px 0;">
-                            <div style="font-size:40px;margin-bottom:10px;"><span class="icon icon-document icon-xxl" aria-hidden="true"></span></div>
+                <div class="question-entry-preview">
+                    <div class="preview-header">
+                        <h3><span class="icon icon-clipboard accent-green" aria-hidden="true"></span> 解析预览 <span class="preview-count" id="previewCount"></span></h3>
+                    </div>
+                    <div id="parsePreview">
+                        <div class="preview-placeholder">
+                            <div class="placeholder-icon"><span class="icon icon-document" aria-hidden="true"></span></div>
                             <p>粘贴 LaTeX 后自动解析</p>
                         </div>
                     </div>
