@@ -570,8 +570,12 @@ function renderOneTikz(code, callback) {
     var doc = iframe.contentDocument || iframe.contentWindow.document;
     doc.open();
     doc.write('<!DOCTYPE html><html><head>' +
-        '<link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css">' +
+        '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@planktimerr/tikzjax@1.0.7/dist/fonts.css">' +
         '<script>' +
+        // Fix document.currentScript for Chrome document.write deprecation
+        'if(document.currentScript===undefined||document.currentScript===null){' +
+        'var _scr=document.getElementsByTagName("script");' +
+        'document.currentScript=_scr[_scr.length-1]}' +
         // Fix btoa: use ArrayBuffer.isView (cross-realm safe) instead of instanceof
         'try{' +
         'var _ob=window.btoa;' +
@@ -585,7 +589,7 @@ function renderOneTikz(code, callback) {
         'return _ob(s)}' +
         '}catch(e){console.warn("btoa patch error:",e)}' +
         '<\/script>' +
-        '<script src="https://tikzjax.com/v1/tikzjax.js"><\/script>' +
+        '<script src="https://cdn.jsdelivr.net/npm/@planktimerr/tikzjax@1.0.7/dist/tikzjax.js"><\/script>' +
         '</head><body>' +
         '<script type="text/tikz">' + safeCode + '<\/script>' +
         '</body></html>');
@@ -681,6 +685,7 @@ function renderQuestionCards(questions) {
         if (q.source) {
             html += '<span class="copy-source-btn" onclick="copySource(' + q.id + ')"><span class="icon icon-clipboard" aria-hidden="true"></span> 复制源码</span>';
         }
+        html += '<span class="remark-tag" onclick="editRemark(' + q.id + ')">' + (q.remark ? escapeHtml(q.remark) : '<span class="remark-empty">+ 备注</span>') + '</span>';
         html += '</div></div>';
         html += '<div class="card-body"><div class="question-text">' + prepareDisplayText(q.question) + '</div>';
         html += optionsHtml + answerHtml;
@@ -813,6 +818,16 @@ function copySource(id) {
     }
 }
 
+function editRemark(id) {
+    var q = questionBank.find(function(q) { return q.id === id; });
+    if (!q) return;
+    var newRemark = prompt('请输入备注：', q.remark || '');
+    if (newRemark === null) return;
+    q.remark = newRemark.trim();
+    saveQuestionBank();
+    applyFiltersAndRender();
+}
+
 // ========== Edit Modal ==========
 var _editingQuestionId = null;
 
@@ -821,6 +836,7 @@ function showEditModal(id) {
     if (!q) return;
     _editingQuestionId = id;
     document.getElementById('editSource').value = q.source || '';
+    document.getElementById('editRemark').value = q.remark || '';
     document.getElementById('editModal').style.display = 'flex';
 }
 
@@ -840,7 +856,8 @@ function saveQuestionEdit() {
     // Re-parse the source to update all fields
     var parsed = parseSingleExample(newSource);
     if (!parsed) { alert('源码解析失败，请检查格式'); return; }
-    // Preserve id and knowledge
+    // Preserve id, knowledge, and remark
+    q.remark = document.getElementById('editRemark').value.trim();
     q.source = newSource;
     q.type = parsed.type;
     q.question = parsed.question;
@@ -1600,6 +1617,7 @@ function importQuestionBank(event) {
                 if (!q.difficulty) q.difficulty = 'medium';
                 if (!q.grade) q.grade = '未分类';
                 if (!q.type) q.type = '';
+                if (!q.remark) q.remark = '';
                 showProgress('正在处理导入...', i + 1, total);
             });
             showProgress('正在合并题库...', total, total);
@@ -1912,6 +1930,7 @@ function renderParsedPreview(questions) {
         html += '<div class="knowledge-dropdown" id="knowledgeDropdown_' + i + '" style="display:none;"></div>';
         html += '</div>';
         html += '</div></div></div>';
+        html += '<div class="form-row" style="margin-top:8px;"><div class="form-group" style="flex:1;"><label>备注</label><input class="parsed-remark" data-idx="' + i + '" placeholder="自定义备注（可选）" style="width:100%;padding:4px 8px;border:1px solid #dcdfe6;border-radius:4px;font-size:13px;"></div></div>';
         html += '<button class="btn-submit btn-add-to-bank" onclick="addParsedToBank(' + i + ')" style="margin-top:8px;font-size:13px;padding:6px 16px;"><span class="icon icon-download" aria-hidden="true"></span> 添加到题库</button>';
         html += '</div></div>';
     });
@@ -1998,6 +2017,7 @@ function addParsedToBank(idx) {
     var knowledge = sel.length > 0 ? sel[0] : '未分类';
     var difficulty = card.querySelector('.parsed-difficulty').value || 'medium';
 
+    var remark = card.querySelector('.parsed-remark');
     var newQ = {
         id: nextId++,
         grade: q.meta && q.meta.grade ? q.meta.grade : '未分类',
@@ -2012,7 +2032,8 @@ function addParsedToBank(idx) {
         answer: q.answer,
         solution: q.solution,
         meta: q.meta,
-        source: q.source
+        source: q.source,
+        remark: remark ? remark.value.trim() : ''
     };
 
     questionBank.push(newQ);
@@ -2074,7 +2095,8 @@ function addAllParsedToBank() {
             answer: q.answer || '',
             solution: q.solution || '',
             meta: q.meta || {},
-            source: q.source
+            source: q.source,
+            remark: ''
         };
         questionBank.push(newQ);
     saveQuestionBank();
@@ -2168,6 +2190,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 500);
         });
     }
+
+    // Migrate: ensure all questions have the remark field
+    questionBank.forEach(function(q) {
+        if (q.remark === undefined) q.remark = '';
+    });
 
     applyFiltersAndRender();
 

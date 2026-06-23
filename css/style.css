@@ -793,6 +793,29 @@ body {
 .copy-source-btn:hover {
     color: #409eff;
 }
+.remark-tag {
+    cursor: pointer;
+    color: #b37feb;
+    font-size: 11px;
+    padding: 2px 8px;
+    border: 1px solid #d3adf7;
+    border-radius: 4px;
+    background: #f9f0ff;
+    transition: all 0.2s;
+    user-select: none;
+    white-space: nowrap;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.remark-tag:hover {
+    background: #efdbff;
+    border-color: #b37feb;
+}
+.remark-empty {
+    color: #c0c4cc;
+    font-style: normal;
+}
 
 .card-body {
     padding: 16px 20px;

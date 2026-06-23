@@ -97,6 +97,10 @@
                     </div>
                     <div class="modal-body">
                         <textarea id="editSource" class="edit-source-textarea" spellcheck="false"></textarea>
+                        <div style="margin-top:8px;">
+                            <label style="font-size:13px;color:#606266;">备注</label>
+                            <input id="editRemark" type="text" placeholder="自定义备注" style="width:100%;padding:6px 10px;border:1px solid #dcdfe6;border-radius:4px;font-size:13px;box-sizing:border-box;">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-danger" id="btnDeleteQuestion" onclick="deleteQuestion()">删除题目</button>
@@ -2112,6 +2116,6 @@
     <script src="js/questions.js"></script>
     <script src="js/app.js"></script>
     <!-- TikZJax fonts for rendered SVGs -->
-    <link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@planktimerr/tikzjax@1.0.7/dist/fonts.css">
 </body>
 </html>
