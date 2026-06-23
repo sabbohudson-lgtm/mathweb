@@ -570,12 +570,8 @@ function renderOneTikz(code, callback) {
     var doc = iframe.contentDocument || iframe.contentWindow.document;
     doc.open();
     doc.write('<!DOCTYPE html><html><head>' +
-        '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@planktimerr/tikzjax@1.0.7/dist/fonts.css">' +
+        '<link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css">' +
         '<script>' +
-        // Fix document.currentScript for Chrome document.write deprecation
-        'if(document.currentScript===undefined||document.currentScript===null){' +
-        'var _scr=document.getElementsByTagName("script");' +
-        'document.currentScript=_scr[_scr.length-1]}' +
         // Fix btoa: use ArrayBuffer.isView (cross-realm safe) instead of instanceof
         'try{' +
         'var _ob=window.btoa;' +
@@ -589,7 +585,7 @@ function renderOneTikz(code, callback) {
         'return _ob(s)}' +
         '}catch(e){console.warn("btoa patch error:",e)}' +
         '<\/script>' +
-        '<script src="https://cdn.jsdelivr.net/npm/@planktimerr/tikzjax@1.0.7/dist/tikzjax.js"><\/script>' +
+        '<script src="https://tikzjax.com/v1/tikzjax.js"><\/script>' +
         '</head><body>' +
         '<script type="text/tikz">' + safeCode + '<\/script>' +
         '</body></html>');
